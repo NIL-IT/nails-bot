@@ -11,13 +11,12 @@ export default function SingleCategory() {
   let products = PRODUCTS.filter(
     ({ category }) => category.id === parseInt(id)
   );
+  const [list, setList] = React.useState(products);
   useEffect(() => {
-    if (!products.length > 0) navigate(ROUTES.HOME);
+    if (!products.length > 0 && !id) navigate(ROUTES.HOME);
     products = PRODUCTS.filter(({ category }) => category.id === parseInt(id));
     setList(products);
   }, [id]);
-
-  const [list, setList] = React.useState(products);
 
   const handleClick = (title) => {
     setList(
@@ -27,7 +26,7 @@ export default function SingleCategory() {
     );
   };
 
-  return (
+  return list.length > 0 ? (
     <div className="mt-[30px]">
       <Title text={list[0].category.name} className={"mb-5"} />
       <div className="flex gap-[10px] flex-wrap mb-[30px]">
@@ -52,5 +51,13 @@ export default function SingleCategory() {
         text="Корзина"
       />
     </div>
+  ) : (
+    <>
+      <div className="flex justify-center items-center h-[70vh]">
+        <p className="text-xl text-primary font-montserrat">
+          Товары по этой категории не найдены
+        </p>
+      </div>
+    </>
   );
 }

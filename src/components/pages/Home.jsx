@@ -9,7 +9,7 @@ const Home = () => {
     <main className="my-[30px]">
       <div className="flex flex-col gap-[30px]">
         {CATEGORIES.map(({ name, id }) => (
-          <Products name={name} categoryId={id} />
+          <Products key={id} name={name} categoryId={id} />
         ))}
       </div>
       <Button

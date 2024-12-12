@@ -9,7 +9,6 @@ export function Products({ categoryId, name }) {
   let filtered = PRODUCTS.filter(
     ({ category: { id } }) => id === categoryId
   ).slice(0, 2);
-  console.log(filtered);
   return (
     filtered.length > 0 && (
       <div>
