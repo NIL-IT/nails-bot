@@ -5,17 +5,26 @@ export const CATEGORIES = [
   },
   {
     id: 2,
-    name: "Дизайны",
+    name: "Скидки",
   },
   {
     id: 3,
+    name: "Дизайны",
+  },
+  {
+    id: 4,
     name: "Покрытия",
+  },
+  {
+    id: 5,
+    name: "Инструменты",
   },
 ];
 export const PRODUCTS = [
   {
     id: 1,
     title: "Базы Foxy Expert",
+
     subtitle: "Lax (Лакс)",
     img: "../../public/img/item.png",
     price: 350,
@@ -35,7 +44,8 @@ export const PRODUCTS = [
   },
   {
     id: 2,
-    title: "Базы Foxy Expert",
+    title: "Базы AdriCoco",
+
     subtitle: "Lax (Лакс)",
     img: "../../public/img/item.png",
     price: 350,
@@ -61,7 +71,7 @@ export const PRODUCTS = [
     price: 350,
     category: {
       id: 2,
-      name: "Дизайны",
+      name: "Скидки",
     },
     desc: "каучуковая MILKY",
     volume: "10 мл #2",
@@ -81,7 +91,7 @@ export const PRODUCTS = [
     price: 350,
     category: {
       id: 2,
-      name: "Дизайны",
+      name: "Скидки",
     },
     desc: "каучуковая MILKY",
     volume: "10 мл #2",
@@ -101,7 +111,7 @@ export const PRODUCTS = [
     price: 350,
     category: {
       id: 3,
-      name: "Покрытия",
+      name: "Дизайны",
     },
     desc: "каучуковая MILKY",
     volume: "10 мл #2",
@@ -121,6 +131,46 @@ export const PRODUCTS = [
     price: 350,
     category: {
       id: 3,
+      name: "Дизайны",
+    },
+    desc: "каучуковая MILKY",
+    volume: "10 мл #2",
+    article: 9920,
+    descriptions: [
+      "Жидкий молочный полигель от ТМ LAX",
+      "Жидкой гель-базой можно выравнивать, ремонтировать и донаращивать свободный край ногтевой пластины.",
+      "Для подвижных и тонких ногтей необходима подложка из базы с высокой адгезией",
+      "Средняя пигментация, хорошо перекрывает НП",
+    ],
+  },
+  {
+    id: 7,
+    title: "Базы Foxy Expert",
+    subtitle: "Lax (Лакс)",
+    img: "../../public/img/item.png",
+    price: 350,
+    category: {
+      id: 4,
+      name: "Покрытия",
+    },
+    desc: "каучуковая MILKY",
+    volume: "10 мл #2",
+    article: 9920,
+    descriptions: [
+      "Жидкий молочный полигель от ТМ LAX",
+      "Жидкой гель-базой можно выравнивать, ремонтировать и донаращивать свободный край ногтевой пластины.",
+      "Для подвижных и тонких ногтей необходима подложка из базы с высокой адгезией",
+      "Средняя пигментация, хорошо перекрывает НП",
+    ],
+  },
+  {
+    id: 8,
+    title: "Базы Foxy Expert",
+    subtitle: "Lax (Лакс)",
+    img: "../../public/img/item.png",
+    price: 350,
+    category: {
+      id: 4,
       name: "Покрытия",
     },
     desc: "каучуковая MILKY",

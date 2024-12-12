@@ -3,14 +3,14 @@ import { Title } from "../ui";
 
 export function Product({ item }) {
   return (
-    <article className="p-[6px] flex flex-col gap-[10px] bg-gray rounded-[10px] w-[145px]">
-      <img
-        width={133}
-        height={89}
-        className="rounded-[10px]"
-        src={item.img}
-        alt={item.title}
-      />
+    <article className="p-[6px] flex flex-col gap-[10px] bg-gray rounded-[10px] ">
+      <div className=" flex justify-center">
+        <img
+          className="rounded-[10px] w-[89px]"
+          src={item.img}
+          alt={item.title}
+        />
+      </div>
       <div>
         <Title text={item.title} size={"text-2xl"} />
         <div className="text-base font-medium">
@@ -18,7 +18,7 @@ export function Product({ item }) {
           <p>{item.volume}</p>
         </div>
       </div>
-      <div className="text-2xl font-semibold">{item.price} </div>
+      <div className="text-2xl font-semibold mb-1">{item.price} ₽</div>
     </article>
   );
 }

@@ -1,15 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { CATEGORIES } from "../../utils/data";
 
-export const Sidebar = ({ items }) => {
+export const Sidebar = () => {
   return (
     <ul className="flex gap-[5px] items-center justify-between overflow-x-scroll ">
-      {items.map((item, i) => (
+      {CATEGORIES.map(({ name, id }) => (
         <li
-          key={i}
+          key={id}
           className="bg-primary text-white text-xl font-medium px-3 pt-[10px] pb-[7px] rounded-b-xl"
         >
-          <Link>{item}</Link>
+          <Link to={`/categories/${id}`}>{name}</Link>
         </li>
       ))}
     </ul>

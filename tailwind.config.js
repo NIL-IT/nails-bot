@@ -7,9 +7,9 @@ export default {
       manrope: ["Manrope", "sans-serif"],
     },
     fontSize: {
-      base: ["10px", "12,19px"],
+      base: ["10px", "12.19px"],
       xl: "12px",
-      "2xl": "15px",
+      "2xl": ["15px", "20.49px"],
       "3xl": "20px",
     },
     colors: {

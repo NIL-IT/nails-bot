@@ -6,7 +6,8 @@ const minus = "minus";
 const plus = "plus";
 export default function SingleProduct() {
   const { id } = useParams();
-  const product = PRODUCTS.filter((item) => item.id === parseInt(id))[0];
+  const product = PRODUCTS.filter((item) => item.id === parseInt(id));
+  const singleProduct = product[0];
   const [count, setCount] = React.useState(1);
   const handleIncrement = (variant) => {
     if (variant === minus) {
@@ -19,24 +20,24 @@ export default function SingleProduct() {
         <div className="flex justify-center">
           <img
             className="h-[171px] w-[300px] "
-            src={product.img}
-            alt={product.title}
+            src={singleProduct.img}
+            alt={singleProduct.title}
           />
         </div>
         <div>
-          <Title text={product.title} />
-          <Title text={product.subtitle} />
+          <Title text={singleProduct.title} />
+          <Title text={singleProduct.subtitle} />
           <div className="flex justify-between">
             <p className="font-montserrat text-base font-medium ">
-              {product.volume}
+              {singleProduct.volume}
             </p>
             <span className="text-gray_dark font-montserrat text-base font-medium ">
-              Артикул: {product.article}
+              Артикул: {singleProduct.article}
             </span>
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          {product.descriptions.map((desc, i) => (
+          {singleProduct.descriptions.map((desc, i) => (
             <p
               className="text-gray_dark text-base font-montserrat font-medium"
               key={i}
