@@ -6,7 +6,6 @@ function App() {
   return (
     <Container>
       <Header />
-      <Sidebar />
       <AppRoutes />
     </Container>
   );

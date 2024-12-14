@@ -1,12 +1,13 @@
 import React from "react";
-import { Products } from "../shared";
+import { Products, Sidebar } from "../shared";
 import { Button } from "../ui";
 import { CATEGORIES } from "../../utils/data";
 import { basket } from "../../utils/constants";
 
 const Home = () => {
   return (
-    <main className="my-[30px]">
+    <main className="mb-[30px]">
+      <Sidebar />
       <div className="flex flex-col gap-[30px]">
         {CATEGORIES.map(({ name, id }) => (
           <Products key={id} name={name} categoryId={id} />

@@ -2,9 +2,13 @@ import React from "react";
 import { Button, Title } from "../ui";
 import { useParams } from "react-router-dom";
 import { PRODUCTS } from "../../utils/data";
-const minus = "minus";
-const plus = "plus";
+import { Sidebar } from "../shared";
+import { useDispatch } from "react-redux";
+import { addItemToCart } from "../../features/slice/userSlice";
+import { minus, quantity } from "../../utils/constants";
+
 export default function SingleProduct() {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const product = PRODUCTS.filter((item) => item.id === parseInt(id));
   const singleProduct = product[0];
@@ -14,12 +18,17 @@ export default function SingleProduct() {
       setCount(count > 1 ? count - 1 : count);
     } else setCount(count + 1);
   };
+  const addItem = () => {
+    dispatch(addItemToCart({ ...singleProduct, quantity: count }));
+  };
+
   return (
-    <div className="mb-9 mt-[30px]">
-      <div className="flex flex-col gap-5">
+    <div>
+      <Sidebar />
+      <div className="flex flex-col gap-5 overflow-scroll mb-[90px]">
         <div className="flex justify-center">
           <img
-            className="h-[171px] w-[300px] "
+            className="h-[174px] w-[174px] "
             src={singleProduct.img}
             alt={singleProduct.title}
           />
@@ -47,26 +56,23 @@ export default function SingleProduct() {
           ))}
         </div>
       </div>
-      <div className="mt-[77px] flex gap-[10px] justify-between items-center">
-        <div className="flex items-center justify-between border border-primary px-[39px] py-3 rounded-[10px] w-[145px] h-[38px]">
-          <button onClick={() => handleIncrement(minus)}>
-            <img src="../../../public/img/-.svg" alt="минус" />
-          </button>
-
-          <span className="text-primary text-xl font-montserrat font-medium">
-            {count}
-          </span>
-          <button onClick={() => handleIncrement(plus)}>
-            <img src="../../../public/img/+.svg" alt="плюс" />
-          </button>
+      <div className="fixed bottom-0 left-0 w-[100%] h-20 bg-white py-[6px] px-[10px] ">
+        <div className=" flex gap-[10px] justify-between items-center w-[100%]">
+          <Button
+            type={quantity}
+            handleIncrement={handleIncrement}
+            count={count}
+            className={"px-[39px] py-3 w-[145px] h-[38px]"}
+          />
+          <Button
+            onClick={addItem()}
+            text={"В корзину"}
+            type="normal"
+            className={
+              "bg-secondary  w-[145px] h-[38px] flex justify-center items-center "
+            }
+          />
         </div>
-        <Button
-          text={"В корзину"}
-          type="normal"
-          className={
-            "bg-secondary  w-[145px] h-[38px] flex justify-center items-center"
-          }
-        />
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ export function Products({ categoryId, name }) {
 
           <Button text="Все" type={outline} id={categoryId} />
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-center gap-[10px]">
           {filtered.map((product, i) => (
             <Link key={i} to={`/products/${product.id}`}>
               <Product item={product} />
