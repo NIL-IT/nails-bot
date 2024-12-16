@@ -1,21 +1,27 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { ROUTES } from "../routes/routes";
+import SearchInput from "./SearchInput";
 
 export function Header() {
-  return (
+  const params = useLocation();
+  const isSearch = params.pathname === "/search";
+
+  return !isSearch ? (
     <header className="flex justify-between items-center mt-[29px] mb-[13px]">
       <Link to={ROUTES.HOME}>
-        <img src="../../../public/img/logo.svg" alt="ШТУЧКИ.PRO" />
+        <img src="/img/logo.svg" alt="ШТУЧКИ.PRO" />
       </Link>
       <div className="flex gap-5 items-center">
-        <Link>
-          <img src="../../../public/img/search.svg" alt="Поиск" />
+        <Link to={ROUTES.SEARCH}>
+          <img src="/img/search.svg" alt="Поиск" />
         </Link>
-        <Link>
-          <img src="../../../public/img/account.svg" alt="Личный кабинет" />
+        <Link to={ROUTES.PROFILE}>
+          <img src="/img/account.svg" alt="Личный кабинет" />
         </Link>
       </div>
     </header>
+  ) : (
+    <></>
   );
 }

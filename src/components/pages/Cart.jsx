@@ -28,10 +28,6 @@ export default function Card() {
         })
       );
   };
-  // useEffect(() => {
-  //   sum = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  //   console.log(sum);
-  // }, [cart]);
   return (
     <div>
       <Title text={"Корзина товаров"} className={"mb-[30px]"} />

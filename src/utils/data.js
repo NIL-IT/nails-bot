@@ -1,3 +1,98 @@
+export const USERS = [
+  {
+    id: 1,
+    isAdmin: true,
+    name: "Петрова Елена",
+    orders: [
+      {
+        id: 1,
+        date: "10.10.24",
+        time: "17:00 (GTM+7)",
+        number: "0798877",
+        items: [
+          {
+            id: 1,
+            quantity: 2,
+          },
+          {
+            id: 2,
+            quantity: 2,
+          },
+          {
+            id: 3,
+            quantity: 2,
+          },
+        ],
+      },
+      {
+        id: 2,
+        date: "05.09.24",
+        time: "14:00 (GTM+7)",
+        items: [
+          {
+            id: 4,
+            quantity: 2,
+          },
+          {
+            id: 2,
+            quantity: 2,
+          },
+          {
+            id: 3,
+            quantity: 2,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    isAdmin: false,
+    name: "Петрова Елена",
+    orders: [
+      {
+        id: 1,
+        date: "10.10.24",
+        time: "17:00 (GTM+7)",
+        number: "0798877",
+        items: [
+          {
+            id: 1,
+            quantity: 2,
+          },
+          {
+            id: 2,
+            quantity: 2,
+          },
+          {
+            id: 3,
+            quantity: 2,
+          },
+        ],
+      },
+      {
+        id: 2,
+        date: "05.09.24",
+        time: "14:00 (GTM+7)",
+        items: [
+          {
+            id: 4,
+            quantity: 2,
+          },
+          {
+            id: 2,
+            quantity: 2,
+          },
+          {
+            id: 3,
+            quantity: 2,
+          },
+        ],
+      },
+    ],
+  },
+];
+
 export const CATEGORIES = [
   {
     id: 1,
