@@ -20,7 +20,7 @@ export const USERS = [
           },
           {
             id: 3,
-            quantity: 2,
+            quantity: 3,
           },
         ],
       },
@@ -62,7 +62,7 @@ export const USERS = [
           },
           {
             id: 2,
-            quantity: 2,
+            quantity: 4,
           },
           {
             id: 3,

@@ -3,6 +3,8 @@ import { Button, Title } from "../ui";
 import { useDispatch, useSelector } from "react-redux";
 import { minus, normal, quantity } from "../../utils/constants";
 import { addItemToCart } from "../../features/slice/userSlice";
+import { Link } from "react-router-dom";
+import { ROUTES } from "../routes/routes";
 
 export default function Card() {
   const dispatch = useDispatch();
@@ -28,7 +30,7 @@ export default function Card() {
         })
       );
   };
-  return (
+  return cart.length ? (
     <div>
       <Title text={"Корзина товаров"} className={"mb-[30px]"} />
       <div className="flex flex-col gap-[15px] mb-[130px] overflow-y-scroll">
@@ -84,6 +86,24 @@ export default function Card() {
           className={"w-[100%] bg-secondary"}
         />
       </div>
+    </div>
+  ) : (
+    <div className="h-[70vh] flex flex-col justify-center items-center   text-center">
+      <img width={100} src="/img/cart.png" alt="" />
+      <div className="font-montserrat text-center flex flex-col gap-0">
+        <p>В корзине пока пусто</p>
+        <span className="text-base text-gray_dark">
+          Корзина ждёт что её наполнят!
+        </span>
+      </div>
+      <Link className="w-[80%]">
+        <Button
+          text={"Перейти в каталог"}
+          type={normal}
+          to={ROUTES.HOME}
+          className={"w-[80%] bg-secondary mt-[20px] mb-[30px]"}
+        />
+      </Link>
     </div>
   );
 }

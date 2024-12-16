@@ -1,22 +1,42 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function OrderItemList({ item, changeSum, currentItem }) {
+import { Title } from "../ui";
+import OrderAdminItem from "./OrderAdminItem";
+import { PRODUCTS, USERS } from "../../utils/data";
+
+export default function OrderItemList({ order }) {
+  const name = USERS[0].name;
+  const [sum, setSum] = useState(0);
+  const calcSum = () => {
+    let price = 0;
+    for (let { id, quantity } of order.items) {
+      const currentItem = PRODUCTS.find((item) => item.id === id);
+      price += currentItem.price * quantity;
+    }
+    return price;
+  };
   useEffect(() => {
-    changeSum(currentItem(item.id).price * item.quantity);
-  }, [item]);
+    if (!order) return;
+    setSum(calcSum());
+  }, [order]);
+
   return (
-    <>
-      <p className="text-gray_dark text-base font-montserrat">{`${
-        currentItem(item.id).title
-      } ${currentItem(item.id).subtitle}`}</p>
-      <div className="flex items-center gap-[10px]">
-        <p className="text-primary text-xl font-medium font-montserrat">
-          {item.quantity}x
-        </p>
-        <span className="font-semibold text-2xl font-manrope">
-          {`${currentItem(item.id).price * item.quantity}`}₽
-        </span>
+    <div className="mb-[10px] bg-gray p-[6px] rounded-[10px]">
+      <Title text={`Заказ №${order.number}`} size={"2xl"} />
+      <div className="mt-[10px] mb-5 text-base font-montserrat text-gray_dark">
+        <p className="mb-[5px]">Имя:&nbsp;{name}</p>
+        <p>Время заказа:&nbsp;{order.time}</p>
       </div>
-    </>
+      <div className="flex flex-col gap-[5px]">
+        {order.items.map((item) => (
+          <OrderAdminItem item={item} key={item.id} />
+        ))}
+      </div>
+      <div className="flex justify-between items-center mt-5">
+        <p>Общая стоимость заказа</p>
+
+        <span className="font-manrope text-3xl font-semibold">{sum}₽</span>
+      </div>
+    </div>
   );
 }

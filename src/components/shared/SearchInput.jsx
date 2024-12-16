@@ -18,7 +18,7 @@ export default function SearchInput({ value, handleSearch, handleSubmit }) {
           type="text"
           className="w-[100%]"
         />
-        <Link to={ROUTES.HOME}>
+        <Link className="mr-1" to={ROUTES.HOME}>
           <img
             src="/public/img/close.svg"
             alt="close"

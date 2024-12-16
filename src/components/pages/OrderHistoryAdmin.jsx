@@ -2,12 +2,12 @@ import React from "react";
 import { Button, Title } from "../ui";
 import { normal } from "../../utils/constants";
 import { USERS } from "../../utils/data";
-import OrderItemAdmin from "../shared/OrderItemAdmin";
+
+import OrderUser from "../shared/OrderUser";
 
 export default function OrderHistoryAdmin() {
-  console.log(USERS);
   return (
-    <div>
+    <div className="mb-[30px]">
       <Title text={"История заказов"} />
       <Button
         text={"Выберите дату"}
@@ -16,7 +16,7 @@ export default function OrderHistoryAdmin() {
       />
       <div>
         {USERS.map(({ orders, id }) => (
-          <OrderItemAdmin key={id} orders={orders} />
+          <OrderUser key={id} orders={orders} />
         ))}
       </div>
     </div>

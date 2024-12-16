@@ -33,7 +33,7 @@ export default function SearchItems() {
       />
       <div className="mt-[100px]">
         {list.length ? (
-          <div className="flex flex-wrap  gap-[10px] mb-[30px]  ">
+          <div className="flex flex-wrap justify-center  gap-[10px] mb-[30px]  ">
             {list.map((item) => (
               <Link to={`/products/${item.id}`} key={item.id}>
                 <Product item={item} />

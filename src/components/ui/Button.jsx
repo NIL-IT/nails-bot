@@ -19,6 +19,7 @@ export function Button({
   count,
   onClick = null,
   handleIncrement,
+  to,
 }) {
   return type === basket ? (
     <button
@@ -49,7 +50,10 @@ export function Button({
       onClick={() => onClick}
       className={clsx(`rounded-[10px] bg-primary  py-[9px]`, className)}
     >
-      <Link className="text-white text-2xl font-manrope font-semibold">
+      <Link
+        to={to ? to : ""}
+        className="text-white text-2xl font-manrope font-semibold"
+      >
         {text}
       </Link>
     </button>
