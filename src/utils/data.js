@@ -1,7 +1,7 @@
 export const USERS = [
   {
     id: 1,
-    isAdmin: false,
+    isAdmin: true,
     name: "Петрова Елена",
     orders: [
       {

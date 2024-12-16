@@ -47,7 +47,7 @@ export function Button({
     </>
   ) : type === normal ? (
     <button
-      onClick={() => onClick}
+      onClick={() => onClick()}
       className={clsx(`rounded-[10px] bg-primary  py-[9px]`, className)}
     >
       <Link
