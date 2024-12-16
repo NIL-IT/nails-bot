@@ -1,0 +1,33 @@
+name: Deploy nails-bot
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy repository to server
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          PAT: ${{ secrets.PAT }}  # Ваш PAT из секретов
+        run: |
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
+          if [ -d /var/www/testingnil6/frontend/.git ]; then
+            cd /var/www/testingnil6/frontend && \
+            git fetch && \
+            git checkout main && \
+            git pull origin main
+          else
+            rm -rf /var/www/testingnil6/frontend/* && \
+            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/frontend && \
+            cd /var/www/testingnil6/frontend && \
+            git checkout main
+          fi
+          "
