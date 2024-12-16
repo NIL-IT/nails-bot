@@ -7,7 +7,7 @@ import { normal } from "../../utils/constants";
 export default function OrderHistory() {
   return (
     <div className="mb-[30px]">
-      <Title text="Заказ от 10.10.24" />
+      <Title text="Заказ от 10.10.24" className={"mt-[30px]"} />
       <div className="mt-5 flex flex-col gap-[10px]">
         {USERS[0].orders[0].items.map((item, index) => (
           <OrderItem key={index} item={item} />

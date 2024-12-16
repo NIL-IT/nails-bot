@@ -15,9 +15,10 @@ const month = {
 export const useGetDate = (date) => {
   const dateArr = date.split(".").slice(1, 3);
   const getMonth = month[dateArr[0]];
-  const year = `20 + ${dateArr[1]}`;
+  const year = `20${dateArr[1]}`;
   return {
     getMonth,
     year,
   };
 };
+console.log();

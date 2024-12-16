@@ -20,7 +20,7 @@ export default function OrderItem({ item: { id, quantity } }) {
         <p className="text-base font-montserrat ">
           {desc}&nbsp;{volume}
         </p>
-        <div className="flex gap-[7px] items-end">
+        <div className="flex gap-[7px] items-center justify-between w-[60px]">
           <p className="text-primary text-xl font-medium font-montserrat">
             {quantity}x
           </p>
