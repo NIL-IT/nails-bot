@@ -19,6 +19,7 @@ export default function SingleProduct() {
     } else setCount(count + 1);
   };
   const addItem = () => {
+    console.log(singleProduct);
     dispatch(addItemToCart({ ...singleProduct, quantity: count }));
   };
 

@@ -13,7 +13,8 @@ const month = {
   12: "Декабрь",
 };
 export const useGetDate = (date) => {
-  const dateArr = date.split(".").slice(1, 3);
+  const dateArr = date.split(".");
+  if (dateArr.length > 2) dateArr.slice(1, 3);
   const getMonth = month[dateArr[0]];
   const year = `20${dateArr[1]}`;
   return {
@@ -21,4 +22,3 @@ export const useGetDate = (date) => {
     year,
   };
 };
-console.log();

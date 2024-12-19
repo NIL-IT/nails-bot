@@ -1,13 +1,13 @@
 export const USERS = [
   {
     id: 1,
-    isAdmin: true,
+    isAdmin: false,
     name: "Петрова Елена",
     orders: [
       {
         id: 1,
         date: "10.10.24",
-        time: "17:00 (GTM+7)",
+        time: "18:00 (GTM+7)",
         number: "0798877",
         items: [
           {
@@ -26,7 +26,26 @@ export const USERS = [
       },
       {
         id: 2,
-        date: "05.09.24",
+        date: "10.10.24",
+        time: "16:00 (GTM+7)",
+        items: [
+          {
+            id: 4,
+            quantity: 2,
+          },
+          {
+            id: 2,
+            quantity: 2,
+          },
+          {
+            id: 3,
+            quantity: 2,
+          },
+        ],
+      },
+      {
+        id: 3,
+        date: "11.10.24",
         time: "14:00 (GTM+7)",
         items: [
           {
@@ -51,8 +70,8 @@ export const USERS = [
     name: "Петрова Елена",
     orders: [
       {
-        id: 1,
-        date: "10.10.24",
+        id: 3,
+        date: "08.11.24",
         time: "17:00 (GTM+7)",
         number: "0798877",
         items: [
@@ -71,8 +90,8 @@ export const USERS = [
         ],
       },
       {
-        id: 2,
-        date: "05.09.24",
+        id: 4,
+        date: "05.07.24",
         time: "14:00 (GTM+7)",
         items: [
           {

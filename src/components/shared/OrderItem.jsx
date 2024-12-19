@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Title } from "../ui";
 import { PRODUCTS } from "../../utils/data";
 
-export default function OrderItem({ item: { id, quantity } }) {
+export default function OrderItem({ item }) {
+  const { id, quantity } = item;
   const [list, setList] = useState([]);
   const { title, subtitle, desc, volume, price } = list;
-  console.log(volume, desc);
   useEffect(() => {
-    if (!id) return;
+    if (!id && !item) return;
     setList(PRODUCTS.find((item) => item.id === id));
   }, [id]);
   return (
@@ -17,7 +17,7 @@ export default function OrderItem({ item: { id, quantity } }) {
         <Title text={subtitle} size={"2xl"} />
       </div>
       <div className="flex justify-between items-end">
-        <p className="text-base font-montserrat ">
+        <p className="text-base font-montserrat text-gray_dark ">
           {desc}&nbsp;{volume}
         </p>
         <div className="flex gap-[7px] items-center justify-between w-[60px]">
