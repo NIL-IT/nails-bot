@@ -9,7 +9,6 @@ import { addItemToCart } from "../../features/slice/userSlice";
 import { ROUTES } from "../routes/routes";
 
 export default function OrderHistory() {
-  console.log(useSortedOrdersUser(USERS[0]));
   const dispatch = useDispatch();
   const addItem = (items) => {
     for (let i = 0; i < items.length; i++) {

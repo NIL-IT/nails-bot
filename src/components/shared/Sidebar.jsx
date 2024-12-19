@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { CATEGORIES } from "../../utils/data";
 
 export const Sidebar = () => {
   const { id } = useParams();
+  let { pathname } = useLocation();
   const [active, setActive] = React.useState(0);
   useEffect(() => {
     if (!id) return;
+    if (pathname.split("/")[1] === "products") return;
     setActive(id);
   }, [id]);
 
