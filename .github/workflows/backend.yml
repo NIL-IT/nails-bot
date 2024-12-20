@@ -39,6 +39,10 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          rm -rf /var/www/testingnil6/backend/* && \
-          cp -r /var/www/testingnil6/github/backend/api /var/www/testingnil6/backend/
+          if [ -d /var/www/testingnil6/github/backend/api ]; then
+            rm -rf /var/www/testingnil6/backend/* && \
+            cp -r /var/www/testingnil6/github/backend/api /var/www/testingnil6/backend/
+          else
+            echo 'API folder does not exist. Skipping copy step.'
+          fi
           "
