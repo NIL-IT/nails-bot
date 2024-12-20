@@ -1,0 +1,37 @@
+name: Deploy nails-bot-backend
+
+on:
+  push:
+    branches: [backend]
+  pull_request:
+    branches: [backend]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy backend repository to server
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          PAT: ${{ secrets.PAT }}
+        run: |
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
+          if [ -d /var/www/testingnil6/backend/.git ]; then
+            cd /var/www/testingnil6/backend && \
+            git fetch && \
+            git checkout backend && \
+            git pull origin backend && \
+            mv -f /var/www/testingnil6/backend/api/* /var/www/testingnil6/backend/ && \
+            rm -rf /var/www/testingnil6/backend/api
+          else
+            rm -rf /var/www/testingnil6/backend/* && \
+            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/backend && \
+            cd /var/www/testingnil6/backend && \
+            git checkout backend && \
+            mv -f /var/www/testingnil6/backend/api/* /var/www/testingnil6/backend/ && \
+            rm -rf /var/www/testingnil6/backend/api
+          fi
+          "
