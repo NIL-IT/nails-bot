@@ -24,13 +24,13 @@ function App() {
 
       if (userResponse && userResponse.success && userResponse.user) {
         setUser(userResponse.user);
+        setIsLoading(false);
       } else {
         console.error("User not found.");
       }
-      setIsLoading(false);
+      
     } catch (error) {
       console.error("Error fetching user data:", error);
-      setIsLoading(false);
     }
   };
 
