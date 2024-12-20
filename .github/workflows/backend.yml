@@ -19,19 +19,15 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          if [ -d /var/www/testingnil6/backend/.git ]; then
-            cd /var/www/testingnil6/backend && \
+          if [ -d /var/www/testingnil6/backend/api/.git ]; then
+            cd /var/www/testingnil6/backend/api && \
             git fetch && \
             git checkout backend && \
-            git pull origin backend && \
-            mv -f /var/www/testingnil6/backend/api/* /var/www/testingnil6/backend/ && \
-            rm -rf /var/www/testingnil6/backend/api
+            git pull origin backend
           else
-            rm -rf /var/www/testingnil6/backend/* && \
-            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/backend && \
-            cd /var/www/testingnil6/backend && \
-            git checkout backend && \
-            mv -f /var/www/testingnil6/backend/api/* /var/www/testingnil6/backend/ && \
-            rm -rf /var/www/testingnil6/backend/api
+            rm -rf /var/www/testingnil6/backend/api && \
+            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/backend/temp && \
+            mv /var/www/testingnil6/backend/temp/api /var/www/testingnil6/backend/ && \
+            rm -rf /var/www/testingnil6/backend/temp
           fi
           "
