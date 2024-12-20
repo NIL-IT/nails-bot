@@ -20,7 +20,7 @@ function App() {
       const tg = window.Telegram.WebApp;
       tg.expand();
       const userId = tg.initDataUnsafe.user.id;
-      const userResponse = await API.getUser(userId, restaurantId);
+      const userResponse = await API.getUser(userId);
 
       if (userResponse && userResponse.success && userResponse.user) {
         setUser(userResponse.user);
@@ -40,13 +40,13 @@ function App() {
 
   // API запросы
   const API = {
-    getUser: async (id, restaurantId) => {
+    getUser: async (id_tg) => {
       const option = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id, restaurantId }),
+        body: JSON.stringify({ id_tg }),
       };
 
       return fetch(`${baseURL}get_user.php`, option)
