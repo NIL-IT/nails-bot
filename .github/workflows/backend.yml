@@ -1,4 +1,4 @@
-name: Deploy nails-bot-backend
+name: Deploy bot.restaurant Backend
 
 on:
   push:
@@ -11,7 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy backend repository to server
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy using git clone to /var/www/testingnil6/github/backend/
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
@@ -19,15 +22,23 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          if [ -d /var/www/testingnil6/backend/api/.git ]; then
-            cd /var/www/testingnil6/backend/api && \
-            git fetch && \
-            git checkout backend && \
-            git pull origin backend
+          if [ -d /var/www/testingnil6/github/backend/.git ]; then
+            cd /var/www/testingnil6/github/backend && git fetch && git checkout backend && git pull origin backend
           else
-            rm -rf /var/www/testingnil6/backend/api && \
-            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/backend/temp && \
-            mv /var/www/testingnil6/backend/temp/api /var/www/testingnil6/backend/ && \
-            rm -rf /var/www/testingnil6/backend/temp
+            rm -rf /var/www/testingnil6/github/backend* && \
+            git clone https://$USERNAME:$PAT@github.com/NIL-IT/bot.restaurant.git /var/www/testingnil6/github/backend && \
+            cd /var/www/testingnil6/github/backend && \
+            git checkout backend
           fi
+          "
+
+      - name: Move API files to /var/www/testingnil6/backend/
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
+          rm -rf /var/www/testingnil6/backend/* && \
+          cp -r /var/www/testingnil6/github/backend/api /var/www/testingnil6/backend/
           "
