@@ -66,7 +66,6 @@ function App() {
   return (
     <Container>
       <Header />
-      <Sidebar />
       <AppRoutes user={user} />
     </Container>
   );
