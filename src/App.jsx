@@ -5,11 +5,9 @@ import { Container, Header, Sidebar } from "./components/shared";
 import { Button } from "./components/ui";
 
 function App() {
-  const [user, setUser] = useState<any | null>(null);
-  const [restaurantName, setRestaurantName] = useState<string | null>(null);
-  const [restaurantAddress, setRestaurantAddress] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isAdmin] = useState(true); 
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin] = useState(true); // Логика для администратора
   const restaurantId = window.location.pathname.split("/")[1];
 
   const location = useLocation();
@@ -26,8 +24,6 @@ function App() {
 
       if (userResponse && userResponse.success && userResponse.user) {
         setUser(userResponse.user);
-        setRestaurantName(userResponse.restaurant_name);
-        setRestaurantAddress(userResponse.restaurant_address);
       } else {
         console.error("User not found.");
       }
