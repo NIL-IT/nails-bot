@@ -44,7 +44,7 @@ const AppRoutes = ({ user }) => {
         },
       };
   
-      return fetch(`${baseURL}categories.php`, option)
+      return fetch(`${baseURL}get_categories.php`, option)
         .then((res) => res.json())
         .catch((err) => {
           console.error("API request error:", err);
@@ -61,7 +61,7 @@ const AppRoutes = ({ user }) => {
         },
       };
   
-      return fetch(`${baseURL}products.php`, option)
+      return fetch(`${baseURL}get_products.php`, option)
         .then((res) => res.json())
         .catch((err) => {
           console.error("API request error:", err);
@@ -78,7 +78,7 @@ const AppRoutes = ({ user }) => {
         },
       };
   
-      return fetch(`${baseURL}orders.php?user_id=${userId}`, option)
+      return fetch(`${baseURL}get_orders.php?user_id=${userId}`, option)
         .then((res) => res.json())
         .catch((err) => {
           console.error("API request error:", err);
