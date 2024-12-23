@@ -62,7 +62,7 @@ export default function Card() {
                   handleIncrement={handleIncrement}
                   count={item.quantity}
                   className={
-                    " py-[5px] px-[10px] rounded-[6.5px] gap-[15px] h-[24.6px] w-[77px]"
+                    " py-[5px] px-[10px] rounded-[6.5px] gap-[10px] h-[24.6px] w-[77px]"
                   }
                 />
                 <span className="font-3xl font-manrope font-semibold">
