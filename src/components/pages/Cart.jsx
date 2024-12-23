@@ -61,9 +61,8 @@ export default function Card() {
                   type={quantity}
                   handleIncrement={handleIncrement}
                   count={item.quantity}
-                  className={
-                    " py-[5px] px-[10px] rounded-[6.5px] gap-[10px] h-[24.6px] w-[77px]"
-                  }
+                  className={" py-[5px] rounded-[6.5px] h-[24.6px] w-[77px]"}
+                  classNameIcons={"min-w-[30%]"}
                 />
                 <span className="font-3xl font-manrope font-semibold">
                   {item.price * item.quantity}₽

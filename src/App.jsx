@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AppRoutes from "./components/routes/AppRoutes";
-import { Container, Header, Sidebar } from "./components/shared";
-import { Button } from "./components/ui";
+import { Container, Header } from "./components/shared";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -58,13 +57,13 @@ function App() {
   };
 
   // Если данные еще загружаются, показываем индикатор загрузки
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center w-[100wh] h-[100vh]">
-        <span className="loader"></span>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center w-[100wh] h-[100vh]">
+  //       <span className="loader"></span>
+  //     </div>
+  //   );
+  // }
 
   return (
     <Container>

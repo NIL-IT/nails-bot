@@ -63,7 +63,7 @@ export default function SingleProduct() {
             type={quantity}
             handleIncrement={handleIncrement}
             count={count}
-            className={"px-[29px] py-3 w-[145px] h-[38px]"}
+            className={"px-[5px] py-3 w-[145px] h-[38px]"}
           />
           <Button
             onClick={addItem()}

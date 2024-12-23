@@ -10,7 +10,7 @@ import {
   plus,
 } from "../../utils/constants";
 import { ROUTES } from "../routes/routes";
-
+const cn = (...classes) => classes.filter(Boolean).join(" ");
 export function Button({
   type,
   text,
@@ -19,6 +19,7 @@ export function Button({
   count,
   onClick = null,
   handleIncrement,
+  classNameIcons,
   to,
 }) {
   return type === basket ? (
@@ -60,13 +61,16 @@ export function Button({
   ) : type === quantity ? (
     <div
       className={clsx(
-        `flex items-center justify-between border border-primary rounded-[10px] gap-5 `,
+        `flex items-center justify-between border border-primary rounded-[10px]  `,
         className
       )}
     >
       <button
         onClick={() => handleIncrement(minus, id)}
-        className="min-w-[15px] min-h-[20px] flex justify-center items-center"
+        className={cn(
+          "min-w-[35%] min-h-[20px] flex flex-col items-end justify-center",
+          classNameIcons
+        )}
       >
         <svg
           width="4"
@@ -74,6 +78,7 @@ export function Button({
           viewBox="0 0 4 2"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className="mr-2"
         >
           <path d="M0.684 1.204V0.208H3.912V1.204H0.684Z" fill="#DC46A0" />
         </svg>
@@ -84,7 +89,10 @@ export function Button({
       </span>
       <button
         onClick={() => handleIncrement(plus, id)}
-        className="min-w-[15px] min-h-[20px] flex justify-center items-center"
+        className={cn(
+          "min-w-[35%] min-h-[20px] flex flex-col items-start justify-center",
+          classNameIcons
+        )}
       >
         <svg
           width="7"
@@ -92,6 +100,7 @@ export function Button({
           viewBox="0 0 7 6"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          className="ml-2"
         >
           <path
             d="M2.988 5.428V0.172H3.996V5.428H2.988ZM0.804 3.28V2.332H6.18V3.28H0.804Z"
