@@ -15,6 +15,7 @@ export const Sidebar = () => {
   const [startX, setStartX] = React.useState(0);
   const [scrollLeft, setScrollLeft] = React.useState(0);
   const sidebarRef = React.useRef(null);
+  console.log(sidebarRef);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -47,12 +48,24 @@ export const Sidebar = () => {
         <li key={id}>
           {active - 1 !== index ? (
             <div className="bg-primary text-white text-xl font-medium px-3 pt-[10px] pb-[7px] rounded-b-xl">
-              <Link to={`/categories/${id}`}>{name}</Link>
+              <Link
+                draggable={false}
+                className="no-select"
+                to={`/categories/${id}`}
+              >
+                {name}
+              </Link>
             </div>
           ) : (
             <>
               <div className="bg-primary text-white text-xl font-medium px-3 pt-[20px] ] pb-[7px] rounded-b-xl">
-                <Link to={`/categories/${id}`}>{name}</Link>
+                <Link
+                  draggable={false}
+                  className="no-select"
+                  to={`/categories/${id}`}
+                >
+                  {name}
+                </Link>
               </div>
             </>
           )}
