@@ -69,7 +69,7 @@ function App() {
   return (
     <Container>
       <Header />
-      <BackButton />
+      {window.Telegram.WebApp.BackButton && <BackButton />}
       <AppRoutes user={user} />
     </Container>
   );
