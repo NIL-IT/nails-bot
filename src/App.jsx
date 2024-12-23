@@ -28,7 +28,6 @@ function App() {
       } else {
         console.error("User not found.");
       }
-      
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -59,9 +58,13 @@ function App() {
   };
 
   // Если данные еще загружаются, показываем индикатор загрузки
-  if (isLoading) {
-    return <div>Загрузка...</div>;
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center w-[100wh] h-[100vh]">
+  //       <span className="loader"></span>
+  //     </div>
+  //   );
+  // }
 
   return (
     <Container>

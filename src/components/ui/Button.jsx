@@ -65,14 +65,14 @@ export function Button({
       )}
     >
       <button onClick={() => handleIncrement(minus, id)}>
-        <img src="../../../public/img/-.svg" alt={minus} />
+        <img src="./img/-.svg" alt={minus} />
       </button>
 
       <span className="text-primary text-xl font-montserrat font-medium">
         {count}
       </span>
       <button onClick={() => handleIncrement(plus, id)}>
-        <img src="../../../public/img/+.svg" alt={plus} />
+        <img src="./img/+.svg" alt={plus} />
       </button>
     </div>
   ) : (
