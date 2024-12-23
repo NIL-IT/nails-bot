@@ -19,6 +19,7 @@ export default function SingleCategory() {
     setList(products);
     let find = PRODUCTS.find(({ category }) => category.id == id);
     if (!find) navigate(ROUTES.HOME);
+    setIndex(null);
   }, [id]);
 
   const handleClick = (title, index) => {
@@ -58,7 +59,7 @@ export default function SingleCategory() {
           ))}
         </div>
         <Button
-          className={"fixed bottom-40 right-[10px]"}
+          className={"fixed bottom-[50px] right-[10px]"}
           type={basket}
           text="Корзина"
         />
