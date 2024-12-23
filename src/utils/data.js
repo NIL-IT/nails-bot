@@ -201,7 +201,7 @@ export const PRODUCTS = [
     id: 4,
     title: "Базы Foxy Expert",
     subtitle: "Lax (Лакс)",
-    img: "../../public/img/item.png",
+    img: "../img/item.png",
     price: 350,
     category: {
       id: 2,
@@ -221,7 +221,7 @@ export const PRODUCTS = [
     id: 5,
     title: "Базы Foxy Expert",
     subtitle: "Lax (Лакс)",
-    img: "/img/item.png",
+    img: "../img/item.png",
     price: 350,
     category: {
       id: 3,
@@ -241,7 +241,7 @@ export const PRODUCTS = [
     id: 6,
     title: "Базы Foxy Expert",
     subtitle: "Lax (Лакс)",
-    img: "/img/item.png",
+    img: "../img/item.png",
     price: 350,
     category: {
       id: 3,
@@ -261,7 +261,7 @@ export const PRODUCTS = [
     id: 7,
     title: "Базы Foxy Expert",
     subtitle: "Lax (Лакс)",
-    img: "/img/item.png",
+    img: "../img/item.png",
     price: 350,
     category: {
       id: 4,
@@ -281,7 +281,7 @@ export const PRODUCTS = [
     id: 8,
     title: "Базы Foxy Expert",
     subtitle: "Lax (Лакс)",
-    img: "../../public/img/item.png",
+    img: "../img/item.png",
     price: 350,
     category: {
       id: 4,
