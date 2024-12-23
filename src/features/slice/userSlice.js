@@ -24,5 +24,5 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {},
 });
-export const { addItemToCart } = userSlice.actions;
+export const { addItemToCart, removeItemFromCart } = userSlice.actions;
 export default userSlice.reducer;

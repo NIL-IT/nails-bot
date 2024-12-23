@@ -2,7 +2,10 @@ import React, { useEffect } from "react";
 import { Button, Title } from "../ui";
 import { useDispatch, useSelector } from "react-redux";
 import { minus, normal, quantity } from "../../utils/constants";
-import { addItemToCart } from "../../features/slice/userSlice";
+import {
+  addItemToCart,
+  removeItemFromCart,
+} from "../../features/slice/userSlice";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../routes/routes";
 
@@ -30,6 +33,9 @@ export default function Card() {
         })
       );
   };
+  const removeItem = (id) => {
+    dispatch(removeItemFromCart(id));
+  };
   return cart.length ? (
     <div>
       <Title text={"Корзина товаров"} className={"mb-[30px]"} />
@@ -39,12 +45,37 @@ export default function Card() {
             key={item.id}
             className="bg-gray rounded-[10px]  p-[6px] flex gap-[10px] items-center"
           >
-            <div className="w-[50%] ">
+            <div className="w-[38%] ">
               <img src={item.img} alt={item.title} />
             </div>
-            <div className="w-[50%]">
+            <div className="w-[62%]">
               <div className="mb-1">
-                <Title text={item.title} size={"2xl"} />
+                <div className="flex justify-between items-center w-full">
+                  <Title text={item.title} size={"2xl"} />
+                  <button
+                    onClick={() => removeItem(item.id)}
+                    className="p-1 ml-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-trash-2"
+                    >
+                      <path d="M3 6h18" />
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                      <line x1="10" x2="10" y1="11" y2="17" />
+                      <line x1="14" x2="14" y1="11" y2="17" />
+                    </svg>
+                  </button>
+                </div>
                 <Title text={item.subtitle} size={"2xl"} />
               </div>
               <p className="text-base font-montserrat text-gray_dark mb-2">
