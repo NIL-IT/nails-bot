@@ -4,7 +4,7 @@ import { Title } from "../ui";
 export function Product({ item }) {
   return (
     <article className="p-[6px] flex flex-col gap-[10px] bg-gray rounded-[10px] w-[145px]">
-      <div className=" flex justify-center">
+      <div className=" flex justify-center w-[89px] h-[89px]">
         <img
           className="rounded-[10px] w-[89px] object-scale-down"
           src={item.img}

@@ -52,7 +52,9 @@ export default function OrderHistoryAdmin() {
       ) : !sortedOrdersByDate.length > 0 ? (
         <div className="flex flex-col justify-center items-center gap-2">
           <p className="font-montserrat">У вас пока нет заказов</p>
-          <img width={180} src="/img/nofaund.png" alt="nofaund" />
+          <div className="w-[180px] h-[180px]">
+            <img width={180} src="/img/nofaund.png" alt="nofaund" />
+          </div>
         </div>
       ) : (
         <div className="h-full flex justify-center flex-col items-center gap-3">
@@ -62,7 +64,9 @@ export default function OrderHistoryAdmin() {
               Выберите другую дату или нажмите на отобразить все заказы
             </p>
           </div>
-          <img width={180} src="/img/nofaund.png" alt="nofaund" />
+          <div className="w-[180px] h-[180px]">
+            <img width={180} src="/img/nofaund.png" alt="nofaund" />
+          </div>
           <Button
             type={normal}
             text={"Отобразить все заказы"}

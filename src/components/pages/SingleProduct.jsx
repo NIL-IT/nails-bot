@@ -27,12 +27,14 @@ export default function SingleProduct() {
     <div>
       <Sidebar />
       <div className="flex flex-col gap-5 overflow-scroll mb-[90px]">
-        <div className="flex justify-center">
-          <img
-            className="h-[174px] w-[174px] "
-            src={singleProduct.img}
-            alt={singleProduct.title}
-          />
+        <div className="flex justify-center ">
+          <div className="w-[171px] h-[171px] ">
+            <img
+              className="h-[171px] w-[171px] "
+              src={singleProduct.img}
+              alt={singleProduct.title}
+            />
+          </div>
         </div>
         <div>
           <Title text={singleProduct.title} />

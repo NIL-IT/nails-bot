@@ -119,7 +119,9 @@ export default function Card() {
     </div>
   ) : (
     <div className="h-[70vh] flex flex-col justify-center items-center   text-center">
-      <img width={100} src="/img/cart.png" alt="" />
+      <div className="w-[100px] h-[100px]">
+        <img width={100} src="/img/cart.png" alt="" />
+      </div>
       <div className="font-montserrat text-center flex flex-col gap-0">
         <p>В корзине пока пусто</p>
         <span className="text-base text-gray_dark">
