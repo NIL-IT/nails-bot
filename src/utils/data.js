@@ -140,7 +140,7 @@ export const PRODUCTS = [
     title: "Базы Foxy Expert",
 
     subtitle: "Lax (Лакс)",
-    img: "../../public/img/item.png",
+    img: "../img/item.png",
     price: 350,
     category: {
       id: 1,
@@ -161,7 +161,7 @@ export const PRODUCTS = [
     title: "Базы AdriCoco",
 
     subtitle: "Lax (Лакс)",
-    img: "../../public/img/item.png",
+    img: "../img/item.png",
     price: 350,
     category: {
       id: 1,
@@ -181,7 +181,7 @@ export const PRODUCTS = [
     id: 3,
     title: "Базы Foxy Expert",
     subtitle: "Lax (Лакс)",
-    img: "../../public/img/item.png",
+    img: "../img/item.png",
     price: 350,
     category: {
       id: 2,
