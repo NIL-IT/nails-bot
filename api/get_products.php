@@ -1,29 +1,28 @@
 <?php
-// Адрес вашего REST вебхука
-$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/profile/';
+// Указываем правильный URL для вашего API Webhook
+$webhookUrl = "https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/user.current.json"; // Замените на свой URL
 
-// Задаем параметры для запроса (если нужно)
-$params = [
-    // Укажите необходимые параметры для вашего метода, если они требуются
-];
-
-// Выполняем запрос
+// Инициализация cURL
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $webhookUrl);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-$response = curl_exec($ch);
-curl_close($ch);
 
-// Обрабатываем ответ
-$data = json_decode($response, true);
-if (isset($data['result'])) {
-    echo '<pre>';
-    print_r($data['result']);
-    echo '</pre>';
+// Устанавливаем параметры запроса
+curl_setopt($ch, CURLOPT_URL, $webhookUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    "Content-Type: application/json"
+));
+
+// Отправляем запрос
+$response = curl_exec($ch);
+
+// Проверяем на ошибки
+if (curl_errno($ch)) {
+    echo 'Ошибка cURL: ' . curl_error($ch);
 } else {
-    echo 'Ошибка получения данных: ' . $response;
+    // Печатаем результат
+    echo "Ответ от API: " . $response;
 }
+
+// Закрываем соединение
+curl_close($ch);
 ?>
