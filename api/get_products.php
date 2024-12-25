@@ -1,6 +1,6 @@
 <?php
 // Указываем правильный URL для вашего API Webhook
-$webhookUrl = "https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/profile/";
+$webhookUrl = "https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/";
 
 // Данные запроса
 $queryData = http_build_query(array(
