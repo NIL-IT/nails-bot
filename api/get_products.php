@@ -1,6 +1,6 @@
 <?php
-// Адрес вашего REST вебхука
-$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/';
+// Адрес вашего REST вебхука с указанием метода
+$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/catalog.product.list';
 
 // Задаем параметры для фильтрации (если нужно)
 $params = [
@@ -28,3 +28,4 @@ if (isset($data['result'])) {
 } else {
     echo 'Ошибка получения данных: ' . $response;
 }
+
