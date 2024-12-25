@@ -28,4 +28,3 @@ if (isset($data['result'])) {
 } else {
     echo 'Ошибка получения данных: ' . $response;
 }
-
