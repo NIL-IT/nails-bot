@@ -1,12 +1,10 @@
 <?php
 // Адрес вашего REST вебхука
-$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/';
+$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/profile/';
 
-// Задаем параметры для фильтрации (если нужно)
+// Задаем параметры для запроса (если нужно)
 $params = [
-    'filter' => [], // Фильтры, например ['ACTIVE' => 'Y']
-    'select' => ['ID', 'NAME', 'PRICE', 'QUANTITY'], // Поля, которые хотите получить
-    'start' => 0 // Для постраничной загрузки
+    // Укажите необходимые параметры для вашего метода, если они требуются
 ];
 
 // Выполняем запрос
@@ -28,3 +26,4 @@ if (isset($data['result'])) {
 } else {
     echo 'Ошибка получения данных: ' . $response;
 }
+?>
