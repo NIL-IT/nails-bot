@@ -1,6 +1,6 @@
 <?php
 // Указываем правильный URL для вашего API Webhook
-$webhookUrl = "https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/user.current.json"; // Замените на свой URL
+$webhookUrl = "https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/profile/";
 
 // Инициализация cURL
 $ch = curl_init();
