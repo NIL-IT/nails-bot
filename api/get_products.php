@@ -1,49 +1,24 @@
 <?php
 // Адрес вашего REST вебхука
-$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/profile/catalog.product.get';
-
-// Данные запроса
-$queryData = http_build_query(array(
-    "id" => 1111, // ID товара
-    "fields" => array(
-        "ID",
-        "NAME",
-        "PRICE",
-        "QUANTITY",
-        "DETAIL_PICTURE"
-    )
-));
+$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/profile/';
 
 // Инициализация cURL
-$curl = curl_init();
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $webhookUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 
-// Устанавливаем параметры запроса
-curl_setopt_array($curl, array(
-    CURLOPT_SSL_VERIFYPEER  => 0,
-    CURLOPT_POST            => 1,
-    CURLOPT_HEADER          => 0,
-    CURLOPT_RETURNTRANSFER  => 1,
-    CURLOPT_URL             => $webhookUrl,
-    CURLOPT_POSTFIELDS      => $queryData,
-));
+// Выполнение GET-запроса
+$response = curl_exec($ch);
+curl_close($ch);
 
-// Отправляем запрос
-$result = curl_exec($curl);
-
-// Проверяем на ошибки
-if (curl_errno($curl)) {
-    echo 'Ошибка cURL: ' . curl_error($curl);
-} else {
-    // Обрабатываем результат
-    $result = json_decode($result, true);
-    if (isset($result['result']['product']['detailPicture']['url'])) {
-        $result['result']['product']['detailPicture']['url'] = str_replace('/rest/', $webhookUrl, $result['result']['product']['detailPicture']['url']);
-    }
+// Обработка ответа
+$data = json_decode($response, true);
+if (isset($data['result'])) {
     echo '<pre>';
-    print_r($result);
+    print_r($data['result']);
     echo '</pre>';
+} else {
+    echo 'Ошибка получения данных: ' . $response;
 }
-
-// Закрываем соединение
-curl_close($curl);
 ?>
