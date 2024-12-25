@@ -1,6 +1,6 @@
 <?php
 // Адрес вашего REST вебхука
-$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2fы/';
+$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/';
 
 // Задаем параметры для фильтрации (если нужно)
 $params = [
