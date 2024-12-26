@@ -23,45 +23,44 @@ export default function SingleProduct() {
   const addItem = () => {
     dispatch(addItemToCart({ ...singleProduct, quantity: count }));
     handleCartPopupClose(false);
+    // const setCookie = (name, value, days) => {
+    //   const expires = new Date(Date.now() + days * 86400000).toUTCString();
+    //   document.cookie = `${name}=${encodeURIComponent(
+    //     value
+    //   )}; expires=${expires}; path=/`;
+    // };
+    // const getCookie = (name) => {
+    //   const matches = document.cookie.match(
+    //     new RegExp(
+    //       `(?:^|; )${name.replace(/([$?*|{}()[\\]\\+^])/g, "\\$1")}=([^;]*)`
+    //     )
+    //   );
+    //   return matches ? decodeURIComponent(matches[1]) : null;
+    // };
 
-    const setCookie = (name, value, days) => {
-      const expires = new Date(Date.now() + days * 86400000).toUTCString();
-      document.cookie = `${name}=${encodeURIComponent(
-        value
-      )}; expires=${expires}; path=/`;
-    };
-    const getCookie = (name) => {
-      const matches = document.cookie.match(
-        new RegExp(
-          `(?:^|; )${name.replace(/([$?*|{}()[\\]\\+^])/g, "\\$1")}=([^;]*)`
-        )
-      );
-      return matches ? decodeURIComponent(matches[1]) : null;
-    };
+    // // Load cart from cookies on initial render
+    // const cartFromCookie = getCookie(`cart_${cartItems.id}`);
+    // if (cartFromCookie) {
+    //   setCartItems(JSON.parse(cartFromCookie));
+    // } else {
+    //   const cartFromLocalStorage = localStorage.getItem(`cart_${cartItems.id}`);
+    //   if (cartFromLocalStorage) {
+    //     setCartItems(JSON.parse(cartFromLocalStorage));
+    //   } else {
+    //     const cartFromSessionStorage = sessionStorage.getItem(
+    //       `cart_${cartItems.id}`
+    //     );
+    //     if (cartFromSessionStorage) {
+    //       setCartItems(JSON.parse(cartFromSessionStorage));
+    //     }
+    //   }
+    // }
+    // // Save cart to cookies whenever cartItems changes
+    // const cartData = JSON.stringify({ ...cartItems, quantity: count });
 
-    // Load cart from cookies on initial render
-    const cartFromCookie = getCookie(`cart_${cartItems.id}`);
-    if (cartFromCookie) {
-      setCartItems(JSON.parse(cartFromCookie));
-    } else {
-      const cartFromLocalStorage = localStorage.getItem(`cart_${cartItems.id}`);
-      if (cartFromLocalStorage) {
-        setCartItems(JSON.parse(cartFromLocalStorage));
-      } else {
-        const cartFromSessionStorage = sessionStorage.getItem(
-          `cart_${cartItems.id}`
-        );
-        if (cartFromSessionStorage) {
-          setCartItems(JSON.parse(cartFromSessionStorage));
-        }
-      }
-    }
-    // Save cart to cookies whenever cartItems changes
-    const cartData = JSON.stringify({ ...cartItems, quantity: count });
-
-    setCookie(`cart_${singleProduct.id}`, cartData, 7); // cookies на 7 дней
-    localStorage.setItem(`cart_${singleProduct.id}`, cartData);
-    sessionStorage.setItem(`cart_${singleProduct.id}`, cartData);
+    // setCookie(`cart_${singleProduct.id}`, cartData, 7); // cookies на 7 дней
+    // localStorage.setItem(`cart_${singleProduct.id}`, cartData);
+    // sessionStorage.setItem(`cart_${singleProduct.id}`, cartData);
   };
 
   const [showNotification, setShowNotification] = React.useState(false);
