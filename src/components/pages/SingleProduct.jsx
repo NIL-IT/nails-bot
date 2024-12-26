@@ -11,10 +11,8 @@ import { NotificationPopup } from "../shared/NotificationPopup";
 export default function SingleProduct() {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const product = PRODUCTS.filter((item) => item.id === parseInt(id))[0];
+  const singleProduct = PRODUCTS.filter((item) => item.id === parseInt(id))[0];
   const [count, setCount] = React.useState(1);
-  const singleProduct = product;
-  const [cartItems, setCartItems] = React.useState(singleProduct);
   const handleIncrement = (variant) => {
     if (variant === minus) {
       setCount(count > 1 ? count - 1 : count);
