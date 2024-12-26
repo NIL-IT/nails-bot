@@ -62,14 +62,13 @@ function App() {
   };
 
   // Если данные еще загружаются, показываем индикатор загрузки
-  //
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex justify-center items-center w-[100wh] h-[100vh]">
-  //       <span className="loader"></span>
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center w-[100wh] h-[100vh]">
+        <span className="loader"></span>
+      </div>
+    );
+  }
   // Восстановение корзины
   useEffect(() => {
     dispatch(recoveryAllCart(getAllCart()));
