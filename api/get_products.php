@@ -1,6 +1,6 @@
 <?php
 // Адрес REST API
-$webhookUrl = 'https://shtuchki.pro/rest/13283/zhc69jnwgx6hweyj/profile/';
+$webhookUrl = 'https://shtuchki.pro/rest/68/zhc69jnwgx6hweyj/profile/';
 
 // Инициализация cURL
 $ch = curl_init();
