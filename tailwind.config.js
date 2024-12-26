@@ -22,6 +22,14 @@ export default {
       gray_dark: "#707070",
     },
     extend: {
+      keyframes: {
+        popup: {
+          "0%": { transform: "translateY(-50px)" },
+          "10%": { transform: "translateY(0px)" },
+          "90%": { transform: "translateY(0px)" },
+          "100%": { transform: "translateY(-50px)" },
+        },
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Title } from "../ui";
 import { useParams } from "react-router-dom";
 import { PRODUCTS } from "../../utils/data";
@@ -6,25 +6,81 @@ import { Sidebar } from "../shared";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../features/slice/userSlice";
 import { minus, quantity } from "../../utils/constants";
+import { NotificationPopup } from "../shared/NotificationPopup";
 
 export default function SingleProduct() {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const product = PRODUCTS.filter((item) => item.id === parseInt(id));
-  const singleProduct = product[0];
+  const product = PRODUCTS.filter((item) => item.id === parseInt(id))[0];
   const [count, setCount] = React.useState(1);
+  const singleProduct = product;
+  const [cartItems, setCartItems] = React.useState(singleProduct);
   const handleIncrement = (variant) => {
     if (variant === minus) {
       setCount(count > 1 ? count - 1 : count);
     } else setCount(count + 1);
   };
   const addItem = () => {
-    console.log(singleProduct);
     dispatch(addItemToCart({ ...singleProduct, quantity: count }));
+    handleCartPopupClose(false);
+
+    const setCookie = (name, value, days) => {
+      const expires = new Date(Date.now() + days * 86400000).toUTCString();
+      document.cookie = `${name}=${encodeURIComponent(
+        value
+      )}; expires=${expires}; path=/`;
+    };
+    const getCookie = (name) => {
+      const matches = document.cookie.match(
+        new RegExp(
+          `(?:^|; )${name.replace(/([$?*|{}()[\\]\\+^])/g, "\\$1")}=([^;]*)`
+        )
+      );
+      return matches ? decodeURIComponent(matches[1]) : null;
+    };
+
+    // Load cart from cookies on initial render
+    const cartFromCookie = getCookie(`cart_${cartItems.id}`);
+    if (cartFromCookie) {
+      setCartItems(JSON.parse(cartFromCookie));
+    } else {
+      const cartFromLocalStorage = localStorage.getItem(`cart_${cartItems.id}`);
+      if (cartFromLocalStorage) {
+        setCartItems(JSON.parse(cartFromLocalStorage));
+      } else {
+        const cartFromSessionStorage = sessionStorage.getItem(
+          `cart_${cartItems.id}`
+        );
+        if (cartFromSessionStorage) {
+          setCartItems(JSON.parse(cartFromSessionStorage));
+        }
+      }
+    }
+    // Save cart to cookies whenever cartItems changes
+    const cartData = JSON.stringify({ ...cartItems, quantity: count });
+
+    setCookie(`cart_${singleProduct.id}`, cartData, 7); // cookies на 7 дней
+    localStorage.setItem(`cart_${singleProduct.id}`, cartData);
+    sessionStorage.setItem(`cart_${singleProduct.id}`, cartData);
+  };
+
+  const [showNotification, setShowNotification] = React.useState(false);
+
+  const handleCartPopupClose = (open) => {
+    if (!open) {
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 2000);
+    }
   };
 
   return (
     <div>
+      <NotificationPopup
+        isVisible={showNotification}
+        message={"Товар добавлен в корзину"}
+      />
       <Sidebar />
       <div className="flex flex-col gap-5 overflow-scroll mb-[90px]">
         <div className="flex justify-center ">
@@ -68,7 +124,7 @@ export default function SingleProduct() {
             className={"px-[5px] py-3 w-[145px] h-[38px]"}
           />
           <Button
-            onClick={addItem()}
+            onClick={addItem}
             text={"В корзину"}
             type="normal"
             className={

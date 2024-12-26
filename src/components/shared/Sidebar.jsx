@@ -15,7 +15,6 @@ export const Sidebar = () => {
   const [startX, setStartX] = React.useState(0);
   const [scrollLeft, setScrollLeft] = React.useState(0);
   const sidebarRef = React.useRef(null);
-  console.log(sidebarRef);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);

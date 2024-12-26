@@ -11,9 +11,14 @@ import { ROUTES } from "../routes/routes";
 
 export default function Card() {
   const dispatch = useDispatch();
-
   const { cart } = useSelector(({ user }) => user);
-  const sum = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const sum = cart.reduce((acc, item) => {
+    if (item.quantity) {
+      return acc + item.price * item.quantity;
+    } else {
+      return acc + item.price * 1;
+    }
+  }, 0);
   const handleIncrement = (variant, id) => {
     let currentItem = cart.find((item) => item.id === id);
     if (variant === minus) {
@@ -91,13 +96,19 @@ export default function Card() {
                   id={item.id}
                   type={quantity}
                   handleIncrement={handleIncrement}
-                  count={item.quantity}
+                  count={item.quantity ? item.quantity : 1}
                   className={" py-[5px] rounded-[6.5px] h-[24.6px] w-[77px]"}
                   classNameIcons={"min-w-[30%]"}
                 />
-                <span className="font-3xl font-manrope font-semibold">
-                  {item.price * item.quantity}₽
-                </span>
+                {item.quantity ? (
+                  <span className="font-3xl font-manrope font-semibold">
+                    {item.price * item.quantity}₽
+                  </span>
+                ) : (
+                  <span className="font-3xl font-manrope font-semibold">
+                    {item.price * 1}₽
+                  </span>
+                )}
               </div>
             </div>
           </div>

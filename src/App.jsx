@@ -3,8 +3,12 @@ import { useLocation } from "react-router-dom";
 import AppRoutes from "./components/routes/AppRoutes";
 import { Container, Header } from "./components/shared";
 import BackButton from "./components/ui/BackButton";
+import { getAllCart } from "./utils/cart";
+import { useDispatch } from "react-redux";
+import { recoveryAllCart } from "./features/slice/userSlice";
 
 function App() {
+  const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin] = useState(true); // Логика для администратора
@@ -66,7 +70,10 @@ function App() {
       </div>
     );
   }
-
+  // Восстановение корзины
+  useEffect(() => {
+    dispatch(recoveryAllCart(getAllCart()));
+  }, []);
   return (
     <Container>
       <Header />
