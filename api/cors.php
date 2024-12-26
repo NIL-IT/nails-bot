@@ -5,7 +5,7 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
     $origin = '';
 }
 
-$allowed_origin = "https://shtuchki.proы";
+$allowed_origin = "https://shtuchki.pro";
 
 header("Access-Control-Allow-Origin: $allowed_origin");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
