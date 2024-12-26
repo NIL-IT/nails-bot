@@ -27,5 +27,5 @@ export function getAllCart() {
     }
   }
 
-  return list;
+  return list.length ? list : [];
 }
