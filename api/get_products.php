@@ -4,7 +4,7 @@ $webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/catalog.product.
 
 // Задаем параметры для фильтрации и выбора полей
 $params = [
-    'filter' => [], // Например, фильтр по активности: ['ACTIVE' => 'Y']
+    'filter' => [],
     'select' => ['ID', 'IBLOCK_ID', 'NAME', 'PRICE', 'QUANTITY'], // Обязательные и дополнительные поля
     'start' => 0 // Для постраничной загрузки, если много данных
 ];
