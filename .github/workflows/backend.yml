@@ -32,7 +32,7 @@ jobs:
           else
             echo 'Repository does not exist. Cloning fresh repository...'
             rm -rf /var/www/testingnil6/github/backend*
-            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/backend
+            git clone https://${USERNAME}:${PAT}@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/backend
             cd /var/www/testingnil6/github/backend
             git checkout backend
           fi
