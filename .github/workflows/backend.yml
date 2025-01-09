@@ -15,21 +15,13 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Deploy using git clone to /var/www/testingnil6/github/backend/
-        env:
-          HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          PAT: ${{ secrets.PAT }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
           if [ -d /var/www/testingnil6/github/backend/.git ]; then
-            cd /var/www/testingnil6/github/backend && \
-            git fetch && \
-            git checkout backend && \
-            git pull origin backend
+            cd /var/www/testingnil6/github/backend && git fetch && git checkout backend && git pull origin backend
           else
             rm -rf /var/www/testingnil6/github/backend* && \
-            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/backend && \
+            git clone https://root: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@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/backend && \
             cd /var/www/testingnil6/github/backend && \
             git checkout backend
           fi
