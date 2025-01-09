@@ -14,8 +14,8 @@ jobs:
       - name: Deploy repository to /var/www/testingnil6/github/frontend/
         env:
           HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.SERVER_USERNAME }}
-          PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
           PAT: ${{ secrets.REPO_PAT }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
@@ -35,8 +35,8 @@ jobs:
       - name: Build project using npm
         env:
           HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.SERVER_USERNAME }}
-          PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
           cd /var/www/testingnil6/github/frontend && \
@@ -47,8 +47,8 @@ jobs:
       - name: Move built files to /var/www/testingnil6/frontend/
         env:
           HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.SERVER_USERNAME }}
-          PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
           rm -rf /var/www/testingnil6/frontend/* && \
