@@ -8,7 +8,7 @@ $params = [
     'select' => ['ID', 'IBLOCK_ID', 'NAME', 'PRICE', 'QUANTITY'], // Обязательные и дополнительные поля
     'start' => 0 // Для постраничной загрузки, если много данных
 ];
-
+//
 // Выполняем запрос
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $webhookUrl);
