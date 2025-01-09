@@ -23,7 +23,10 @@ jobs:
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
           if [ -d /var/www/testingnil6/github/backend/.git ]; then
-            cd /var/www/testingnil6/github/backend && git fetch && git checkout backend && git pull origin backend
+            cd /var/www/testingnil6/github/backend && \
+            git fetch && \
+            git checkout backend && \
+            git pull origin backend
           else
             rm -rf /var/www/testingnil6/github/backend* && \
             git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/backend && \
