@@ -12,20 +12,23 @@ export default function SingleCategory() {
     ({ category }) => category.id === parseInt(id)
   );
   const [list, setList] = React.useState(products);
+  const [indexItem, setIndex] = React.useState(null);
   useEffect(() => {
     if (!products.length > 0 || !id) navigate(ROUTES.HOME);
     products = PRODUCTS.filter(({ category }) => category.id === parseInt(id));
     setList(products);
     let find = PRODUCTS.find(({ category }) => category.id == id);
     if (!find) navigate(ROUTES.HOME);
+    setIndex(null);
   }, [id]);
 
-  const handleClick = (title) => {
+  const handleClick = (title, index) => {
     setList(
       products.filter((item) =>
         item.title.toLowerCase().includes(title.toLowerCase())
       )
     );
+    setIndex(index);
   };
 
   return list.length > 0 ? (
@@ -35,8 +38,14 @@ export default function SingleCategory() {
         <Title text={list[0].category.name} className={"mb-5"} />
         <div className="flex gap-[10px] flex-wrap mb-[30px]">
           {products.map(({ title }, i) => (
-            <a onClick={() => handleClick(title)} key={i}>
-              <p className="underline decoration-1 text-xl text-primary font-montserrat">
+            <a onClick={() => handleClick(title, i)} key={i}>
+              <p
+                className={`${
+                  indexItem === i
+                    ? "text-secondary font-semibold underline underline-offset-4"
+                    : ""
+                } underline decoration-1 text-xl cursor-pointer text-primary font-montserrat`}
+              >
                 {title.split(" ").slice(1, 3).join(" ")}
               </p>
             </a>
@@ -50,7 +59,7 @@ export default function SingleCategory() {
           ))}
         </div>
         <Button
-          className={"fixed bottom-40 right-[10px]"}
+          className={"fixed bottom-[50px] right-[10px]"}
           type={basket}
           text="Корзина"
         />

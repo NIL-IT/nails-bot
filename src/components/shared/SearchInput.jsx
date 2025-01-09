@@ -10,7 +10,9 @@ export default function SearchInput({ value, handleSearch, handleSubmit }) {
         className="flex justify-between items-center  py-1 px-4 gap-[10px] 
     rounded-[10px] bg-gray mt-[30px]"
       >
-        <img src="/public/img/searchnobg.svg" alt="search" />
+        <div className="w-5 h-5">
+          <img src="./img/searchnobg.svg" alt="search" />
+        </div>
         <input
           value={value}
           onChange={handleSearch}
@@ -18,12 +20,8 @@ export default function SearchInput({ value, handleSearch, handleSubmit }) {
           type="text"
           className="w-[100%]"
         />
-        <Link className="mr-1" to={ROUTES.HOME}>
-          <img
-            src="/public/img/close.svg"
-            alt="close"
-            className="min-w-5 min-h-5"
-          />
+        <Link className="mr-1 w-5 h-5" to={ROUTES.HOME}>
+          <img src="./img/close.svg" alt="close" className="min-w-5 min-h-5" />
         </Link>
       </form>
     </div>

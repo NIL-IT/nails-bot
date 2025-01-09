@@ -14,7 +14,7 @@ const Home = () => {
         ))}
       </div>
       <Button
-        className={"fixed bottom-40 right-[10px]"}
+        className={"fixed bottom-[50px] right-[10px]"}
         type={basket}
         text="Корзина"
       />

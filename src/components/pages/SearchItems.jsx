@@ -45,7 +45,9 @@ export default function SearchItems() {
             <p className="font-montserrat">
               По вашему запросу ничего не найдено
             </p>
-            <img src="/img/nofaund.png" alt="" />
+            <div className="h-[200px] w-[200px]">
+              <img src="/img/nofaund.png" alt="" />
+            </div>
           </div>
         )}
       </div>
