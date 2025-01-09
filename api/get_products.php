@@ -1,12 +1,11 @@
 <?php
-// Адрес вашего REST вебхука с указанием метода
+
 $webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/catalog.product.list';
 
-// Задаем параметры для фильтрации и выбора полей
 $params = [
     'filter' => [],
-    'select' => ['ID', 'IBLOCK_ID', 'NAME', 'PRICE', 'QUANTITY'], // Обязательные и дополнительные поля
-    'start' => 0 // Для постраничной загрузки, если много данных
+    'select' => ['ID', 'IBLOCK_ID', 'NAME', 'PRICE', 'QUANTITY'], 
+    'start' => 0 
 ];
 //
 // Выполняем запрос
