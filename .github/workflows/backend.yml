@@ -22,8 +22,9 @@ jobs:
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}    # Password for SSH
           HOST: ${{ secrets.HOST }}
         run: |
-          # Cloning the repository using GitHub credentials
+          sudo mkdir -p /var/www/testingnil6/github/backend
           git clone https://${REPO_USERNAME}:${REPO_PAT}@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/backend
+
 
           # SSH into the server and perform actions
           sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$HOST "
