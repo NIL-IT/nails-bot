@@ -16,12 +16,17 @@ jobs:
 
       - name: Deploy using git clone to /var/www/testingnil6/github/backend/
         env:
+          REPO_USERNAME: ${{ secrets.REPO_USERNAME }}        # GitHub username
+          REPO_PAT: ${{ secrets.REPO_PAT }}                  # GitHub Personal Access Token
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}    # SSH username for the server
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}    # Password for SSH
           HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          PAT: ${{ secrets.PAT }}
         run: |
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
+          # Cloning the repository using GitHub credentials
+          git clone https://${REPO_USERNAME}:${REPO_PAT}@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/backend
+
+          # SSH into the server and perform actions
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$HOST "
           set -e
           if [ -d /var/www/testingnil6/github/backend/.git ]; then
             echo 'Repository exists. Fetching and pulling changes...'
@@ -32,7 +37,7 @@ jobs:
           else
             echo 'Repository does not exist. Cloning fresh repository...'
             rm -rf /var/www/testingnil6/github/backend*
-            git clone https://${USERNAME}:${PAT}@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/backend
+            git clone https://${REPO_USERNAME}:${REPO_PAT}@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/backend
             cd /var/www/testingnil6/github/backend
             git checkout backend
           fi
@@ -40,11 +45,11 @@ jobs:
 
       - name: Move API files to /var/www/testingnil6/backend/
         env:
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}    # SSH username for the server
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}    # Password for SSH
           HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$HOST "
           set -e
           if [ -d /var/www/testingnil6/github/backend/api ]; then
             echo 'Moving API files...'
