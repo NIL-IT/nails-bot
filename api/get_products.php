@@ -25,6 +25,8 @@ if (isset($data['result'])) {
     echo '<pre>';
     print_r($data['result']);
     echo '</pre>';
+} elseif (isset($data['error'])) {
+    echo 'Ошибка получения данных: ' . $data['error_description'];
 } else {
     echo 'Ошибка получения данных: ' . $response;
 }
