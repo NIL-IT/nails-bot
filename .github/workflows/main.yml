@@ -11,12 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Deploy repository to /var/www/testingnil6/github/frontend/
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
-          PAT: ${{ secrets.REPO_PAT }}
+          PAT: ${{ secrets.PAT }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
           if [ -d /var/www/testingnil6/github/frontend/.git ]; then
@@ -31,7 +34,6 @@ jobs:
             git checkout main
           fi
           "
-
       - name: Build project using npm
         env:
           HOST: ${{ secrets.HOST }}
@@ -43,7 +45,6 @@ jobs:
           npm install && \
           npm run build
           "
-
       - name: Move built files to /var/www/testingnil6/frontend/
         env:
           HOST: ${{ secrets.HOST }}
