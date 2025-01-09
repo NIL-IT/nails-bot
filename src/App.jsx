@@ -18,7 +18,7 @@ function App() {
 
   const baseURL = "https://testingnil6.ru:8000/";
 
-  // Функция получения данных пользователя
+
   const fetchUserData = async () => {
     try {
       const tg = window.Telegram.WebApp;
