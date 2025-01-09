@@ -38,7 +38,7 @@ function App() {
     fetchUserData();
   }, [restaurantId]);
 
-  // API запросы
+
   const API = {
     getUser: async (id_tg) => {
       const option = {
