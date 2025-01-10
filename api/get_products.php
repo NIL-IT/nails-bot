@@ -1,6 +1,6 @@
 <?php
 
-$webhookUrl = 'https://shtuchki.pro/rest/13283/zhc69jnwgx6hweyj/catalog.product.list';
+$webhookUrl = 'https://shtuchki.pro/rest/68/zhc69jnwgx6hweyj/catalog.product.list';
 
 $params = [
     'filter' => [],
