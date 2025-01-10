@@ -4,7 +4,7 @@ $webhookUrl = 'https://shtuchki.pro/rest/68/zhc69jnwgx6hweyj/catalog.product.lis
 
 $params = [
     'filter' => ['id' => 1, 'iblockId' => 2],
-    'select' => ['ID', 'IBLOCK_ID', 'NAME', 'PRICE', 'QUANTITY'], 
+    'select' => ['id', 'iblockId', 'NAME', 'PRICE', 'QUANTITY'], 
     'start' => 0 
 ];
 
