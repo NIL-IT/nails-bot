@@ -3,8 +3,8 @@
 $webhookUrl = 'https://shtuchki.pro/rest/68/zhc69jnwgx6hweyj/catalog.product.list';
 
 $params = [
-    'filter' => ['IBLOCK_ID' => 2], // Убедитесь, что IBLOCK_ID существует
-    'select' => ['ID', 'IBLOCK_ID', 'NAME', 'PRICE', 'QUANTITY'], 
+    'filter' => [],
+    'select' => ['id', 'iblockId', 'NAME', 'PRICE', 'QUANTITY'], 
     'start' => 0 
 ];
 
