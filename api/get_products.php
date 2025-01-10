@@ -25,7 +25,11 @@ if (isset($data['result'])) {
     print_r($data['result']);
     echo '</pre>';
 } elseif (isset($data['error'])) {
-    echo 'Ошибка получения данных: ' . $data['error_description'];
+    if ($data['error'] === 'authorization_error') {
+        echo 'Ошибка авторизации: ' . $data['error_description'];
+    } else {
+        echo 'Ошибка получения данных: ' . $data['error_description'];
+    }
 } else {
     echo 'Ошибка получения данных: ' . $response;
 }
