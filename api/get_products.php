@@ -1,10 +1,10 @@
 <?php
 
-$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/catalog.product.list';
+$webhookUrl = 'https://shtuchki.pro/rest/13283/hrwfpr2yee7qvk2f/crm.product.list';
 
 $params = [
     'filter' => [],
-    'select' => ['ID', 'IBLOCK_ID', 'NAME', 'PRICE', 'QUANTITY'], 
+    'select' => ['ID', 'NAME', 'PRICE', 'QUANTITY'], 
     'start' => 0 
 ];
 
