@@ -5,7 +5,8 @@ $webhookUrl = 'https://shtuchki.pro/rest/68/zhc69jnwgx6hweyj/catalog.product.lis
 $params = [
     'filter' => ['iblockId' => 21], 
     'select' => ['id', 'iblockId', 'name', 'price', 'QUANTITY'], 
-    'start' => 0 
+    'start' => 0,
+    'limit' => 100 // Устанавливаем лимит на 100 товаров
 ];
 
 $allProducts = [];
