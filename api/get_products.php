@@ -1,11 +1,21 @@
 <?php
 
 $webhookUrl = 'https://shtuchki.pro/rest/68/zhc69jnwgx6hweyj/catalog.product.list';
+$select = [
+    'id',
+    'iblockId',
+    'name',
+    'price',
+    'detailText',
+    'detailPicture',
+    'purchasingPrice',
+    '*',
+];
 
 $params = [
     'filter' => ['iblockId' => 21], 
-    'select' => ['id', 'iblockId', 'name', 'price', 'QUANTITY',"minimum_price","MAXIMUM_PRICE","MORE_PHOTO"], 
-    'start' => 50
+    'select' => $select, 
+    'start' => 50 
 ];
 
 $ch = curl_init();
@@ -16,7 +26,7 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
 ]);
-curl_setopt($ch, CURLOPT_USERPWD, 'wizzardhtt@gmail.com:111222'); // Логин и пароль
+
 
 $response = curl_exec($ch);
 curl_close($ch);
