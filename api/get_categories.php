@@ -5,7 +5,7 @@ $webhookUrl = 'https://shtuchki.pro/rest/68/zhc69jnwgx6hweyj/catalog.section.lis
 $params = [
     'filter' => ['iblockId' => 21], 
     'select' => ['id', 'name', 'iblockId'], 
-    'start' => 0 
+    'start' => 50 
 ];
 
 $ch = curl_init();
