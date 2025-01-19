@@ -9,7 +9,7 @@ $select = [
     'detailText',
     'detailPicture',
     'purchasingPrice',
-    '*',
+    
 ];
 
 $params = [
