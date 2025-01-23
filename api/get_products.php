@@ -44,7 +44,7 @@ do {
 } while (count($data['result']) > 0);
 
 // Сохранение данных в файл
-$file = fopen('products.txt', 'w');
+$file = fopen('/var/www/testingnil6/backend/api/products.txt', 'w');
 foreach ($allProducts as $product) {
     fwrite($file, print_r($product, true) . "\n");
 }
