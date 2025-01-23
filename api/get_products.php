@@ -11,9 +11,18 @@ $select = [
     'purchasingPrice',
 ];
 
-$start = 0;
 $step = 50;
-$allProducts = [];
+$startFile = '/var/www/testingnil6/backend/api/start.txt';
+$productFile = '/var/www/testingnil6/backend/api/products.txt';
+
+// Чтение значения start из файла
+if (file_exists($startFile)) {
+    $start = (int)file_get_contents($startFile);
+} else {
+    $start = 0;
+}
+
+$file = fopen($productFile, 'a');
 
 do {
     $params = [
@@ -36,18 +45,17 @@ do {
 
     $data = json_decode($response, true);
     if (isset($data['result'])) {
-        $allProducts = array_merge($allProducts, $data['result']);
+        foreach ($data['result'] as $product) {
+            fwrite($file, print_r($product, true) . "\n");
+        }
         $start += $step;
+        // Сохранение текущего значения start в файл
+        file_put_contents($startFile, $start);
     } else {
         break;
     }
 } while (count($data['result']) > 0);
 
-// Сохранение данных в файл
-$file = fopen('/var/www/testingnil6/backend/api/products.txt', 'w');
-foreach ($allProducts as $product) {
-    fwrite($file, print_r($product, true) . "\n");
-}
 fclose($file);
 
 echo 'Данные успешно сохранены в файл products.txt';
