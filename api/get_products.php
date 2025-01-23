@@ -11,33 +11,44 @@ $select = [
     'purchasingPrice',
 ];
 
-$params = [
-    'filter' => ['iblockId' => 21], 
-    'select' => $select, 
-    'start' => 0 
-];
+$start = 0;
+$step = 50;
+$allProducts = [];
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $webhookUrl);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json',
-]);
+do {
+    $params = [
+        'filter' => ['iblockId' => 21], 
+        'select' => $select, 
+        'start' => $start 
+    ];
 
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $webhookUrl);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+    ]);
 
-$response = curl_exec($ch);
-curl_close($ch);
+    $response = curl_exec($ch);
+    curl_close($ch);
 
-$data = json_decode($response, true);
-if (isset($data['result'])) {
-    echo '<pre>';
-    print_r($data['result']);
-    echo '</pre>';
-} elseif (isset($data['error'])) {
-    echo 'Ошибка получения   данных: ' . $data['error_description'];
-} else {
-    echo 'Ошибка получения данных: ' . $response;
+    $data = json_decode($response, true);
+    if (isset($data['result'])) {
+        $allProducts = array_merge($allProducts, $data['result']);
+        $start += $step;
+    } else {
+        break;
+    }
+} while (count($data['result']) > 0);
+
+// Сохранение данных в файл
+$file = fopen('products.txt', 'w');
+foreach ($allProducts as $product) {
+    fwrite($file, print_r($product, true) . "\n");
 }
+fclose($file);
+
+echo 'Данные успешно сохранены в файл products.txt';
 ?>
