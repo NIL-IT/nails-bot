@@ -15,7 +15,7 @@ $select = [
 $params = [
     'filter' => ['iblockId' => 21], 
     'select' => $select, 
-    'start' => 30450 
+    'start' => 30500 
 ];
 
 $ch = curl_init();
