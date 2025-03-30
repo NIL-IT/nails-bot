@@ -14,7 +14,7 @@ const AppRoutes = ({ user }) => {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
 
-  const baseURL = "https://testingnil6.ru:8000/";
+  const baseURL = "https://nails-bot.nilit1.ru:8000/";
 
   const API = {
     // Получение данных пользователя

@@ -16,7 +16,7 @@ function App() {
 
   const location = useLocation();
 
-  const baseURL = "https://testingnil6.ru:8000/";
+  const baseURL = "https://nails-bot.nilit1.ru:8000/";
 
 
   const fetchUserData = async () => {
@@ -69,7 +69,7 @@ function App() {
   //     </div>
   //   );
   // }
-  // Восстановение корзины
+
   useEffect(() => {
     dispatch(recoveryAllCart(getAllCart()));
   }, []);
