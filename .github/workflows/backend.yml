@@ -46,9 +46,9 @@ jobs:
             echo 'API folder does not exist. Skipping copy step.'
           fi
           
-          if [ -d /var/www/nails-bot/github/backend/api_bitrix2 ]; then
-            cp -r /var/www/nails-bot/github/backend/api_bitrix2 /var/www/nails-bot/backend/
+          if [ -d /var/www/nails-bot/github/backend/api_bitrix ]; then
+            cp -r /var/www/nails-bot/github/backend/api_bitrix /var/www/nails-bot/backend/
           else
-            echo 'api_bitrix2 folder does not exist. Skipping copy step.'
+            echo 'api_bitrix folder does not exist. Skipping copy step.'
           fi
           "
