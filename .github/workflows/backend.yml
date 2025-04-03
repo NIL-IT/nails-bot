@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Deploy using git clone to /var/www/testingnil6/github/backend/
+      - name: Deploy using git clone to /var/www/nails-bot/github/backend/
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
@@ -22,27 +22,33 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          if [ -d /var/www/testingnil6/github/backend/.git ]; then
-            cd /var/www/testingnil6/github/backend && git fetch && git checkout backend && git pull origin backend
+          if [ -d /var/www/nails-bot/github/backend/.git ]; then
+            cd /var/www/nails-bot/github/backend && git fetch && git checkout backend && git pull origin backend
           else
-            rm -rf /var/www/testingnil6/github/backend* && \
-            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/backend && \
-            cd /var/www/testingnil6/github/backend && \
+            rm -rf /var/www/nails-bot/github/backend* && \
+            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/github/backend && \
+            cd /var/www/nails-bot/github/backend && \
             git checkout backend
           fi
           "
 
-      - name: Move API files to /var/www/testingnil6/backend/
+      - name: Move API files to /var/www/nails-bot/backend/
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          if [ -d /var/www/testingnil6/github/backend/api ]; then
-            rm -rf /var/www/testingnil6/backend/* && \
-            cp -r /var/www/testingnil6/github/backend/api /var/www/testingnil6/backend/
+          if [ -d /var/www/nails-bot/github/backend/api ]; then
+            rm -rf /var/www/nails-bot/backend/* && \
+            cp -r /var/www/nails-bot/github/backend/api /var/www/nails-bot/backend/
           else
             echo 'API folder does not exist. Skipping copy step.'
+          fi
+          
+          if [ -d /var/www/nails-bot/github/backend/api_bitrix2 ]; then
+            cp -r /var/www/nails-bot/github/backend/api_bitrix2 /var/www/nails-bot/backend/
+          else
+            echo 'api_bitrix2 folder does not exist. Skipping copy step.'
           fi
           "
