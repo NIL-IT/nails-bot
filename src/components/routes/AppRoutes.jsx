@@ -14,7 +14,7 @@ const AppRoutes = ({ user }) => {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
 
-  const baseURL = "https://nails-bot.nilit1.ru:8000/";
+  const baseURL = "https://nails.nilit2.ru:8000/catalog.php/";
 
   const API = {
     // Получение данных пользователя
@@ -26,7 +26,7 @@ const AppRoutes = ({ user }) => {
         },
         body: JSON.stringify({ id_tg }),
       };
-  
+
       return fetch(`${baseURL}get_user.php`, option)
         .then((res) => res.json())
         .catch((err) => {
@@ -34,7 +34,7 @@ const AppRoutes = ({ user }) => {
           return { success: false };
         });
     },
-  
+
     // Получение категорий
     getCategories: async () => {
       const option = {
@@ -43,15 +43,15 @@ const AppRoutes = ({ user }) => {
           "Content-Type": "application/json",
         },
       };
-  
-      return fetch(`${baseURL}get_categories.php`, option)
+
+      return fetch(`${baseURL}index.php`, option)
         .then((res) => res.json())
         .catch((err) => {
           console.error("API request error:", err);
           return [];
         });
     },
-  
+
     // Получение продуктов
     getProducts: async () => {
       const option = {
@@ -60,15 +60,15 @@ const AppRoutes = ({ user }) => {
           "Content-Type": "application/json",
         },
       };
-  
-      return fetch(`${baseURL}get_products.php`, option)
+
+      return fetch(`${baseURL}index.php`, option)
         .then((res) => res.json())
         .catch((err) => {
           console.error("API request error:", err);
           return [];
         });
     },
-  
+
     // Получение заказов пользователя
     getOrders: async (userId) => {
       const option = {
@@ -77,7 +77,7 @@ const AppRoutes = ({ user }) => {
           "Content-Type": "application/json",
         },
       };
-  
+
       return fetch(`${baseURL}get_orders.php?user_id=${userId}`, option)
         .then((res) => res.json())
         .catch((err) => {
@@ -119,9 +119,15 @@ const AppRoutes = ({ user }) => {
       <Route path={ROUTES.SEARCH} element={<SearchItems />} />
 
       {user?.isAdmin ? (
-        <Route path={ROUTES.PROFILE} element={<OrderHistoryAdmin orders={orders} />} />
+        <Route
+          path={ROUTES.PROFILE}
+          element={<OrderHistoryAdmin orders={orders} />}
+        />
       ) : (
-        <Route path={ROUTES.PROFILE} element={<OrderHistory orders={orders} />} />
+        <Route
+          path={ROUTES.PROFILE}
+          element={<OrderHistory orders={orders} />}
+        />
       )}
     </Routes>
   );
