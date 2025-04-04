@@ -11,7 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy repository to /var/www/testingnil6/github/frontend/
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy repository to /var/www/nails-bot/github/frontend/
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
@@ -19,19 +22,18 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          if [ -d /var/www/testingnil6/github/frontend/.git ]; then
-            cd /var/www/testingnil6/github/frontend && \
+          if [ -d /var/www/nails-bot/github/frontend/.git ]; then
+            cd /var/www/nails-bot/github/frontend && \
             git fetch && \
             git checkout main && \
             git pull origin main
           else
-            rm -rf /var/www/testingnil6/github/frontend/* && \
-            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/testingnil6/github/frontend && \
-            cd /var/www/testingnil6/github/frontend && \
+            rm -rf /var/www/nails-bot/github/frontend/* && \
+            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/github/frontend && \
+            cd /var/www/nails-bot/github/frontend && \
             git checkout main
           fi
           "
-
       - name: Build project using npm
         env:
           HOST: ${{ secrets.HOST }}
@@ -39,18 +41,17 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          cd /var/www/testingnil6/github/frontend && \
+          cd /var/www/nails-bot/github/frontend && \
           npm install && \
           npm run build
           "
-
-      - name: Move built files to /var/www/testingnil6/frontend/
+      - name: Move built files to /var/www/nails-bot/frontend/
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          rm -rf /var/www/testingnil6/frontend/* && \
-          cp -r /var/www/testingnil6/github/frontend/dist/* /var/www/testingnil6/frontend/
+          rm -rf /var/www/nails-bot/frontend/* && \
+          cp -r /var/www/nails-bot/github/frontend/dist/* /var/www/nails-bot/frontend/
           "

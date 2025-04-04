@@ -6,12 +6,10 @@ import BackButton from "./components/ui/BackButton";
 import { getAllCart } from "./utils/cart";
 import { useDispatch } from "react-redux";
 import { recoveryAllCart } from "./features/slice/userSlice";
-import { getRootCategories } from "./api";
 
 function App() {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
-  const [rootCategories, setRootCategories] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin] = useState(true); // Логика для администратора
   const restaurantId = window.location.pathname.split("/")[1];
@@ -27,9 +25,7 @@ function App() {
       tg.expand();
       const userId = tg.initDataUnsafe.user.id;
       const userResponse = await API.getUser(userId);
-      const rootCategories = await API.getRootCategories();
-      setRootCategories(rootCategories);
-      console.log(rootCategories);
+
       if (userResponse && userResponse.success && userResponse.user) {
         setUser(userResponse.user);
         setIsLoading(false);
@@ -63,22 +59,9 @@ function App() {
           return { success: false };
         });
     },
-    getRootCategories: async () => {
-      const option = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ type: "category", id: "NULL" }),
-      };
-      return fetch(`${baseURL}index.php`, option)
-        .then((res) => res.json())
-        .catch((err) => {
-          console.error("API request error:", err);
-          return { success: false };
-        });
-    },
   };
+
+  // Если данные еще загружаются, показываем индикатор загрузки
 
   // if (isLoading) {
   //   return (
@@ -93,8 +76,6 @@ function App() {
   }, []);
   return (
     <Container>
-      <div>{JSON.stringify(rootCategories)}</div>
-      <div>{JSON.stringify(user)}</div>
       <Header />
       {Object.hasOwn(window, "Telegram") && <BackButton />}
       <AppRoutes user={user} />
