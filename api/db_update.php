@@ -1,10 +1,9 @@
 <?php
 
-require_once 'CatalogBitrixRestApiClient.php';
+require_once __DIR__ . '/../api_bitrix/CatalogBitrixRestApiClient.php';
 require_once 'DatabaseClient.php';
 
 $apiClient = new CatalogBitrixRestApiClient( 'https://shtuchki.pro/rest/13283/nj2nk4gedj6wvk5j/' );
-
 $dbClient = new DatabaseClient( 'localhost', '5432', 'testingnil6', 'ivers', '111333555Qaz' );
 
 $iblockId = 21;
@@ -18,9 +17,9 @@ function updateSectionsTable($sections, $dbClient, $parent_id = null) {
             ':parent_id' => $parent_id !== null ? (int)$parent_id : null
         ];
 
-        $query = "INSERT INTO sections (id_section, name, id_parent) 
+        $query = "INSERT INTO sections (id_section, name, id_parent)
                  VALUES (:id_section, :name, :parent_id)
-                 ON CONFLICT (id_section) 
+                 ON CONFLICT (id_section)
                  DO UPDATE SET
                      name = EXCLUDED.name,
                      id_parent = EXCLUDED.id_parent";
@@ -99,9 +98,9 @@ function updateCatalogProductsTable($catalogData,$dbClient) {
                 ':preview_picture' => $product['PREVIEW_PICTURE'] !== null ? (string)$product['PREVIEW_PICTURE'] : null,
             ];
 
-            $query = "INSERT INTO catalog_products (id_product, name, id_section, detail_picture, preview_picture) 
+            $query = "INSERT INTO catalog_products (id_product, name, id_section, detail_picture, preview_picture)
                  VALUES (:id_product, :name, :id_section, :detail_picture, :preview_picture)
-                 ON CONFLICT (id_product) 
+                 ON CONFLICT (id_product)
                  DO UPDATE SET
                      name = EXCLUDED.name,
                      id_section = EXCLUDED.id_section,
