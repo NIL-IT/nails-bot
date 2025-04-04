@@ -41,10 +41,11 @@ const AppRoutes = ({ user }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: {
+        mode: "no-cors",
+        body: JSON.stringify({
           type: "category",
           id: "NULL",
-        },
+        }),
       };
 
       return fetch(`${baseURL}index.php`, option)
