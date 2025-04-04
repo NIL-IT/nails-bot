@@ -1,4 +1,4 @@
-name: Deploy nails-bot
+name: Deploy Frontend
 
 on:
   push:
@@ -11,31 +11,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Install sshpass
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
+        run: sudo apt-get install -y sshpass
 
-      - name: Deploy and build project
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create deploy script
+        run: |
+          cat > deploy.sh << 'SCRIPT'
+          #!/bin/bash
+          mkdir -p /var/www/nails-bot/frontend
+
+          if [ -d /var/www/nails-bot/frontend/.git ]; then
+            cd /var/www/nails-bot/frontend
+            git fetch
+            git reset --hard origin/main
+          else
+            rm -rf /var/www/nails-bot/frontend/*
+            git clone https://$1@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/frontend_temp
+            mv /var/www/nails-bot/frontend_temp/* /var/www/nails-bot/frontend/
+            mv /var/www/nails-bot/frontend_temp/.* /var/www/nails-bot/frontend/ 2>/dev/null || true
+            rm -rf /var/www/nails-bot/frontend_temp
+          fi
+
+          cd /var/www/nails-bot/frontend
+          npm cache clean --force
+          npm install -g npm@latest
+          npm install
+          npm run build
+          SCRIPT
+          chmod +x deploy.sh
+
+      - name: Deploy project
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
           PAT: ${{ secrets.PAT }}
         run: |
-          # Sync files using rsync (more reliable than git pull)
-          sshpass -p "$PASSWORD" rsync -avz --delete \
-            --exclude='.git' \
-            --exclude='node_modules' \
-            ./ $USERNAME@$HOST:/var/www/nails-bot/frontend/
-
-          # Build project on server
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-            cd /var/www/nails-bot/frontend/ && \
-            npm ci && \
-            npm run build && \
-            chmod -R 755 /var/www/nails-bot/frontend/
-          "
+          sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no deploy.sh $USERNAME@$HOST:/tmp/
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "bash /tmp/deploy.sh $PAT && rm /tmp/deploy.sh"
