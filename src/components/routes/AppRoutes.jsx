@@ -15,7 +15,6 @@ const AppRoutes = ({ user }) => {
   const [orders, setOrders] = useState([]);
 
   const baseURL = "https://nails.nilit2.ru:8000/catalog.php/";
-
   const API = {
     // Получение данных пользователя
     getUser: async (id_tg) => {
@@ -38,9 +37,13 @@ const AppRoutes = ({ user }) => {
     // Получение категорий
     getCategories: async () => {
       const option = {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
+        },
+        body: {
+          type: "category",
+          id: "NULL",
         },
       };
 
@@ -106,8 +109,8 @@ const AppRoutes = ({ user }) => {
 
   useEffect(() => {
     fetchCategories();
-    fetchProducts();
-    fetchOrders();
+    // fetchProducts();
+    // fetchOrders();
   }, [user]);
 
   return (
