@@ -22,13 +22,13 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          if [ -d /var/www/nails-bot/github/frontend/.git ]; then
+          if [ -d /var/www/nails-bot/frontend/.git ]; then
             cd /var/www/nails-bot/frontend/ && \
             git fetch && \
             git checkout main && \
             git pull origin main
           else
-            rm -rf /var/www/nails-bot/github/frontend/* && \
+            rm -rf /var/www/nails-bot/frontend/* && \
             git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/frontend/ && \
             cd /var/www/nails-bot/frontend/&& \
             git checkout main
