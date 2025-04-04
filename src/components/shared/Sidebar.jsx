@@ -46,26 +46,18 @@ export const Sidebar = () => {
       {CATEGORIES.map(({ name, id }, index) => (
         <li key={id}>
           {active - 1 !== index ? (
-            <div className="bg-primary text-white text-xl font-medium px-3 pt-[10px] pb-[7px] rounded-b-xl">
-              <Link
-                draggable={false}
-                className="no-select"
-                to={`/categories/${id}`}
-              >
+            <Link draggable={false} to={`/categories/${id}`}>
+              <div className="no-select bg-primary text-white text-xl font-medium px-3 pt-[10px] pb-[7px] rounded-b-xl">
                 {name}
-              </Link>
-            </div>
+              </div>
+            </Link>
           ) : (
             <>
-              <div className="bg-primary text-white text-xl font-medium px-3 pt-[20px] ] pb-[7px] rounded-b-xl">
-                <Link
-                  draggable={false}
-                  className="no-select"
-                  to={`/categories/${id}`}
-                >
+              <Link draggable={false} to={`/categories/${id}`}>
+                <div className="no-select bg-primary text-white text-xl font-medium px-3 pt-[20px] ] pb-[7px] rounded-b-xl">
                   {name}
-                </Link>
-              </div>
+                </div>
+              </Link>
             </>
           )}
         </li>
