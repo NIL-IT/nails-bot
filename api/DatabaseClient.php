@@ -1,6 +1,7 @@
 <?php
 class DatabaseClient
 {
+    
     private $host;
     private $port;
     private $dbname;
