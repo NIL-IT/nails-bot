@@ -12,46 +12,30 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Deploy repository to /var/www/nails-bot/frontend/
+      - name: Install sshpass
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+
+      - name: Deploy and build project
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
           PAT: ${{ secrets.PAT }}
         run: |
+          # Sync files using rsync (more reliable than git pull)
+          sshpass -p "$PASSWORD" rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            ./ $USERNAME@$HOST:/var/www/nails-bot/frontend/
+
+          # Build project on server
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          if [ -d /var/www/nails-bot/frontend/.git ]; then
             cd /var/www/nails-bot/frontend/ && \
-            git fetch && \
-            git checkout main && \
-            git pull origin main
-          else
-            rm -rf /var/www/nails-bot/frontend/* && \
-            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/frontend/ && \
-            cd /var/www/nails-bot/frontend/&& \
-            git checkout main
-          fi
-          "
-      - name: Build project using npm
-        env:
-          HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-        run: |
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          cd /var/www/nails-bot/frontend/ && \
-          npm install && \
-          npm run build
-          "
-      - name: Move built files to /var/www/nails-bot/frontend/
-        env:
-          HOST: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-        run: |
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          rm -rf /var/www/nails-bot/frontend/* && \
-          cp -r /var/www/nails-bot/frontend/dist/* /var/www/nails-bot/frontend/
+            npm ci && \
+            npm run build && \
+            chmod -R 755 /var/www/nails-bot/frontend/
           "
