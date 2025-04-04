@@ -53,5 +53,5 @@ jobs:
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
           rm -rf /var/www/nails-bot/frontend/* && \
-          cp -r /var/www/nails-bot/frontend//dist/* /var/www/nails-bot/frontend/
+          cp -r /var/www/nails-bot/frontend/dist/* /var/www/nails-bot/frontend/
           "
