@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import { ROUTES } from "./routes";
@@ -7,134 +7,73 @@ import SingleCategory from "../pages/SingleCategory";
 import Cart from "../pages/Cart";
 import SearchItems from "../pages/SearchItems";
 import OrderHistory from "../pages/OrderHistory";
-import OrderHistoryAdmin from "../pages/OrderHistoryAdmin"; // Admin version of OrderHistory
+import OrderHistoryAdmin from "../pages/OrderHistoryAdmin";
+import { API, getAllProducts } from "../../api";
 
 const AppRoutes = ({ user }) => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-
-  const baseURL = "https://nails.nilit2.ru:8000/";
-  const API = {
-    // Получение данных пользователя
-    getUser: async (id_tg) => {
-      const option = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id_tg }),
-      };
-
-      return fetch(`${baseURL}get_user.php`, option)
-        .then((res) => res.json())
-        .catch((err) => {
-          console.error("API request error:", err);
-          return { success: false };
-        });
-    },
-
-    // Получение категорий
-    getCategories: async () => {
-      const option = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          type: "category",
-          id: "NULL",
-        }),
-      };
-
-      return fetch(`${baseURL}catalog.php`, option)
-        .then((res) => res.json())
-        .catch((err) => {
-          console.error("API request error:", err);
-          return [];
-        });
-    },
-
-    // Получение продуктов
-    getProducts: async () => {
-      const option = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      return fetch(`${baseURL}index.php`, option)
-        .then((res) => res.json())
-        .catch((err) => {
-          console.error("API request error:", err);
-          return [];
-        });
-    },
-
-    // Получение заказов пользователя
-    getOrders: async (userId) => {
-      const option = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      return fetch(`${baseURL}get_orders.php?user_id=${userId}`, option)
-        .then((res) => res.json())
-        .catch((err) => {
-          console.error("API request error:", err);
-          return [];
-        });
-    },
-  };
-
-  const fetchCategories = async () => {
-    const categoriesData = await API.getCategories();
-    setCategories(categoriesData);
-    console.log(categoriesData);
-  };
-
-  const fetchProducts = async () => {
-    const productsData = await API.getProducts();
-    setProducts(productsData);
-  };
-
-  const fetchOrders = async () => {
-    if (user?.id) {
-      const ordersData = await API.getOrders(user.id);
-      setOrders(ordersData);
-    }
-  };
-
+  const [loading, setLoading] = useState(true);
+  const dataFetchedRef = useRef(false);
   useEffect(() => {
-    fetchCategories();
+    const abortController = new AbortController(); // Создаем контроллер для отмены
+    if (dataFetchedRef.current) return;
 
-    // fetchProducts();
-    // fetchOrders();
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const categoriesResponse = await API.getCategories({
+          signal: abortController.signal,
+        }); // Передаем сигнал
+        const allProducts = await getAllProducts(categoriesResponse.data);
+        setCategories((prev) => {
+          if (prev.length === 0 && allProducts.length > 0) return allProducts;
+          return prev;
+        });
+        dataFetchedRef.current = true;
+      } catch (error) {
+        if (error.name !== "AbortError") console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (!categories.length) fetchData();
+
+    return () => abortController.abort(); // Отменяем запрос при размонтировании
   }, [user]);
 
+  if (loading && !categories) {
+    return <div className="loading">Loading categories and products...</div>;
+  }
   return (
-    <Routes>
-      <Route path={ROUTES.HOME} element={<Home />} />
-      <Route path={ROUTES.PRODUCT} element={<SingleProduct />} />
-      <Route path={ROUTES.CATEGORY} element={<SingleCategory />} />
-      <Route path={ROUTES.CART} element={<Cart />} />
-      <Route path={ROUTES.SEARCH} element={<SearchItems />} />
-
-      {user?.isAdmin ? (
+    categories?.length && (
+      <Routes>
+        <Route path={ROUTES.HOME} element={<Home categories={categories} />} />
+        <Route path={ROUTES.PRODUCT} element={<SingleProduct />} />
         <Route
-          path={ROUTES.PROFILE}
-          element={<OrderHistoryAdmin orders={orders} />}
+          path={ROUTES.CATEGORY}
+          element={<SingleCategory categories={categories} />}
         />
-      ) : (
+        <Route path={ROUTES.CART} element={<Cart />} />
         <Route
-          path={ROUTES.PROFILE}
-          element={<OrderHistory orders={orders} />}
+          path={ROUTES.SEARCH}
+          element={<SearchItems products={products} />}
         />
-      )}
-    </Routes>
+        {user?.isAdmin ? (
+          <Route
+            path={ROUTES.PROFILE}
+            element={<OrderHistoryAdmin orders={orders} />}
+          />
+        ) : (
+          <Route
+            path={ROUTES.PROFILE}
+            element={<OrderHistory orders={orders} />}
+          />
+        )}
+      </Routes>
+    )
   );
 };
 

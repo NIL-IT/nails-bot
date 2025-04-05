@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Product, Sidebar } from "../shared";
 import { basket } from "../../utils/constants";
 import { ROUTES } from "../routes/routes";
-export default function SingleCategory() {
+export default function SingleCategory({ categories }) {
   const { id } = useParams();
   const navigate = useNavigate();
   let products = PRODUCTS.filter(
@@ -33,7 +33,7 @@ export default function SingleCategory() {
 
   return list.length > 0 ? (
     <div>
-      <Sidebar />
+      <Sidebar categories={categories} />
       <div className="my-[30px] ">
         <Title text={list[0].category.name} className={"mb-5"} />
         <div className="flex gap-[10px] flex-wrap mb-[30px]">

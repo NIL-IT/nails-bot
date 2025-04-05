@@ -20,20 +20,22 @@ function App() {
 
   // Функция получения данных пользователя
   const fetchUserData = async () => {
-    try {
-      const tg = window.Telegram.WebApp;
-      tg.expand();
-      const userId = tg.initDataUnsafe.user.id;
-      const userResponse = await API.getUser(userId);
+    if (Object.hasOwn(window, "Telegram")) {
+      try {
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        const userId = tg.initDataUnsafe.user.id;
+        const userResponse = await API.getUser(userId);
 
-      if (userResponse && userResponse.success && userResponse.user) {
-        setUser(userResponse.user);
-        setIsLoading(false);
-      } else {
-        console.error("User not found.");
+        if (userResponse && userResponse.success && userResponse.user) {
+          setUser(userResponse.user);
+          setIsLoading(false);
+        } else {
+          console.error("User not found.");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
     }
   };
 

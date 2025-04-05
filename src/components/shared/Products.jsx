@@ -4,30 +4,44 @@ import { Link } from "react-router-dom";
 import { PRODUCTS } from "../../utils/data";
 import { outline } from "../../utils/constants";
 import { Button, Title } from "../ui";
+import { useDispatch } from "react-redux";
+import { changeCurrentProduct } from "../../features/slice/userSlice";
 
-export function Products({ categoryId, name }) {
-  let filtered = PRODUCTS.filter(
-    ({ category: { id } }) => id === categoryId
-  ).slice(0, 2);
+export function Products({ categoryId, name, products }) {
+  const dispatch = useDispatch();
   return (
-    filtered.length > 0 && (
-      <div>
-        <div
-          to={`/categories/${categoryId}`}
-          className="flex items-center justify-between mb-5"
-        >
-          <Title size={"text-3xl"} text={name} />
+    <div>
+      <div
+        to={`/categories/${categoryId}`}
+        className="flex items-center justify-between mb-5"
+      >
+        <Title size={"text-3xl"} text={name} />
 
-          <Button text="Все" type={outline} id={categoryId} />
-        </div>
-        <div className="flex justify-center gap-[10px]">
-          {filtered.map((product, i) => (
-            <Link key={i} to={`/products/${product.id}`}>
-              <Product item={product} />
-            </Link>
-          ))}
-        </div>
+        <Button text="Все" type={outline} id={categoryId} />
       </div>
-    )
+      <div className="flex justify-center gap-[10px]">
+        {Array.isArray(products) ? (
+          <>
+            {products.map((product) => (
+              <Link
+                key={product.id}
+                to={`/products/${product.id}`}
+                onClick={() => dispatch(changeCurrentProduct(product))}
+              >
+                <Product item={product} />
+              </Link>
+            ))}
+          </>
+        ) : (
+          <Link
+            key={products.id}
+            to={`/products/${products.id}`}
+            onClick={() => dispatch(changeCurrentProduct(products))}
+          >
+            <Product item={products} />
+          </Link>
+        )}
+      </div>
+    </div>
   );
 }
