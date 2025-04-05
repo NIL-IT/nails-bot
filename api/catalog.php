@@ -1,6 +1,7 @@
 <?php
 require_once 'DatabaseClient.php';
 require_once 'db_queries.php';
+require_once 'cors.php';
 
 $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
 if (strpos($contentType, 'application/json') !== false) {
