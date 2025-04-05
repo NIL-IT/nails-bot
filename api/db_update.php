@@ -96,7 +96,7 @@ function updateCatalogProductsTable($catalogData,$dbClient) {
                 ':detail_picture' => $product['DETAIL_PICTURE'] !== null ? (string)$product['DETAIL_PICTURE'] : null,
                 ':preview_picture' => $product['PREVIEW_PICTURE'] !== null ? (string)$product['PREVIEW_PICTURE'] : null,
                 ':base_price' => $product['BASE_PRICE'] !== null ? (string)$product['BASE_PRICE'] : null,
-                ':detailtext' => $product['detailText'] !== null ? (string)$product['PREVIEW_PICTURE'] : null,
+                ':detailtext' => $product['detailText'] !== null ? (string)$product['detailText'] : null,
                 ':opt_price' => $product['OPT_PRICE'] !== null ? (string)$product['OPT_PRICE'] : null,
                 ':master_price' => $product['MASTER_PRICE'] !== null ? (string)$product['MASTER_PRICE'] : null,
                 ':roznica_master_price' => $product['ROZNICA/MASTER_PRICE'] !== null ? (string)$product['ROZNICA/MASTER_PRICE'] : null,
