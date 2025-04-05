@@ -12,11 +12,11 @@ header('Content-Type: application/json');
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($data['type'], $data['id'])) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Missing type or id']);
-    exit;
-}
+// if (!isset($data['type'], $data['id'])) {
+//     http_response_code(400);
+//     echo json_encode(['error' => 'Missing type or id']);
+//     exit;
+// }
 
 $type = $data['type'];
 $id = $data['id'];
