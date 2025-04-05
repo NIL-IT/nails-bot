@@ -1,4 +1,4 @@
-name: Deploy Frontend
+name: Deploy nails-bot
 
 on:
   push:
@@ -11,50 +11,49 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
-
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Create deploy script
-        run: |
-          cat > deploy.sh << 'SCRIPT'
-          #!/bin/bash
-          set -e  # Выход при первой ошибке
-          
-          mkdir -p /var/www/nails-bot/frontend
-
-          if [ -d /var/www/nails-bot/frontend/.git ]; then
-            cd /var/www/nails-bot/frontend
-            git fetch
-            git reset --hard origin/main
-          else
-            rm -rf /var/www/nails-bot/frontend/*
-            git clone https://$1@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/frontend_temp
-            mv /var/www/nails-bot/frontend_temp/* /var/www/nails-bot/frontend/
-            mv /var/www/nails-bot/frontend_temp/.* /var/www/nails-bot/frontend/ 2>/dev/null || true
-            rm -rf /var/www/nails-bot/frontend_temp
-          fi
-
-          cd /var/www/nails-bot/frontend
-          npm cache clean --force
-          npm install -g npm@latest
-          npm install
-          npm run build
-          SCRIPT
-          chmod +x deploy.sh
-
-      - name: Deploy project
+      - name: Deploy repository to /var/www/nails-bot/github/frontend/
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
           PAT: ${{ secrets.PAT }}
         run: |
-          # Копируем скрипт на сервер
-          sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no deploy.sh $USERNAME@$HOST:/tmp/deploy.sh
-          
-          # Выполняем скрипт и затем удаляем его в отдельной команде
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "bash /tmp/deploy.sh '$PAT'"
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "rm -f /tmp/deploy.sh"
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
+            if [ -d /var/www/nails-bot/github/frontend/.git ]; then
+              cd /var/www/nails-bot/github/frontend && \
+              git fetch && \
+              git checkout main && \
+              git pull origin main
+            else
+              rm -rf /var/www/nails-bot/github/frontend/* && \
+              git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/github/frontend && \
+              cd /var/www/nails-bot/github/frontend && \
+              git checkout main
+            fi
+          "
+
+      - name: Build project using npm
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
+            cd /var/www/nails-bot/github/frontend && \
+            npm install && \
+            npm run build
+          "
+
+      - name: Copy built files to production directory
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
+            rm -rf /var/www/nails-bot/frontend/* && \
+            cp -r /var/www/nails-bot/github/frontend/dist/* /var/www/nails-bot/frontend/
+          "

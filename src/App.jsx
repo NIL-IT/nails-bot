@@ -16,7 +16,7 @@ function App() {
 
   const location = useLocation();
 
-  const baseURL = "https://testingnil6.ru:8000/";
+  const baseURL = "https://nails.nilit2.ru:8000/";
 
   // Функция получения данных пользователя
   const fetchUserData = async () => {
