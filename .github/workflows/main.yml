@@ -14,38 +14,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Deploy repository to /var/www/nails-bot/frontend/
-
-
-
-
-
+      - name: Deploy repository to /var/www/nails-bot/github/frontend/
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
           PAT: ${{ secrets.PAT }}
         run: |
-
-
-
-
-
-
-
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          if [ -d /var/www/nails-bot/frontend/.git ]; then
-            cd /var/www/nails-bot/frontend/ && \
-            git fetch && \
-            git checkout main && \
-            git pull origin main
-          else
-            rm -rf /var/www/nails-bot/frontend/* && \
-            git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/frontend/ && \
-            cd /var/www/nails-bot/frontend/&& \
-            git checkout main
-          fi
+            if [ -d /var/www/nails-bot/github/frontend/.git ]; then
+              cd /var/www/nails-bot/github/frontend && \
+              git fetch && \
+              git checkout main && \
+              git pull origin main
+            else
+              rm -rf /var/www/nails-bot/github/frontend/* && \
+              git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/github/frontend && \
+              cd /var/www/nails-bot/github/frontend && \
+              git checkout main
+            fi
           "
+
       - name: Build project using npm
         env:
           HOST: ${{ secrets.HOST }}
@@ -53,17 +42,18 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          cd /var/www/nails-bot/frontend/ && \
-          npm install && \
-          npm run build
+            cd /var/www/nails-bot/github/frontend && \
+            npm install && \
+            npm run build
           "
-      - name: Move built files to /var/www/nails-bot/frontend/
+
+      - name: Copy built files to production directory
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-          rm -rf /var/www/nails-bot/frontend/* && \
-          cp -r /var/www/nails-bot/frontend/dist/* /var/www/nails-bot/frontend/
+            rm -rf /var/www/nails-bot/frontend/* && \
+            cp -r /var/www/nails-bot/github/frontend/dist/* /var/www/nails-bot/frontend/
           "
