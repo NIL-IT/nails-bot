@@ -72,8 +72,10 @@ class DatabaseClient
                     ];
 
                 default:
+                    $result = $stmt->fetchAll();
                     return [
                         'success' => true,
+                        'data' => $result,
                         'message' => 'Query executed successfully'
                     ];
             }

@@ -45,7 +45,7 @@ class CatalogBitrixRestApiClient {
         return $decodedResponse;
     }
 
-    function getCatalogProducts($iblockId, $iblockSectionId, $select = ['id', 'iblockId', 'name']) {
+    function getCatalogProducts($iblockId, $iblockSectionId, $select = ['id', 'iblockId', 'name','detailText','purchasingPrice']) {
         $queryData = [
             'filter' => array(
                 'iblockId' => $iblockId,
@@ -56,6 +56,7 @@ class CatalogBitrixRestApiClient {
         try {
             $response = $this->makeRequest('catalog.product.list', $queryData);
             return $response['result']['products'] ?? [];
+//            return $response;
         } catch (Exception $e) {
             error_log('API Error: ' . $e->getMessage());
             return [];
@@ -72,6 +73,7 @@ class CatalogBitrixRestApiClient {
         try {
             $response = $this->makeRequest('catalog.section.list', $queryData);
             return $response['result']['sections'] ?? [];
+//            return $response;
         } catch (Exception $e) {
             error_log('API Error: ' . $e->getMessage());
             return [];
@@ -113,6 +115,70 @@ class CatalogBitrixRestApiClient {
             error_log('API Error: ' . $e->getMessage());
             return [];
         }
+    }
+    function getProductPrice($productId){
+        $queryData = array(
+            'select' => array('id'),
+            'filter' => array('productId' => $productId),
+            'order' => array('id' => 'ASC'),
+        );
+        try {
+            $response = $this->makeRequest('catalog.price.list', $queryData);
+            $prices = $response['result']['prices'] ?? [];
+            $priceList = [];
+            foreach ($prices as $price) {
+                $queryData = array(
+                    'id' => $price['id'],
+                );
+                $result = $this->makeRequest('catalog.price.get', $queryData)['result']['price'];
+
+                $number = $result['catalogGroupId']; // Здесь можно изменить значение переменной (1, 2, 3 или 4)
+                $catalogGroupName = '';
+
+                switch ($number) {
+                    case 1:
+                        $catalogGroupName = 'BASE_PRICE';
+                        break;
+                    case 2:
+                        $catalogGroupName = 'OPT_PRICE';
+                        break;
+                    case 3:
+                        $catalogGroupName = 'MASTER_PRICE';
+                        break;
+                    case 4:
+                        $catalogGroupName = 'ROZNICA/MASTER_PRICE';
+                        break;
+                    default:
+                        $catalogGroupName = 'nonePrice';
+                        break;
+                }
+                $priceList[$catalogGroupName] = $result['price'];
+            }
+            $requiredKeys = [
+                'BASE_PRICE',
+                'OPT_PRICE',
+                'MASTER_PRICE',
+                'ROZNICA/MASTER_PRICE'
+            ];
+
+            foreach ($requiredKeys as $key) {
+                if (!array_key_exists($key, $priceList)) {
+                    $priceList[$key] = null;
+                }
+            }
+            return $priceList ?? [];
+        } catch (Exception $e) {
+            error_log('API Error: ' . $e->getMessage());
+            return [];
+        }
+    }
+    function getPriceType(){
+        $queryData = array(
+            'select' => array('id', 'name'),
+        );
+        $response = $this->makeRequest('catalog.priceType.list', $queryData);
+        $priceTypes = $response['result'] ?? [];
+        return $priceTypes;
     }
 
 }

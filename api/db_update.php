@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../api_bitrix/CatalogBitrixRestApiClient.php';
+require_once __DIR__.'/../api_bitrix/CatalogBitrixRestApiClient.php';
 require_once 'DatabaseClient.php';
 
 $apiClient = new CatalogBitrixRestApiClient( 'https://shtuchki.pro/rest/13283/nj2nk4gedj6wvk5j/' );
@@ -8,7 +8,6 @@ $dbClient = new DatabaseClient( 'localhost', '5432', 'testingnil6', 'ivers', '11
 
 $iblockId = 21;
 $sections = $apiClient->getSectionsTree($iblockId);
-
 function updateSectionsTable($sections, $dbClient, $parent_id = null) {
     foreach ($sections as $section) {
         $params = [
@@ -58,14 +57,14 @@ function getSectionProducts($section, $apiClient, $iblockId) {
         $iter = 0;
         foreach ($products as $product) {
             if (!empty($product)) {
-                $images = $apiClient->getProductImage($product['id']);
-
+                $images = $apiClient -> getProductImage($product['id']);
+                $prices = $apiClient -> getProductPrice($product['id']);
                 foreach ($images as $image) {
                     $product[$image['type']] = $image['detailUrl'];
                 }
 
                 $product['parent_id'] = $section['id'];
-                $products[$iter] = $product;
+                $products[$iter] = array_merge($product,$prices);
             }
             $iter += 1;
             usleep(1000000); // Задержка для API
@@ -96,16 +95,28 @@ function updateCatalogProductsTable($catalogData,$dbClient) {
                 ':id_section' => $product['parent_id'] !== null ? (int)$product['parent_id'] : null,
                 ':detail_picture' => $product['DETAIL_PICTURE'] !== null ? (string)$product['DETAIL_PICTURE'] : null,
                 ':preview_picture' => $product['PREVIEW_PICTURE'] !== null ? (string)$product['PREVIEW_PICTURE'] : null,
+                ':base_price' => $product['BASE_PRICE'] !== null ? (string)$product['BASE_PRICE'] : null,
+                ':detailtext' => $product['detailText'] !== null ? (string)$product['PREVIEW_PICTURE'] : null,
+                ':opt_price' => $product['OPT_PRICE'] !== null ? (string)$product['OPT_PRICE'] : null,
+                ':master_price' => $product['MASTER_PRICE'] !== null ? (string)$product['MASTER_PRICE'] : null,
+                ':roznica_master_price' => $product['ROZNICA/MASTER_PRICE'] !== null ? (string)$product['ROZNICA/MASTER_PRICE'] : null,
+                ':purchasingprice' => $product['purchasingPrice'] !== null ? (string)$product['purchasingPrice'] : null,
             ];
 
-            $query = "INSERT INTO catalog_products (id_product, name, id_section, detail_picture, preview_picture)
-                 VALUES (:id_product, :name, :id_section, :detail_picture, :preview_picture)
+            $query = "INSERT INTO catalog_products (id_product, name, id_section, detail_picture, preview_picture, base_price, detailtext,opt_price,master_price,roznica_master_price,purchasingprice)
+                 VALUES (:id_product, :name, :id_section, :detail_picture, :preview_picture, :base_price, :detailtext, :opt_price, :master_price, :roznica_master_price, :purchasingprice)
                  ON CONFLICT (id_product)
                  DO UPDATE SET
                      name = EXCLUDED.name,
                      id_section = EXCLUDED.id_section,
                      detail_picture = EXCLUDED.detail_picture,
-                     preview_picture = EXCLUDED.preview_picture
+                     preview_picture = EXCLUDED.preview_picture,
+                     base_price = EXCLUDED.base_price,
+                     detailtext = EXCLUDED.detailtext,
+                     opt_price = EXCLUDED.opt_price,
+                     master_price = EXCLUDED.master_price,
+                     roznica_master_price = EXCLUDED.roznica_master_price, 
+                     purchasingprice = EXCLUDED.purchasingprice
                      ";
 
             $result = $dbClient->psqlQuery($query, $params);

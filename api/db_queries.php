@@ -51,4 +51,35 @@ function get_by_id_product($id_product,$dbClient)
         echo json_encode(['error' => 'Invalid id']);
         return;
     }
+};
+function get_catalog($dbClient): array {
+    $query = "
+        WITH RECURSIVE section_tree AS (
+            SELECT 
+                id_section,
+                id_parent,
+                id,
+                name,
+                1 AS level
+            FROM sections
+            WHERE id_parent IS NULL
+            
+            UNION ALL
+            
+            SELECT 
+                s.id_section,
+                s.id_parent,
+                s.id,
+                s.name,
+                st.level + 1 AS level
+            FROM sections s
+            INNER JOIN section_tree st ON s.id_parent = st.id_section
+        )
+        SELECT * FROM section_tree
+        ORDER BY level;
+    ";
+
+    $result = $dbClient->psqlQuery($query);
+    return is_array($result) ? $result : [];
 }
+?>
