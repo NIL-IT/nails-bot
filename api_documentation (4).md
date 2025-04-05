@@ -20,14 +20,14 @@ POST https://nails.nilit2.ru:8000/catalog.php
 
 ```json
 {
-  "type": "category" | "item",
+  "type": "category" | "item" | "catalog",
   "id": number | "NULL"
 }
 ```
 
 | Поле | Тип | Обязательное | Описание |
 |------|-----|---------------|----------|
-| `type` | string | ✅ | Определяет, какую сущность запрашиваем: `category` или `item` |
+| `type` | string | ✅ | Определяет, какую сущность запрашиваем: `category`, `item` или `catalog` |
 | `id` | number или строка `"NULL"` | ✅ | ID категории или товара. `"NULL"` используется для запроса корневых категорий |
 
 ---
@@ -48,6 +48,12 @@ POST https://nails.nilit2.ru:8000/catalog.php
 ### 🔸 type = `"item"`
 
 - Возвращает полную информацию о товаре по его `id`.
+
+---
+
+### 🔸 type = `"catalog"` , `"id": "NULL"`
+
+- Возвращает струткуру каталогов.
 
 ---
 
@@ -93,7 +99,7 @@ query error
 
 ### ▶ Получить корневые категории
 ```http
-POST /index.php
+POST /catalog.php
 Content-Type: application/json
 
 {
@@ -104,7 +110,7 @@ Content-Type: application/json
 
 ### ▶ Получить подкатегории категории с id = 5
 ```http
-POST /index.php
+POST /catalog.php
 Content-Type: application/json
 
 {
@@ -115,7 +121,7 @@ Content-Type: application/json
 
 ### ▶ Получить товар с id = 10
 ```http
-POST /index.php
+POST /catalog.php
 Content-Type: application/json
 
 {
@@ -123,7 +129,16 @@ Content-Type: application/json
   "id": 10
 }
 ```
+### ▶ Получить структуру каталога
+```http
+POST /catalog.php
+Content-Type: application/json
 
+{
+  "type": "catalog",
+  "id": NULL
+}
+```
 ---
 
 ## ⚠️ Примечания

@@ -14,7 +14,7 @@ const AppRoutes = ({ user }) => {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
 
-  const baseURL = "https://nails.nilit2.ru:8000/catalog.php/";
+  const baseURL = "https://nails.nilit2.ru:8000/";
   const API = {
     // Получение данных пользователя
     getUser: async (id_tg) => {
@@ -48,7 +48,7 @@ const AppRoutes = ({ user }) => {
         }),
       };
 
-      return fetch(`${baseURL}index.php`, option)
+      return fetch(`${baseURL}catalog.php`, option)
         .then((res) => res.json())
         .catch((err) => {
           console.error("API request error:", err);
@@ -94,6 +94,7 @@ const AppRoutes = ({ user }) => {
   const fetchCategories = async () => {
     const categoriesData = await API.getCategories();
     setCategories(categoriesData);
+    console.log(categoriesData);
   };
 
   const fetchProducts = async () => {
@@ -110,6 +111,7 @@ const AppRoutes = ({ user }) => {
 
   useEffect(() => {
     fetchCategories();
+
     // fetchProducts();
     // fetchOrders();
   }, [user]);
