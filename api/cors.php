@@ -5,7 +5,8 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
     $origin = '';
 }
 
-$allowed_origin = "https://nails.nilit2.ru/";
+// Разрешить запросы с любого домена, который отправляет запрос
+$allowed_origin = $origin;
 
 header("Access-Control-Allow-Origin: $allowed_origin");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
