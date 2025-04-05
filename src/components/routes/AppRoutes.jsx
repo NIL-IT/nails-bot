@@ -41,7 +41,6 @@ const AppRoutes = ({ user }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        mode: "no-cors",
         body: JSON.stringify({
           type: "category",
           id: "NULL",
