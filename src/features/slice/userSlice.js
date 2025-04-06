@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { useEffect } from "react";
+import { CategoryItem } from "../../components/shared/CategoryItem";
 
 const userSlice = createSlice({
   name: "user",
@@ -7,8 +8,12 @@ const userSlice = createSlice({
     cart: [],
     currentCategory: null,
     product: null,
+    categoryName: null,
   },
   reducers: {
+    changeCategoryName: (state, { payload }) => {
+      state.categoryName = payload;
+    },
     changeCurrentProduct: (state, { payload }) => {
       state.product = payload;
     },
@@ -84,5 +89,6 @@ export const {
   removeItemFromCart,
   recoveryAllCart,
   changeCurrentCategory,
+  changeCategoryName,
 } = userSlice.actions;
 export default userSlice.reducer;

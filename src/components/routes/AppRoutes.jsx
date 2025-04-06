@@ -23,14 +23,17 @@ const AppRoutes = ({ user }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const categoriesResponse = await API.getCategories({
-          signal: abortController.signal,
-        }); // Передаем сигнал
-        const allProducts = await getAllProducts(categoriesResponse.data);
-        setCategories((prev) => {
-          if (prev.length === 0 && allProducts.length > 0) return allProducts;
-          return prev;
-        });
+        const getCategories = await API.getCategories();
+        setCategories(getCategories.data);
+        console.log(getCategories.data);
+        // const categoriesResponse = await API.getCategories({
+        //   signal: abortController.signal,
+        // }); // Передаем сигнал
+        // const allProducts = await getAllProducts(categoriesResponse.data);
+        // setCategories((prev) => {
+        //   if (prev.length === 0 && allProducts.length > 0) return allProducts;
+        //   return prev;
+        // });
         dataFetchedRef.current = true;
       } catch (error) {
         if (error.name !== "AbortError") console.error("Error:", error);
@@ -51,11 +54,20 @@ const AppRoutes = ({ user }) => {
     categories?.length && (
       <Routes>
         <Route path={ROUTES.HOME} element={<Home categories={categories} />} />
-        <Route path={ROUTES.PRODUCT} element={<SingleProduct />} />
         <Route
           path={ROUTES.CATEGORY}
           element={<SingleCategory categories={categories} />}
         />
+        <Route
+          path={ROUTES.PRODUCT}
+          element={<SingleProduct categories={categories} />}
+        />
+        <Route
+          path={ROUTES.SEARCH}
+          element={<SearchItems products={products} />}
+        />
+        {/* 
+       
         <Route path={ROUTES.CART} element={<Cart />} />
         <Route
           path={ROUTES.SEARCH}
@@ -71,7 +83,7 @@ const AppRoutes = ({ user }) => {
             path={ROUTES.PROFILE}
             element={<OrderHistory orders={orders} />}
           />
-        )}
+        )} */}
       </Routes>
     )
   );

@@ -1,14 +1,18 @@
 import { AirVent } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { changeCurrentCategory } from "../../features/slice/userSlice";
 
 export const Sidebar = ({ categories }) => {
   const { id } = useParams();
   let { pathname } = useLocation();
+  const { currentCategory } = useSelector(({ user }) => user);
+  console.log("currentCategory", currentCategory);
   const dispatch = useDispatch();
-  const [active, setActive] = useState(categories ? categories[0].id : null);
+  const [active, setActive] = useState(
+    currentCategory ? currentCategory : categories[0].id
+  );
   useEffect(() => {
     if (!id) return;
     if (pathname.split("/")[1] === "products") return;
@@ -47,7 +51,6 @@ export const Sidebar = ({ categories }) => {
     setActive(id);
     dispatch(changeCurrentCategory(id));
   };
-  console.log(" sidebar categories", categories);
   return (
     categories && (
       <ul
@@ -56,19 +59,23 @@ export const Sidebar = ({ categories }) => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        className="flex gap-[5px]  justify-between overflow-x-scroll mb-[30px]"
+        className="flex gap-[5px] overflow-x-scroll mb-[30px] whitespace-nowrap"
       >
         {categories.map(({ name, id }) => (
-          <li key={id}>
-            <Link onClick={(e) => handleClickLink(e, id)} draggable={false}>
-              <div
-                className={`no-select bg-primary
-               text-white text-xl font-medium px-3 pt-[10px] pb-[7px] rounded-b-xl ${
-                 active !== id ? "pt-[10px]" : "pt-[20px]"
-               }`}
+          <li key={id} className="flex-shrink-0">
+            <Link
+              to={"/"}
+              onClick={(e) => handleClickLink(e, id)}
+              draggable={false}
+            >
+              <span
+                className={`no-select block bg-primary text-white 
+          text-xl font-medium px-3 pt-[10px] pb-[7px] rounded-b-xl 
+          ${active !== id ? "pt-[10px]" : "pt-[30px]"}
+          whitespace-nowrap`}
               >
                 {name}
-              </div>
+              </span>
             </Link>
           </li>
         ))}

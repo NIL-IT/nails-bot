@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Title } from "../ui";
 import { useParams } from "react-router-dom";
 import { PRODUCTS } from "../../utils/data";
@@ -7,21 +7,40 @@ import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../../features/slice/userSlice";
 import { minus, quantity } from "../../utils/constants";
 import { NotificationPopup } from "../shared/NotificationPopup";
+import { API } from "../../api";
 
-export default function SingleProduct() {
+export default function SingleProduct({ categories }) {
   const dispatch = useDispatch();
   const { id } = useParams();
   const { product } = useSelector(({ user }) => user);
-  const singleProduct = PRODUCTS.filter((item) => item.id === parseInt(id))[0];
   const [count, setCount] = React.useState(1);
+  const [itemData, setItemData] = useState({});
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!loading) return;
+    const fetchAllData = async () => {
+      try {
+        const fetchProduct = await API.getProduct(id);
+        console.log("fetchProduct", fetchProduct.data[0]);
+        setItemData(fetchProduct.data[0]);
+      } catch (error) {
+        console.error("Global fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, []);
+
   const handleIncrement = (variant) => {
     if (variant === minus) {
       setCount(count > 1 ? count - 1 : count);
     } else setCount(count + 1);
   };
   const addItem = () => {
-    dispatch(addItemToCart({ ...singleProduct, quantity: count }));
-    handleCartPopupClose(false);
+    // dispatch(addItemToCart({ ...singleProduct, quantity: count }));
+    // handleCartPopupClose(false);
   };
 
   const [showNotification, setShowNotification] = React.useState(false);
@@ -35,37 +54,43 @@ export default function SingleProduct() {
     }
   };
 
-  return (
+  return loading ? (
+    <div>Загрузка</div>
+  ) : (
     <div>
       <NotificationPopup
         isVisible={showNotification}
         message={"Товар добавлен в корзину"}
       />
-      <Sidebar />
+      <Sidebar categories={categories} />
       <div className="flex flex-col gap-5 overflow-scroll mb-[90px]">
         <div className="flex justify-center ">
           <div className="w-[171px] h-[171px] ">
             <img
               className="h-[171px] w-[171px] "
-              src={product?.detail_picture ? product.detail_picture : ""}
-              alt={product.name}
+              src={
+                itemData?.detail_picture
+                  ? `https://shtuchki.pro${itemData.detail_picture}`
+                  : ""
+              }
+              alt={itemData.name}
             />
           </div>
         </div>
         <div>
-          <Title text={product.name} />
-          <Title text={product.name} />
+          <Title text={itemData.name} />
+
           <div className="flex justify-between">
             {/* <p className="font-montserrat text-base font-medium ">
               {singleProduct.volume}
             </p> */}
             <span className="text-gray_dark font-montserrat text-base font-medium ">
-              Артикул: {product.id_product}
+              Артикул: {itemData.id_product}
             </span>
           </div>
         </div>
         <div
-          dangerouslySetInnerHTML={{ __html: product.detailtext }}
+          dangerouslySetInnerHTML={{ __html: itemData.detailtext }}
           className="flex flex-col gap-4"
         />
       </div>

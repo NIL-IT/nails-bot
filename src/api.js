@@ -52,7 +52,7 @@ export const API = {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        type: "catalog",
+        type: "category",
         id: "NULL",
       }),
     };
@@ -83,11 +83,30 @@ export const API = {
       const resp = await fetch(`${baseURL}catalog.php`, option);
       return API.parseResponse(resp);
     } catch (err) {
-      console.error("API request error:", err);
+      // console.error("API request error:", err);
       return { success: false };
     }
   },
+  getProducts: async (sectionId) => {
+    const option = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "category",
+        id: sectionId,
+      }),
+    };
 
+    try {
+      const resp = await fetch(`${baseURL}catalog.php`, option);
+      return API.parseResponse(resp);
+    } catch (err) {
+      // console.error("API request error:", err);
+      return { success: false };
+    }
+  },
   // Получение заказов пользователя
   getOrders: async (userId) => {
     const option = {
@@ -108,59 +127,55 @@ export const API = {
 
 // Recursive function to fetch subcategories and products
 async function transformCatalogWithProducts(catalogData) {
-  // Function to recursively process the tree
   async function processNode(node) {
-    // Create a new node that preserves the original structure
     const newNode = { ...node };
 
-    // If node has level 3 or 4 (subcategory that should contain products)
-    if (node.children === undefined) {
+    // Определяем, нужно ли загружать товары для этого узла
+    const shouldFetchProducts = !newNode.children?.length || newNode.level >= 3;
+
+    if (shouldFetchProducts) {
       try {
-        // Fetch product details using the provided API function
-        const productData = await API.getProduct(node.id);
+        // Получаем список товаров для текущего раздела
+        const productsResponse = await API.getProducts(newNode.id_section);
+        const productList = Array.isArray(productsResponse)
+          ? productsResponse
+          : productsResponse?.data || [];
+        if (!productList) return;
+        // Загружаем детальную информацию для каждого товара
+        const productsWithDetails = await Promise.all(
+          productList.map(async (product) => {
+            try {
+              console.log(product.id);
+              return await API.getProduct(product.id);
+            } catch (error) {
+              console.error(`Error fetching product ${product.id}:`, error);
+              return null;
+            }
+          })
+        );
 
-        // Replace the children array with product data
-        if (
-          productData.data &&
-          Array.isArray(productData.data) &&
-          productData.data.length > 0
-        ) {
-          newNode.children = productData.data[0];
-        } else {
-          newNode.children = []; // Empty array if no products
-        }
-
-        return newNode;
+        // Заменяем детей на товары (фильтруем неудачные запросы)
+        newNode.children = productsWithDetails.filter((p) => p !== null);
       } catch (error) {
-        // console.error(`Error fetching products for ${node.id}:`, error);
-        newNode.children = []; // Set empty array on error
-        return newNode;
+        console.error(
+          `Error fetching products for section ${newNode.id_section}:`,
+          error
+        );
+        newNode.children = [];
       }
-    }
-
-    // For nodes with level 1 or 2 (main categories), process their children
-    if (
-      node.children &&
-      Array.isArray(node.children) &&
-      node.children.length > 0
-    ) {
-      // Process all children and wait for all promises to resolve
+    } else if (newNode.children?.length) {
+      // Обрабатываем дочерние категории
       newNode.children = await Promise.all(
-        node.children.map((child) => processNode(child))
+        newNode.children.map((child) => processNode(child))
       );
     }
 
     return newNode;
   }
 
-  // Start processing with the root data
-  if (Array.isArray(catalogData)) {
-    // If catalogData is an array, process each item
-    return await Promise.all(catalogData.map((item) => processNode(item)));
-  } else {
-    // If catalogData is a single object
-    return await processNode(catalogData);
-  }
+  return Array.isArray(catalogData)
+    ? await Promise.all(catalogData.map(processNode))
+    : await processNode(catalogData);
 }
 
 export async function getAllProducts(catalogData) {

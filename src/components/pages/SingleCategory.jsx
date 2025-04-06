@@ -1,71 +1,107 @@
-import React, { useEffect } from "react";
-import { PRODUCTS } from "../../utils/data";
+import React, { useEffect, useState } from "react";
 import { Button, Title } from "../ui";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Product, Sidebar } from "../shared";
 import { basket } from "../../utils/constants";
-import { ROUTES } from "../routes/routes";
+import { useDispatch, useSelector } from "react-redux";
+import { API } from "../../api";
+import { changeCurrentProduct } from "../../features/slice/userSlice";
+import { CategoryItem } from "../shared/CategoryItem";
 export default function SingleCategory({ categories }) {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  let products = PRODUCTS.filter(
-    ({ category }) => category.id === parseInt(id)
-  );
-  const [list, setList] = React.useState(products);
-  const [indexItem, setIndex] = React.useState(null);
-  useEffect(() => {
-    if (!products.length > 0 || !id) navigate(ROUTES.HOME);
-    products = PRODUCTS.filter(({ category }) => category.id === parseInt(id));
-    setList(products);
-    let find = PRODUCTS.find(({ category }) => category.id == id);
-    if (!find) navigate(ROUTES.HOME);
-    setIndex(null);
-  }, [id]);
+  const [searchParams] = useSearchParams(); // Добавлено: получение query-параметров
+  const id = searchParams.get("id"); // Извлечение id
+  const nameParam = searchParams.get("name"); // Извлечение name
+  const decodedName = nameParam ? decodeURIComponent(nameParam) : "";
+  const dispatch = useDispatch();
+  const { currentCategory, categoryName } = useSelector(({ user }) => user);
+  const [itemsData, setItemsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isCategory, setIsCategory] = useState(null);
 
+  useEffect(() => {
+    setLoading(true);
+    const fetchAllData = async () => {
+      try {
+        const fetchProduct = await API.getProducts(id);
+        console.log("fetchProduct", fetchProduct.data);
+        setItemsData(fetchProduct.data);
+        setIsCategory(fetchProduct.data[0].hasOwnProperty("id_section"));
+      } catch (error) {
+        console.error("Global fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, [id, nameParam]);
   const handleClick = (title, index) => {
-    setList(
-      products.filter((item) =>
-        item.title.toLowerCase().includes(title.toLowerCase())
-      )
-    );
-    setIndex(index);
+    // setList(
+    //   products.filter((item) =>
+    //     item.title.toLowerCase().includes(title.toLowerCase())
+    //   )
+    // );
+    // setIndex(index);
   };
 
-  return list.length > 0 ? (
+  console.log("isCategory", isCategory);
+  return (
     <div>
       <Sidebar categories={categories} />
-      <div className="my-[30px] ">
-        <Title text={list[0].category.name} className={"mb-5"} />
-        <div className="flex gap-[10px] flex-wrap mb-[30px]">
-          {products.map(({ title }, i) => (
-            <a onClick={() => handleClick(title, i)} key={i}>
-              <p
-                className={`${
-                  indexItem === i
-                    ? "text-secondary font-semibold underline underline-offset-4"
-                    : ""
-                } underline decoration-1 text-xl cursor-pointer text-primary font-montserrat`}
-              >
-                {title.split(" ").slice(1, 3).join(" ")}
-              </p>
-            </a>
-          ))}
+      {itemsData.length > 0 ? (
+        <div className="my-[30px] ">
+          <Title text={decodedName} className={"mb-5"} />
+          <div className="flex gap-[10px] flex-wrap mb-[30px]">
+            {/* {products.map(({ title }, i) => (
+              <a onClick={() => handleClick(title, i)} key={i}>
+                <p
+                  className={`${
+                    indexItem === i
+                      ? "text-secondary font-semibold underline underline-offset-4"
+                      : ""
+                  } underline decoration-1 text-xl cursor-pointer text-primary font-montserrat`}
+                >
+                  {title.split(" ").slice(1, 3).join(" ")}
+                </p>
+              </a>
+            ))} */}
+          </div>
+          <div className="w-full flex justify-center">
+            {!isCategory ? (
+              <div className="justify-self-center grid grid-cols-2 gap-[20px]">
+                {itemsData.map((product) => {
+                  return (
+                    <Link
+                      key={product.id}
+                      to={`/products/${product.id}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        dispatch(changeCurrentProduct(product));
+                      }}
+                    >
+                      <Product idItem={product.id} />
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="justify-self-center grid grid-cols-2 gap-[20px]">
+                {itemsData.map((product) => (
+                  <CategoryItem category={product} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-        <div className="flex justify-center gap-[10px]">
-          {list.map((product) => (
-            <Link key={product.id} to={`/products/${product.id}`}>
-              <Product item={product} />
-            </Link>
-          ))}
-        </div>
-        <Button
-          className={"fixed bottom-[50px] right-[10px]"}
-          type={basket}
-          text="Корзина"
-        />
-      </div>
+      ) : (
+        <div>Загрузка</div>
+      )}
+
+      <Button
+        className={"fixed bottom-[50px] right-[10px]"}
+        type={basket}
+        text="Корзина"
+      />
     </div>
-  ) : (
-    <></>
   );
 }

@@ -9,6 +9,7 @@ import { changeCurrentProduct } from "../../features/slice/userSlice";
 
 export function Products({ categoryId, name, products }) {
   const dispatch = useDispatch();
+
   return (
     <div>
       <div
@@ -19,7 +20,7 @@ export function Products({ categoryId, name, products }) {
 
         <Button text="Все" type={outline} id={categoryId} />
       </div>
-      <div className="flex justify-center gap-[10px]">
+      <div className="grid grid-cols-2 gap-[10px]">
         {Array.isArray(products) ? (
           <>
             {products.map((product) => (
