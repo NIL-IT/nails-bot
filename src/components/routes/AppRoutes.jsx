@@ -48,10 +48,14 @@ const AppRoutes = ({ user }) => {
   }, [user]);
 
   if (loading && !categories) {
-    return <div className="loading">Loading categories and products...</div>;
+    return (
+      <div className="flex justify-center items-center w-[100wh] h-[100vh]">
+        <span className="loader"></span>
+      </div>
+    );
   }
   return (
-    categories?.length && (
+    categories && (
       <Routes>
         <Route path={ROUTES.HOME} element={<Home categories={categories} />} />
         <Route

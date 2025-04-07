@@ -4,8 +4,9 @@ import { API } from "../../api";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { changeCurrentProduct } from "../../features/slice/userSlice";
+import SkeletonLoader from "../ui/SkeletonLoader";
 
-export function Product({ idItem }) {
+export function Product({ idItem, search }) {
   const dispatch = useDispatch();
   const [itemData, setItemData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -26,18 +27,25 @@ export function Product({ idItem }) {
   }, []);
 
   return loading ? (
-    <div>Загрузка</div>
+    <></>
   ) : (
     <Link
       key={itemData.id}
       to={`/product/${itemData.id}`}
       onClick={() => dispatch(changeCurrentProduct(itemData))}
-      className="p-[6px] max-w-[145px] flex flex-col gap-[10px] bg-gray rounded-[10px]
-     w-[145px] h-full min-h-[189px]"
+      className={` max-w-[145px]
+       flex flex-col gap-[10px]  rounded-[10px]
+     w-[145px] h-full min-h-[189px] ${
+       search ? "bg-gray_dark/10 p-2" : "bg-gray p-[6px]"
+     }`}
     >
       <img
         className="rounded-[10px] w-full h-[89px] object-cover object-center"
-        src={`https://shtuchki.pro${itemData.preview_picture}`}
+        src={
+          itemData?.preview_picture
+            ? `https://shtuchki.pro${itemData.preview_picture}`
+            : "/img/no_photo.webp"
+        }
         alt={itemData.name}
       />
       <div className="flex flex-col justify-between h-full">
@@ -48,8 +56,12 @@ export function Product({ idItem }) {
             <p>{itemData.volume}</p>
           </div> */}
         </div>
-        {itemData.base_price && (
-          <div className="text-2xl font-semibold mb-1">
+        {itemData.base_price && itemData.base_price !== "0.00" && (
+          <div
+            className={`text-2xl font-semibold mb-1 ${
+              search ? "pt-5" : "pt-2"
+            }`}
+          >
             {itemData.base_price} ₽
           </div>
         )}

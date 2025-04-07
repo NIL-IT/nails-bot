@@ -10,6 +10,7 @@ import {
 } from "../../features/slice/userSlice";
 import { API } from "../../api";
 import { CategoryItem } from "./CategoryItem";
+import SkeletonLoader from "../ui/SkeletonLoader";
 
 export function CategoryList({ subCategory }) {
   const [itemsData, setItemsData] = useState({});
@@ -98,7 +99,7 @@ export function CategoryList({ subCategory }) {
                       {itemData.map((product, index) => {
                         if (index >= 2) return;
                         return (
-                          <div>
+                          <div key={index}>
                             <CategoryItem category={product} />
                           </div>
                         );
@@ -122,9 +123,17 @@ export function CategoryList({ subCategory }) {
           );
         } else {
           return (
-            <div key={item.id}>
-              <Title size="text-3xl" text={item.name} />
-              <Button text="Загрузка..." type={outline} id={item.id} />
+            <div>
+              <div
+                className="flex items-center justify-between mb-5"
+                key={item.id}
+              >
+                <Title size="text-3xl" text={item.name} />
+                <Button text="Все" type={outline} id={item.id} />
+              </div>
+              <div className="justify-self-center grid grid-cols-2 gap-[20px]">
+                <SkeletonLoader count={2} />
+              </div>
             </div>
           );
         }

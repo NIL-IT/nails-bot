@@ -87,6 +87,26 @@ export const API = {
       return { success: false };
     }
   },
+  fetchSearch: async (value) => {
+    const option = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "product_list",
+        search: value,
+      }),
+    };
+
+    try {
+      const resp = await fetch(`${baseURL}search.php`, option);
+      return API.parseResponse(resp);
+    } catch (err) {
+      // console.error("API request error:", err);
+      return { success: false };
+    }
+  },
   getProducts: async (sectionId) => {
     const option = {
       method: "POST",

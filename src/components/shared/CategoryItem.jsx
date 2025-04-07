@@ -6,6 +6,7 @@ import { changeCurrentProduct } from "../../features/slice/userSlice";
 
 export function CategoryItem({ category }) {
   const dispatch = useDispatch();
+  console.log("category", category);
   return (
     <Link
       to={`/categories?id=${category.id_section}&name=${category.name}`}
@@ -16,8 +17,12 @@ export function CategoryItem({ category }) {
      w-[145px] h-full min-h-[189px]"
     >
       <img
-        className="rounded-[10px] w-full h-[89px] object-cover object-center"
-        src={`/img/item.png`}
+        className="rounded-[10px] w-full h-[120px] object-cover object-center"
+        src={
+          category?.picture
+            ? `https://shtuchki.pro/${category.picture}`
+            : `/img/no_photo.webp`
+        }
         alt={category.name}
       />
 

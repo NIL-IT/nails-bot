@@ -69,25 +69,20 @@ export default function SingleCategory({ categories }) {
           <div className="w-full flex justify-center">
             {!isCategory ? (
               <div className="justify-self-center grid grid-cols-2 gap-[20px]">
-                {itemsData.map((product) => {
+                {itemsData.map((product, index) => {
                   return (
-                    <Link
-                      key={product.id}
-                      to={`/products/${product.id}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        dispatch(changeCurrentProduct(product));
-                      }}
-                    >
+                    <div key={index}>
                       <Product idItem={product.id} />
-                    </Link>
+                    </div>
                   );
                 })}
               </div>
             ) : (
               <div className="justify-self-center grid grid-cols-2 gap-[20px]">
-                {itemsData.map((product) => (
-                  <CategoryItem category={product} />
+                {itemsData.map((product, index) => (
+                  <div key={index}>
+                    <CategoryItem category={product} />
+                  </div>
                 ))}
               </div>
             )}

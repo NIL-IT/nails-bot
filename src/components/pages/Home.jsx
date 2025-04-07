@@ -64,22 +64,12 @@ const Home = ({ categories }) => {
     <main className="mb-[30px]">
       <Sidebar categories={categories} />
       {loading ? (
-        <div>Загрузка...</div>
+        <></>
       ) : (
         <div>
           <CategoryList subCategory={subCategory} />
         </div>
       )}
-      {/* <div className="flex flex-col gap-[30px]">
-        {itemsList.map(({ name, id, children }) => (
-          <Products
-            key={id}
-            name={name}
-            categoryId={id}
-            products={children || null}
-          />
-        ))}
-      </div> */}
       <Button
         className={"fixed bottom-[50px] right-[10px]"}
         type={basket}

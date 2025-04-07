@@ -53,7 +53,7 @@ export default function SingleProduct({ categories }) {
       }, 2000);
     }
   };
-
+  console.log(itemData);
   return loading ? (
     <div>Загрузка</div>
   ) : (
@@ -71,7 +71,7 @@ export default function SingleProduct({ categories }) {
               src={
                 itemData?.detail_picture
                   ? `https://shtuchki.pro${itemData.detail_picture}`
-                  : ""
+                  : "/img/no_photo.webp"
               }
               alt={itemData.name}
             />
@@ -85,7 +85,7 @@ export default function SingleProduct({ categories }) {
               {singleProduct.volume}
             </p> */}
             <span className="text-gray_dark font-montserrat text-base font-medium ">
-              Артикул: {itemData.id_product}
+              Артикул: {itemData.articul}
             </span>
           </div>
         </div>
