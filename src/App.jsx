@@ -82,7 +82,6 @@ function App() {
 
       {Object.hasOwn(window, "Telegram") && <BackButton />}
       <AppRoutes user={user} />
-      <div>user: {user}</div>
     </Container>
   );
 }
