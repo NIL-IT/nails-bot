@@ -25,8 +25,9 @@ function App() {
         const tg = window.Telegram.WebApp;
         tg.expand();
         const userId = tg.initDataUnsafe.user.id;
-        const userResponse = await API.getUser(userId);
-
+        const username = tg.initDataUnsafe.user.username;
+        const userResponse = await API.getUser(userId, username); 
+  
         if (userResponse && userResponse.success && userResponse.user) {
           setUser(userResponse.user);
           setIsLoading(false);
@@ -45,15 +46,15 @@ function App() {
 
   // API запросы
   const API = {
-    getUser: async (id_tg) => {
+    getUser: async (id_tg, username) => {
       const option = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id_tg }),
+        body: JSON.stringify({ id_tg, username }), // Добавлено поле username
       };
-
+  
       return fetch(`${baseURL}get_user.php`, option)
         .then((res) => res.json())
         .catch((err) => {
