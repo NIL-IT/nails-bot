@@ -53,7 +53,7 @@ export default function SingleProduct({ categories }) {
       }, 2000);
     }
   };
-  console.log(itemData);
+
   return loading ? (
     <div>Загрузка</div>
   ) : (

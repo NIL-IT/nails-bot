@@ -57,7 +57,10 @@ const AppRoutes = ({ user }) => {
   return (
     categories && (
       <Routes>
-        <Route path={ROUTES.HOME} element={<Home categories={categories} />} />
+        <Route
+          path={ROUTES.HOME}
+          element={<Home user={user} categories={categories} />}
+        />
         <Route
           path={ROUTES.CATEGORY}
           element={<SingleCategory categories={categories} />}

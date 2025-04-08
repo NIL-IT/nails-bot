@@ -25,27 +25,6 @@ export default function SearchItems() {
     e?.preventDefault();
   };
 
-  // Function to add products to the list in batches
-  const addProductsToList = useCallback((products) => {
-    setList((prevList) => {
-      // Take first 50 items (or all if less than 50)
-      const newBatch = products.slice(0, 50);
-
-      // Store remaining items for later
-      const remaining = products.slice(50);
-      if (remaining.length > 0) {
-        setPendingProducts(remaining);
-        // Set a timeout to load the rest after a short delay
-        setTimeout(() => {
-          setList((currentList) => [...currentList, ...remaining]);
-          setPendingProducts([]);
-        }, 300);
-      }
-
-      return [...prevList, ...newBatch];
-    });
-  }, []);
-
   useEffect(() => {
     let abortController = new AbortController();
     let timeoutId;
@@ -64,35 +43,13 @@ export default function SearchItems() {
         const sectionsResponse = await API.fetchSearch(value.toLowerCase(), {
           signal: abortController.signal,
         });
-        console.log("sectionsResponse", sectionsResponse);
         // 2. Проверка структуры ответа
         if (!sectionsResponse?.data?.data) {
           throw new Error("Invalid sections response structure");
         }
-        const limitedSections = sectionsResponse.data.data.slice(0, 5); // Первые 5 секций
-        console.log(limitedSections);
-        // 3. Создаем безопасные промисы
-        const productPromises = limitedSections.map(({ id_section }) => {
-          if (!id_section) return Promise.resolve([]); // Защита от невалидных секций
-          return API.getProducts(id_section, {
-            signal: abortController.signal,
-          })
-            .then((response) => {
-              // 4. Проверка структуры продуктов
-
-              if (!response?.data) return [];
-              return response.data;
-            })
-            .catch(() => []);
-        });
-
-        // 5. Ожидаем выполнения всех запросов
-        const productsResults = await Promise.all(productPromises);
-        console.log("productsResults", productsResults);
-        // 6. Объединяем и проверяем данные
-        const combinedProducts = productsResults.flat().slice(0, 50); // Максимум 50 товаров
-        console.log("combinedProducts", combinedProducts);
-        setList(combinedProducts);
+        const limitData = sectionsResponse.data.data.slice(0, 60);
+        console.log("sectionsResponse", sectionsResponse.data.data);
+        setList(limitData);
       } catch (err) {
         if (err.name !== "AbortError") {
           setError("Ошибка при загрузке данных");
@@ -127,12 +84,15 @@ export default function SearchItems() {
         ) : error ? (
           <div className="text-center text-red-500">{error}</div>
         ) : list.length > 0 ? (
-          <div className="flex flex-wrap justify-center gap-[10px] mb-[30px]">
+          <div
+            className="grid grid-cols-2  
+          gap-[10px] mb-[30px] mx-auto max-w-[300px]"
+          >
             {list.map((item, i) => {
               // Check before rendering
               if (!item?.id) return null;
               return (
-                <div key={i}>
+                <div key={i} className="w-[145px] ">
                   <Product search={true} idItem={item.id} />
                 </div>
               );
@@ -153,7 +113,11 @@ export default function SearchItems() {
               <img src="/img/nofaund.png" alt="Not found" />
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="text-center text-gray_dark">
+            Введите запрос для поиска
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 import React from "react";
 import { Product } from "./index";
 import { Link } from "react-router-dom";
-import { PRODUCTS } from "../../utils/data";
 import { outline } from "../../utils/constants";
 import { Button, Title } from "../ui";
 import { useDispatch } from "react-redux";
@@ -9,7 +8,6 @@ import { changeCurrentProduct } from "../../features/slice/userSlice";
 
 export function Products({ categoryId, name, products }) {
   const dispatch = useDispatch();
-
   return (
     <div>
       <div

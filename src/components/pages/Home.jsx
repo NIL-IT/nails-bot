@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { API } from "../../api";
 import { CategoryList } from "../shared/CategoryList";
 
-const Home = ({ categories }) => {
+const Home = ({ categories, user }) => {
   const { pathname } = useLocation();
   const [category, setCategory] = useState(null);
   const [subCategory, setSubCategory] = useState(null);
@@ -59,7 +59,7 @@ const Home = ({ categories }) => {
       isMounted = false;
     };
   }, [currentCategory, categories]);
-
+  console.log("user:", user);
   return category ? (
     <main className="mb-[30px]">
       <Sidebar categories={categories} />
