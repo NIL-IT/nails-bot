@@ -26,7 +26,7 @@ export function Product({ idItem, search }) {
     fetchAllData();
   }, []);
   return loading ? (
-    <></>
+    <div className="w-[145px] h-[225px]"></div>
   ) : (
     <Link
       key={itemData.id}

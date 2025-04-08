@@ -98,7 +98,10 @@ export function CategoryList({ subCategory }) {
               {loading ? (
                 <div>Загрузка...</div>
               ) : (
-                <div className="justify-self-center grid grid-cols-2 gap-[20px]">
+                <div
+                  className="justify-self-center
+                 grid grid-cols-2 gap-[20px] w-[310px] mx-auto"
+                >
                   {isCategory ? (
                     <>
                       {itemData.map((product, index) => {
