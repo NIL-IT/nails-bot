@@ -67,7 +67,11 @@ function getSectionProducts($section, $apiClient, $iblockId) {
                 $products[$iter] = array_merge($product,$prices);
             }
             $iter += 1;
-            usleep(1000000); // Задержка для API
+            echo "Добавлен продукт: ".$product['id'];
+            if ($iter % 10 === 0) {
+                usleep(1000000); // Задержка для API
+            }
+
         }
         $section['products'] = $products;
     } else {
@@ -101,10 +105,11 @@ function updateCatalogProductsTable($catalogData,$dbClient) {
                 ':master_price' => $product['MASTER_PRICE'] !== null ? (string)$product['MASTER_PRICE'] : null,
                 ':roznica_master_price' => $product['ROZNICA/MASTER_PRICE'] !== null ? (string)$product['ROZNICA/MASTER_PRICE'] : null,
                 ':purchasingprice' => $product['purchasingPrice'] !== null ? (string)$product['purchasingPrice'] : null,
+                ':articul' => $product['xmlId'] !== null ? (string)$product['xmlId'] : null,
             ];
 
-            $query = "INSERT INTO catalog_products (id_product, name, id_section, detail_picture, preview_picture, base_price, detailtext,opt_price,master_price,roznica_master_price,purchasingprice)
-                 VALUES (:id_product, :name, :id_section, :detail_picture, :preview_picture, :base_price, :detailtext, :opt_price, :master_price, :roznica_master_price, :purchasingprice)
+            $query = "INSERT INTO catalog_products (id_product, name, id_section, detail_picture, preview_picture, base_price, detailtext,opt_price,master_price,roznica_master_price,purchasingprice,articul)
+                 VALUES (:id_product, :name, :id_section, :detail_picture, :preview_picture, :base_price, :detailtext, :opt_price, :master_price, :roznica_master_price, :purchasingprice, :articul)
                  ON CONFLICT (id_product)
                  DO UPDATE SET
                      name = EXCLUDED.name,
@@ -116,10 +121,12 @@ function updateCatalogProductsTable($catalogData,$dbClient) {
                      opt_price = EXCLUDED.opt_price,
                      master_price = EXCLUDED.master_price,
                      roznica_master_price = EXCLUDED.roznica_master_price, 
-                     purchasingprice = EXCLUDED.purchasingprice
+                     purchasingprice = EXCLUDED.purchasingprice,
+                     articul = EXCLUDED.articul
                      ";
 
             $result = $dbClient->psqlQuery($query, $params);
+            print_r($result);
         }
     }
     elseif (!empty($catalogData['children'])) {

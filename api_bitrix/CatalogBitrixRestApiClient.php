@@ -45,7 +45,7 @@ class CatalogBitrixRestApiClient {
         return $decodedResponse;
     }
 
-    function getCatalogProducts($iblockId, $iblockSectionId, $select = ['id', 'iblockId', 'name','detailText','purchasingPrice']) {
+    function getCatalogProducts($iblockId, $iblockSectionId, $select = ['id', 'iblockId', 'name','detailText','purchasingPrice','xmlId']) {
         $queryData = [
             'filter' => array(
                 'iblockId' => $iblockId,
@@ -56,7 +56,20 @@ class CatalogBitrixRestApiClient {
         try {
             $response = $this->makeRequest('catalog.product.list', $queryData);
             return $response['result']['products'] ?? [];
-//            return $response;
+        } catch (Exception $e) {
+            error_log('API Error: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    function getCatalogProduct($productId, $select = []) {
+        $queryData = [
+            'id' => $productId,
+            'select' => $select
+        ];
+        try {
+            $response = $this->makeRequest('catalog.product.get', $queryData);
+            return $response['result']['product'] ?? [];
         } catch (Exception $e) {
             error_log('API Error: ' . $e->getMessage());
             return [];
@@ -79,13 +92,26 @@ class CatalogBitrixRestApiClient {
             return [];
         }
     }
+    function getCatalogSection($sectionId, $select = ['id', 'name']) {
+        $queryData = array(
+            'id' => $sectionId,
+            'select' => $select,
+        );
+        try {
+            $response = $this->makeRequest('catalog.section.get', $queryData);
+            return $response['result']['section'] ?? [];
+        } catch (Exception $e) {
+            error_log('API Error: ' . $e->getMessage());
+            return [];
+        }
+    }
     function getSectionsTree($iblock_id, $parentSectionId = null) {
         $queryData = [
             'filter' => array(
                 'iblock_id' => $iblock_id,
                 'iblockSectionId' => $parentSectionId,
             ),
-            'select' => ['id', 'name'],
+            'select' => ['id', 'name','code'],
         ];
         try {
             $response = $this->makeRequest('catalog.section.list', $queryData);

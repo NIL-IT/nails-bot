@@ -26,7 +26,7 @@ $dbClient = new DatabaseClient('localhost', '5432', 'testingnil6', 'ivers', '111
 
 switch ($type) {
     case 'category':
-        $result = get_by_id_parent($id,$dbClient); // твоя функция
+        $result = get_by_id_parent($id,$dbClient);
         break;
 
     case 'item':

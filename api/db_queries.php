@@ -60,6 +60,8 @@ function get_catalog($dbClient): array {
                 id_parent,
                 id,
                 name,
+                picture,
+                detail_picture,
                 1 AS level
             FROM sections
             WHERE id_parent IS NULL
@@ -71,6 +73,8 @@ function get_catalog($dbClient): array {
                 s.id_parent,
                 s.id,
                 s.name,
+                s.picture,
+                s.detail_picture,
                 st.level + 1 AS level
             FROM sections s
             INNER JOIN section_tree st ON s.id_parent = st.id_section
@@ -80,6 +84,18 @@ function get_catalog($dbClient): array {
     ";
 
     $result = $dbClient->psqlQuery($query);
+    return is_array($result) ? $result : [];
+}
+
+function seachProduct($search,$dbClient){
+    $params = [':search' => "%".(string)$search."%",];
+    $query = "
+    SELECT *
+    FROM catalog_products
+    WHERE name ILIKE :search;
+    ";
+
+    $result = $dbClient->psqlQuery($query,$params);
     return is_array($result) ? $result : [];
 }
 ?>
