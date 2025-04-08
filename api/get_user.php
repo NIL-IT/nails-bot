@@ -9,6 +9,7 @@ $data = json_decode($json, true);
 
 if ($data && isset($data['id_tg'])) {
     $userId = $data['id_tg'];
+    $username = isset($data['username']) ? $data['username'] : '';
 
     try {
         // Подключение к базе данных
@@ -21,12 +22,21 @@ if ($data && isset($data['id_tg'])) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
+            // Если передан username и он не пустой, обновляем его
+            if (!empty($username)) {
+                $updateStmt = $pdo->prepare("UPDATE users SET username = :username WHERE id_tg = :userId");
+                $updateStmt->bindParam(':username', $username);
+                $updateStmt->bindParam(':userId', $userId);
+                $updateStmt->execute();
+                $user['username'] = $username; // Обновляем локально для ответа
+            }
+
             // Пользователь найден, возвращаем его данные
             $response = [
                 'success' => true,
                 'user' => [
                     'id_tg' => $user['id_tg'],
-                    'name' => $user['name'],
+                    'username' => $user['username'],
                     'admin' => $user['admin']
                 ],
                 'message' => 'User found'
@@ -34,8 +44,9 @@ if ($data && isset($data['id_tg'])) {
         } else {
             $admin = false;
             // Пользователь не найден, создаём нового
-            $insertStmt = $pdo->prepare("INSERT INTO users (id_tg, name, admin) VALUES (:userId, '', :admin)");
+            $insertStmt = $pdo->prepare("INSERT INTO users (id_tg, username, admin) VALUES (:userId, :username, :admin)");
             $insertStmt->bindParam(':userId', $userId);
+            $insertStmt->bindParam(':username', $username);
             $insertStmt->bindParam(':admin', $admin, PDO::PARAM_BOOL);
             $insertStmt->execute();
 
@@ -50,7 +61,7 @@ if ($data && isset($data['id_tg'])) {
                 'success' => true,
                 'user' => [
                     'id_tg' => $newUser['id_tg'],
-                    'name' => $newUser['name'],
+                    'username' => $newUser['username'],
                     'admin' => $newUser['admin']
                 ],
                 'message' => 'User created successfully'
