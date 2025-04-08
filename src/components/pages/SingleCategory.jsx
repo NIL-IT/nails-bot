@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Button, Title } from "../ui";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Product, Sidebar } from "../shared";
 import { basket } from "../../utils/constants";
-import { useDispatch, useSelector } from "react-redux";
 import { API } from "../../api";
-import { changeCurrentProduct } from "../../features/slice/userSlice";
 import { CategoryItem } from "../shared/CategoryItem";
 export default function SingleCategory({ categories }) {
   const [searchParams] = useSearchParams(); // Добавлено: получение query-параметров
   const id = searchParams.get("id"); // Извлечение id
   const nameParam = searchParams.get("name"); // Извлечение name
   const decodedName = nameParam ? decodeURIComponent(nameParam) : "";
-  const dispatch = useDispatch();
-  const { currentCategory, categoryName } = useSelector(({ user }) => user);
   const [itemsData, setItemsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCategory, setIsCategory] = useState(null);
@@ -23,7 +19,7 @@ export default function SingleCategory({ categories }) {
     const fetchAllData = async () => {
       try {
         const fetchProduct = await API.getProducts(id);
-        console.log("fetchProduct", fetchProduct.data);
+
         setItemsData(fetchProduct.data);
         setIsCategory(fetchProduct.data[0].hasOwnProperty("id_section"));
       } catch (error) {
@@ -44,10 +40,9 @@ export default function SingleCategory({ categories }) {
     // setIndex(index);
   };
 
-  console.log("isCategory", isCategory);
   return (
     <div>
-      <Sidebar categories={categories} />
+      {categories.length > 0 && <Sidebar categories={categories} />}
       {itemsData.length > 0 ? (
         <div className="my-[30px] ">
           <Title text={decodedName} className={"mb-5"} />

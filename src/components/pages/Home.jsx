@@ -20,15 +20,21 @@ const Home = ({ categories, user }) => {
     const fetchData = async () => {
       setLoading(true);
       if (!currentCategory) {
-        if (isMounted) setCategory(categories[0]);
-        try {
-          const subCategoryData = await API.getProducts(
-            categories[0].id_section
-          );
-          setSubCategory(subCategoryData.data);
-        } catch (error) {
-          console.error("Error fetching subcategory:", error);
-        } finally {
+        // Check if categories is available and not empty
+        if (categories && categories.length > 0) {
+          if (isMounted) setCategory(categories[0]);
+          try {
+            const subCategoryData = await API.getProducts(
+              categories[0].id_section
+            );
+            setSubCategory(subCategoryData.data);
+          } catch (error) {
+            console.error("Error fetching subcategory:", error);
+          } finally {
+            setLoading(false);
+          }
+        } else {
+          // No categories available, set loading to false
           setLoading(false);
         }
       } else {
@@ -49,6 +55,8 @@ const Home = ({ categories, user }) => {
           } finally {
             setLoading(false);
           }
+        } else {
+          setLoading(false);
         }
       }
     };
@@ -59,7 +67,7 @@ const Home = ({ categories, user }) => {
       isMounted = false;
     };
   }, [currentCategory, categories]);
-  console.log("user:", user);
+
   return category ? (
     <main className="mb-[30px]">
       <Sidebar categories={categories} />

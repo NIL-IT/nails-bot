@@ -15,7 +15,6 @@ import SkeletonLoader from "../ui/SkeletonLoader";
 export function CategoryList({ subCategory }) {
   const [itemsData, setItemsData] = useState({});
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     let isMounted = true;
@@ -58,10 +57,9 @@ export function CategoryList({ subCategory }) {
       isMounted = false;
     };
   }, [subCategory]);
-
   return (
     <div className="space-y-[30px]">
-      {subCategory.map((item) => {
+      {subCategory.map((item, index) => {
         const itemData = itemsData[item.id];
         if (itemData) {
           if (itemData.length === 0) return;
@@ -81,10 +79,17 @@ export function CategoryList({ subCategory }) {
                    border-primary px-[10px] py-[7px]"
                   >
                     <div className="flex items-center gap-[5px]">
-                      <span className="text-primary text-base font-montserrat">
+                      <span
+                        className="text-primary
+                       text-base font-montserrat"
+                      >
                         Все
                       </span>
-                      <img src="./img/arrow-right.svg" alt="arrow-right" />
+                      <img
+                        className={index == 0 ? "translate-y-[-1px]" : ""}
+                        src="/img/arrow-right.svg"
+                        alt="arrow-right"
+                      />
                     </div>
                   </button>
                 </Link>
@@ -110,7 +115,7 @@ export function CategoryList({ subCategory }) {
                       {itemData.map(({ id }, index) => {
                         if (index >= 2) return;
                         return (
-                          <div key={id}>
+                          <div key={index}>
                             <Product idItem={id} />
                           </div>
                         );
@@ -123,7 +128,7 @@ export function CategoryList({ subCategory }) {
           );
         } else {
           return (
-            <div>
+            <div key={item.id}>
               <div
                 className="flex items-center justify-between mb-5"
                 key={item.id}

@@ -4,10 +4,10 @@ import { API } from "../../api";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { changeCurrentProduct } from "../../features/slice/userSlice";
-import SkeletonLoader from "../ui/SkeletonLoader";
 
 export function Product({ idItem, search }) {
   const dispatch = useDispatch();
+
   const [itemData, setItemData] = useState({});
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -25,7 +25,6 @@ export function Product({ idItem, search }) {
 
     fetchAllData();
   }, []);
-
   return loading ? (
     <></>
   ) : (
@@ -56,15 +55,19 @@ export function Product({ idItem, search }) {
             <p>{itemData.volume}</p>
           </div> */}
         </div>
-        {itemData.base_price && itemData.base_price !== "0.00" && (
-          <div
-            className={`text-2xl font-semibold mb-1 ${
-              search ? "pt-5" : "pt-2"
-            }`}
-          >
-            {itemData.base_price} ₽
-          </div>
-        )}
+
+        <div
+          className={`text-2xl font-semibold mb-1 ${search ? "pt-5" : "pt-2"}`}
+        >
+          {itemData?.base_price && itemData?.base_price !== "0.00"
+            ? itemData.base_price
+            : itemData?.purchasingprice
+            ? itemData.purchasingprice
+            : itemData?.opt_price
+            ? itemData.opt_price
+            : 0}{" "}
+          ₽
+        </div>
       </div>
     </Link>
   );

@@ -25,15 +25,6 @@ const AppRoutes = ({ user }) => {
       try {
         const getCategories = await API.getCategories();
         setCategories(getCategories.data);
-        console.log(getCategories.data);
-        // const categoriesResponse = await API.getCategories({
-        //   signal: abortController.signal,
-        // }); // Передаем сигнал
-        // const allProducts = await getAllProducts(categoriesResponse.data);
-        // setCategories((prev) => {
-        //   if (prev.length === 0 && allProducts.length > 0) return allProducts;
-        //   return prev;
-        // });
         dataFetchedRef.current = true;
       } catch (error) {
         if (error.name !== "AbortError") console.error("Error:", error);
@@ -73,14 +64,7 @@ const AppRoutes = ({ user }) => {
           path={ROUTES.SEARCH}
           element={<SearchItems products={products} />}
         />
-        {/* 
-       
-        <Route path={ROUTES.CART} element={<Cart />} />
-        <Route
-          path={ROUTES.SEARCH}
-          element={<SearchItems products={products} />}
-        />
-        {user?.isAdmin ? (
+        {user?.admin ? (
           <Route
             path={ROUTES.PROFILE}
             element={<OrderHistoryAdmin orders={orders} />}
@@ -90,7 +74,9 @@ const AppRoutes = ({ user }) => {
             path={ROUTES.PROFILE}
             element={<OrderHistory orders={orders} />}
           />
-        )} */}
+        )}
+
+        <Route path={ROUTES.CART} element={<Cart />} />
       </Routes>
     )
   );

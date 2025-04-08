@@ -21,6 +21,7 @@ const userSlice = createSlice({
       state.currentCategory = payload;
     },
     addItemToCart: (state, { payload }) => {
+      console.log("payload", payload);
       let newCart = [...state.cart];
       const found = state.cart.find(({ id }) => id === payload.id);
       if (found) {
@@ -35,6 +36,7 @@ const userSlice = createSlice({
         ...payload,
         quantity: payload.quantity,
       });
+      console.log("cartData", cartData);
       const setCookie = (name, value, days) => {
         const expires = new Date(Date.now() + days * 86400000).toUTCString();
         document.cookie = `${name}=${encodeURIComponent(

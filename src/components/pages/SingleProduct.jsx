@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Title } from "../ui";
 import { useParams } from "react-router-dom";
-import { PRODUCTS } from "../../utils/data";
 import { Sidebar } from "../shared";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../features/slice/userSlice";
 import { minus, quantity } from "../../utils/constants";
 import { NotificationPopup } from "../shared/NotificationPopup";
@@ -12,7 +11,6 @@ import { API } from "../../api";
 export default function SingleProduct({ categories }) {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const { product } = useSelector(({ user }) => user);
   const [count, setCount] = React.useState(1);
   const [itemData, setItemData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -21,7 +19,7 @@ export default function SingleProduct({ categories }) {
     const fetchAllData = async () => {
       try {
         const fetchProduct = await API.getProduct(id);
-        console.log("fetchProduct", fetchProduct.data[0]);
+
         setItemData(fetchProduct.data[0]);
       } catch (error) {
         console.error("Global fetch error:", error);
@@ -39,8 +37,8 @@ export default function SingleProduct({ categories }) {
     } else setCount(count + 1);
   };
   const addItem = () => {
-    // dispatch(addItemToCart({ ...singleProduct, quantity: count }));
-    // handleCartPopupClose(false);
+    dispatch(addItemToCart({ ...itemData, quantity: count }));
+    handleCartPopupClose(false);
   };
 
   const [showNotification, setShowNotification] = React.useState(false);
@@ -62,7 +60,7 @@ export default function SingleProduct({ categories }) {
         isVisible={showNotification}
         message={"Товар добавлен в корзину"}
       />
-      <Sidebar categories={categories} />
+      {categories.length > 0 && <Sidebar categories={categories} />}
       <div className="flex flex-col gap-5 overflow-scroll mb-[90px]">
         <div className="flex justify-center ">
           <div className="w-[171px] h-[171px] ">
@@ -84,14 +82,17 @@ export default function SingleProduct({ categories }) {
             {/* <p className="font-montserrat text-base font-medium ">
               {singleProduct.volume}
             </p> */}
-            <span className="text-gray_dark font-montserrat text-base font-medium ">
+            <span
+              className="text-gray_dark font-montserrat
+             text-[12px] font-medium "
+            >
               Артикул: {itemData.articul}
             </span>
           </div>
         </div>
         <div
           dangerouslySetInnerHTML={{ __html: itemData.detailtext }}
-          className="flex flex-col gap-4"
+          className="space-y-1 mb-5"
         />
       </div>
       <div className="fixed bottom-0 left-0 w-[100%] h-20 bg-white py-[6px] px-[10px] ">

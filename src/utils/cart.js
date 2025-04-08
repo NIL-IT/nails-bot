@@ -1,31 +1,67 @@
-import { PRODUCTS } from "./data";
-
+// Обновленная функция чтения куки с декодированием
 const getCookie = (name) => {
-  const matches = document.cookie.match(
-    new RegExp(
-      `(?:^|; )${name.replace(/([$?*|{}()[\\]\\+^])/g, "\\$1")}=([^;]*)`
-    )
-  );
-  return matches ? decodeURIComponent(matches[1]) : null;
+  const cookies = `; ${document.cookie}`;
+  const parts = cookies.split(`; ${name}=`);
+  if (parts.length === 2) {
+    const encodedValue = parts.pop().split(";").shift();
+    return decodeURIComponent(encodedValue); // Декодируем значение
+  }
 };
+
+const getCookieKeys = () => {
+  return document.cookie
+    .split(";")
+    .map((cookie) => cookie.trim().split("=")[0])
+    .filter((key) => key.startsWith("cart_"));
+};
+
 export function getAllCart() {
-  let list = [];
-  for (let { id } of PRODUCTS) {
-    const cartFromCookie = getCookie(`cart_${id}`);
-    if (cartFromCookie && typeof cartFromCookie === "object") {
-      list.push(JSON.parse(cartFromCookie));
-    } else {
-      const cartFromLocalStorage = localStorage.getItem(`cart_${id}`);
-      if (cartFromLocalStorage) {
-        list.push(JSON.parse(cartFromLocalStorage));
-      } else {
-        const cartFromSessionStorage = sessionStorage.getItem(`cart_${id}`);
-        if (cartFromSessionStorage) {
-          list.push(JSON.parse(cartFromSessionStorage));
+  const uniqueItems = new Map();
+
+  // 1. Обрабатываем куки (с приоритетом)
+  getCookieKeys().forEach((cookieKey) => {
+    try {
+      const cookieValue = getCookie(cookieKey);
+      if (!cookieValue) return;
+
+      const item = JSON.parse(cookieValue); // Теперь получим валидный JSON
+      if (item?.id && !uniqueItems.has(item.id)) {
+        uniqueItems.set(item.id, item);
+      }
+    } catch (e) {
+      console.error(`Invalid JSON in ${cookieKey}`, e);
+    }
+  });
+
+  // 2. Локальное хранилище (без изменений)
+  Object.keys(localStorage)
+    .filter((key) => key.startsWith("cart_"))
+    .forEach((key) => {
+      const itemId = key.split("_")[1];
+      if (!uniqueItems.has(itemId)) {
+        try {
+          const item = JSON.parse(localStorage.getItem(key));
+          if (item?.id) uniqueItems.set(item.id, item);
+        } catch (e) {
+          console.error(`Invalid JSON in ${key}`, e);
         }
       }
-    }
-  }
+    });
 
-  return list.length ? list : [];
+  // 3. Сессионное хранилище (без изменений)
+  Object.keys(sessionStorage)
+    .filter((key) => key.startsWith("cart_"))
+    .forEach((key) => {
+      const itemId = key.split("_")[1];
+      if (!uniqueItems.has(itemId)) {
+        try {
+          const item = JSON.parse(sessionStorage.getItem(key));
+          if (item?.id) uniqueItems.set(item.id, item);
+        } catch (e) {
+          console.error(`Invalid JSON in ${key}`, e);
+        }
+      }
+    });
+
+  return Array.from(uniqueItems.values());
 }

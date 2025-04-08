@@ -1,14 +1,13 @@
-import { AirVent } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { changeCurrentCategory } from "../../features/slice/userSlice";
 
 export const Sidebar = ({ categories }) => {
-  const { id } = useParams();
+  const [searchParams] = useSearchParams(); // Добавлено: получение query-параметров
+  const id = searchParams.get("id");
   let { pathname } = useLocation();
   const { currentCategory } = useSelector(({ user }) => user);
-  console.log("currentCategory", currentCategory);
   const dispatch = useDispatch();
   const [active, setActive] = useState(
     currentCategory ? currentCategory : categories[0].id
