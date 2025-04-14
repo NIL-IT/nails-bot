@@ -59,14 +59,7 @@ export function Product({ idItem, search }) {
         <div
           className={`text-2xl font-semibold mb-1 ${search ? "pt-5" : "pt-2"}`}
         >
-          {itemData?.base_price && itemData?.base_price !== "0.00"
-            ? itemData.base_price
-            : itemData?.purchasingprice
-            ? itemData.purchasingprice
-            : itemData?.opt_price
-            ? itemData.opt_price
-            : 0}{" "}
-          ₽
+          {itemData.base_price}₽
         </div>
       </div>
     </Link>

@@ -5,4 +5,5 @@ export const ROUTES = {
   PRODUCT: "/product/:id",
   SEARCH: "/search",
   CATEGORY: "/categories",
+  CHECKOUT: "/checkout",
 };

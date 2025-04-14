@@ -39,7 +39,6 @@ export default function SingleCategory({ categories }) {
     // );
     // setIndex(index);
   };
-
   return (
     <div>
       {categories.length > 0 && <Sidebar categories={categories} />}

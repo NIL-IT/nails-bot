@@ -108,6 +108,7 @@ export function CategoryList({ subCategory }) {
                         if (index >= 2) return;
                         return (
                           <div key={index}>
+                            {console.log(product)}
                             <CategoryItem category={product} />
                           </div>
                         );
@@ -139,7 +140,7 @@ export function CategoryList({ subCategory }) {
                 <Title size="text-3xl" text={item.name} />
                 <Button text="Все" type={outline} id={item.id} />
               </div>
-              <div className="justify-self-center grid grid-cols-2 gap-[20px]">
+              <div className="justify-self-center grid grid-cols-2 gap-[20px]  w-[310px] mx-auto">
                 <SkeletonLoader count={2} />
               </div>
             </div>

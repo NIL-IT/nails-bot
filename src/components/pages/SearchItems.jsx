@@ -86,7 +86,7 @@ export default function SearchItems() {
         ) : list.length > 0 ? (
           <div
             className="grid grid-cols-2  
-          gap-[10px] mb-[30px] mx-auto max-w-[300px]"
+          gap-[20px] mb-[30px] mx-auto max-w-[310px]"
           >
             {list.map((item, i) => {
               // Check before rendering

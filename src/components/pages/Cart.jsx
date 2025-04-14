@@ -7,6 +7,7 @@ import {
   removeItemFromCart,
 } from "../../features/slice/userSlice";
 import { ROUTES } from "../routes/routes";
+import { Link } from "react-router-dom";
 
 export default function Card() {
   const dispatch = useDispatch();
@@ -144,11 +145,15 @@ export default function Card() {
           </p>
           <span className="font-semibold font-manrope text-3xl">{sum} ₽</span>
         </div>
-        <Button
-          text={"Оформить"}
-          type={normal}
-          className={"w-[100%] bg-secondary"}
-        />
+
+        <Link
+          to={"/checkout"}
+          className="text-white block text-center 
+          text-2xl font-manrope font-semibold rounded-[10px]
+           bg-secondary  py-[9px] w-full"
+        >
+          Оформить
+        </Link>
       </div>
     </div>
   ) : (

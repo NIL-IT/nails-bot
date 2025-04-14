@@ -9,6 +9,7 @@ import SearchItems from "../pages/SearchItems";
 import OrderHistory from "../pages/OrderHistory";
 import OrderHistoryAdmin from "../pages/OrderHistoryAdmin";
 import { API, getAllProducts } from "../../api";
+import Checkout from "../pages/Checkout";
 
 const AppRoutes = ({ user }) => {
   const [categories, setCategories] = useState([]);
@@ -64,6 +65,7 @@ const AppRoutes = ({ user }) => {
           path={ROUTES.SEARCH}
           element={<SearchItems products={products} />}
         />
+        <Route path={ROUTES.CHECKOUT} element={<Checkout />} />
         {user?.admin ? (
           <Route
             path={ROUTES.PROFILE}
