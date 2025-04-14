@@ -12,6 +12,12 @@ export default function DeliveryForm({
   handleFinalSubmit,
   handlePrevStep,
 }) {
+  console.log(deliveryOption);
+  const isShowForm =
+    deliveryOption === "courier" ||
+    deliveryOption === "park" ||
+    deliveryOption === "south_gate" ||
+    deliveryOption === "boxberry";
   return (
     <div className="bg-white rounded-lg shadow p-6 flex flex-col justify-between min-h-[80vh]">
       <div>
@@ -47,7 +53,30 @@ export default function DeliveryForm({
               <div className="font-medium text-sm">Курьером по Томску</div>
               <div className="text-primary text-sm">200.00 ₽</div>
             </div>
-
+            <div
+              className={`border rounded-lg p-3 cursor-pointer transition-colors ${
+                deliveryOption === "south_gate"
+                  ? "border-secondary"
+                  : "border-gray-300 hover:border-pink-300"
+              }`}
+              onClick={() => handleSelectDelivery("south_gate")}
+            >
+              <div className="font-medium text-sm">Курьером в Южные ворота</div>
+              <div className="text-primary text-sm">300.00 ₽</div>
+            </div>
+            <div
+              className={`border rounded-lg p-3 cursor-pointer transition-colors ${
+                deliveryOption === "park"
+                  ? "border-secondary"
+                  : "border-gray-300 hover:border-pink-300"
+              }`}
+              onClick={() => handleSelectDelivery("park")}
+            >
+              <div className="font-medium text-sm">
+                Курьером в Северный Парк
+              </div>
+              <div className="text-primary text-sm">250.00 ₽</div>
+            </div>
             <div
               className={`border rounded-lg p-3 cursor-pointer transition-colors ${
                 deliveryOption === "boxberry"
@@ -99,7 +128,7 @@ export default function DeliveryForm({
             )}
           </div>
         )}
-
+        {/* 
         {deliveryOption === "boxberry" && (
           <div className="mb-4">
             {selectedStore ? (
@@ -123,20 +152,21 @@ export default function DeliveryForm({
                 </div>
               </div>
             ) : (
-              <div className="mb-4">
-                <MapPin className="inline-block text-primary mr-2" size={20} />
-                <button
-                  onClick={handleOpenModal}
-                  className="border border-gray-300 rounded px-4 py-2 text-sm font-medium hover:border-secondary transition-colors"
-                >
-                  Выбрать ПВЗ Boxberry
-                </button>
-              </div>
+            
+                <div className="mb-4">
+                  <MapPin className="inline-block text-primary mr-2" size={20} />
+                  <button
+                    onClick={handleOpenModal}
+                    className="border border-gray-300 rounded px-4 py-2 text-sm font-medium hover:border-secondary transition-colors"
+                  >
+                    Выбрать ПВЗ Boxberry
+                  </button>
+                </div>
             )}
           </div>
-        )}
+        )} */}
 
-        {deliveryOption === "courier" && (
+        {isShowForm && (
           <div className="mb-4 border rounded-lg p-4">
             <h3 className="font-medium mb-4">Адрес доставки</h3>
 
@@ -251,10 +281,11 @@ export default function DeliveryForm({
 
           <button
             type="button"
-            onClick={handlePrevStep}
-            className="flex items-center justify-center text-gray-600 hover:text-primary"
+            onClick={() => handlePrevStep(1)}
+            className="flex
+             items-center justify-center py-[9px] rounded-[10px]
+               hover:text-primary w-full bg-gray_dark/20"
           >
-            <ChevronLeft size={20} />
             <span>Вернуться назад</span>
           </button>
         </div>

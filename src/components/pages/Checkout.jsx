@@ -3,6 +3,7 @@ import CustomerForm from "../shared/CustomerForm";
 import DeliveryForm from "../shared/DeliveryForm";
 import StoreSelectionModal from "../shared/StoreSelectionModal";
 import BoxberrySelectionModal from "../shared/BoxberrySelectionModal"; // Предполагаем, что такой компонент будет создан
+import FinishDesign from "../shared/FinishDesign";
 
 export default function Checkout() {
   const [step, setStep] = useState(1);
@@ -13,7 +14,6 @@ export default function Checkout() {
     email: "",
     city: "",
     phone: "+7",
-    // Address fields for courier delivery
     region: "Томская",
     index: "",
     street: "",
@@ -28,7 +28,22 @@ export default function Checkout() {
   const [deliveryOption, setDeliveryOption] = useState("selfPickup");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStore, setSelectedStore] = useState(null);
-
+  const [priceDelivery, setPriceDelivery] = useState("0");
+  useEffect(() => {
+    let price =
+      deliveryOption === "selfPickup"
+        ? 0
+        : deliveryOption === "courier"
+        ? 200.0
+        : deliveryOption === "south_gate"
+        ? 300.0
+        : deliveryOption === "park"
+        ? 250.0
+        : deliveryOption === "boxberry"
+        ? 162.0
+        : 0;
+    setPriceDelivery(price);
+  }, [deliveryOption]);
   // Validate the entire form whenever data changes
   useEffect(() => {
     const { lastName, firstName, email, city, phone } = formData;
@@ -126,15 +141,12 @@ export default function Checkout() {
     }
   };
 
-  const handlePrevStep = () => {
-    setStep(1);
-  };
-
   const handleSelectDelivery = (option) => {
+    if (option !== "selfPickup") setSelectedStore(null);
+
     setDeliveryOption(option);
 
     // Reset selected store if switching to another option
-    setSelectedStore(null);
   };
 
   const formatPhoneNumber = (value) => {
@@ -222,18 +234,22 @@ export default function Checkout() {
       deliveryOption,
       selectedStore: selectedStore ? selectedStore.id : null,
     });
-
+    setStep(3);
     // Here you would typically call an API to submit the order
-    alert("Заказ успешно оформлен!");
   };
 
   const isDeliveryComplete = () => {
-    if (deliveryOption === "selfPickup" || deliveryOption === "boxberry") {
+    if (deliveryOption === "selfPickup") {
       return !!selectedStore;
     }
 
     // For courier delivery, check required address fields
-    if (deliveryOption === "courier") {
+    if (
+      deliveryOption === "courier" ||
+      deliveryOption === "park" ||
+      deliveryOption === "south_gate" ||
+      deliveryOption === "boxberry"
+    ) {
       return addressFormIsValid;
     }
 
@@ -279,7 +295,7 @@ export default function Checkout() {
             formIsValid={formIsValid}
             handleSubmitFirstForm={handleSubmitFirstForm}
           />
-        ) : (
+        ) : step === 2 ? (
           <DeliveryForm
             formData={formData}
             handleInputChange={handleInputChange}
@@ -289,7 +305,14 @@ export default function Checkout() {
             handleOpenModal={handleOpenModal}
             isDeliveryComplete={isDeliveryComplete}
             handleFinalSubmit={handleFinalSubmit}
-            handlePrevStep={handlePrevStep}
+            handlePrevStep={setStep}
+          />
+        ) : (
+          <FinishDesign
+            priceDelivery={priceDelivery}
+            formData={formData}
+            selectedStore={selectedStore}
+            handlePrevStep={setStep}
           />
         )}
       </div>

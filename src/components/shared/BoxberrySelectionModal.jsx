@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { X, MapPin, Search } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function BoxberrySelectionModal({
   isOpen,
@@ -7,280 +8,250 @@ export default function BoxberrySelectionModal({
   onSelectStore,
 }) {
   const API_KEY = "275f4252-f50b-4872-91e3-17f3e668263f";
-  const BOXBERRY_API_KEY = "ad6fd06b28f7e8d0a94d9e0de47ce1e6";
-  const BOXBERRY_API_URL = "https://api.boxberry.ru/json.php";
+  const [selectedPoint, setSelectedPoint] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [coordinates, setCoordinates] = useState(null);
+  const [isAddressSelected, setIsAddressSelected] = useState(false);
+  const [isMapInitialized, setIsMapInitialized] = useState(false);
 
   const mapRef = useRef(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCity, setSelectedCity] = useState({ name: "Томск", code: "" });
-  const [searchResults, setSearchResults] = useState([]);
-  const [isMapLoaded, setIsMapLoaded] = useState(false);
-  const [mapInstance, setMapInstance] = useState(null);
-  const [points, setPoints] = useState([]);
-  const [selectedPoint, setSelectedPoint] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [cities, setCities] = useState([]);
+  const yandexMapRef = useRef(null);
+  const placemarkerRef = useRef(null);
 
-  // Загрузка списка городов из API Boxberry
-  useEffect(() => {
-    if (isOpen) {
-      const loadCities = async () => {
-        try {
-          const response = await fetch(
-            `${BOXBERRY_API_URL}?token=${BOXBERRY_API_KEY}&method=ListCities`
-          );
-          const data = await response.json();
-          console.log("ListCities", data);
-          if (Array.isArray(data)) {
-            setCities(data);
-            // Найдем код для Томска (по умолчанию)
-            const tomsk = data.find(
-              (city) => city.Name.toLowerCase() === "томск"
-            );
-            if (tomsk) {
-              setSelectedCity({ name: "Томск", code: tomsk.Code });
-            }
-          }
-        } catch (error) {
-          console.error("Ошибка загрузки городов:", error);
-        }
-      };
+  // Initialize map when component mounts and modal is open
+  const initMap = useCallback(() => {
+    // Return early if map is already initialized or DOM element is not ready
+    if (isMapInitialized || !mapRef.current || !window.ymaps) return;
 
-      loadCities();
-    }
-  }, [isOpen, BOXBERRY_API_KEY]);
+    window.ymaps.ready(() => {
+      // Проверяем, что DOM-элемент существует и имеет размеры
+      if (
+        mapRef.current &&
+        mapRef.current.offsetWidth > 0 &&
+        mapRef.current.offsetHeight > 0 &&
+        !yandexMapRef.current // Ensure map doesn't already exist
+      ) {
+        console.log("Creating new map instance");
 
-  // Загрузка пунктов выдачи по коду города
-  const loadBoxberryPoints = async (cityCode) => {
-    if (!cityCode) return;
+        // Create map instance
+        const map = new window.ymaps.Map(mapRef.current, {
+          center: [56.4977, 84.9744], // Tomsk center coordinates
+          zoom: 12,
+          controls: ["zoomControl"],
+        });
 
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${BOXBERRY_API_URL}?token=${BOXBERRY_API_KEY}&method=ListPoints&prepaid=1&CityCode=${cityCode}`
-      );
-
-      const data = await response.json();
-
-      if (Array.isArray(data)) {
-        const formattedPoints = data.map((point) => ({
-          id: point.Code,
-          name: `ПВЗ Boxberry ${point.Name}`,
-          address: point.Address,
-          schedule: point.WorkSchedule,
-          phone: point.Phone,
-          coordinates: [
-            parseFloat(point.GPS_Latitude),
-            parseFloat(point.GPS_Longitude),
-          ],
-          description: point.TripDescription || "",
-          metro: point.Metro || "",
-        }));
-
-        setPoints(formattedPoints);
-        console.log(`Найдено ${formattedPoints.length} пунктов Boxberry`);
-
-        // Если есть точки и карта, центрируем и добавляем метки
-        if (formattedPoints.length > 0 && mapInstance) {
-          updateMapWithPoints(formattedPoints, mapInstance);
-        }
-      } else {
-        setPoints([]);
-      }
-    } catch (error) {
-      console.error("Ошибка загрузки ПВЗ:", error);
-      setPoints([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Обновление карты с новыми точками
-  const updateMapWithPoints = (pointsData, map) => {
-    if (!map || !window.ymaps) return;
-
-    // Очистка карты
-    map.geoObjects.removeAll();
-
-    // Создаем кластеризатор
-    const clusterer = new window.ymaps.Clusterer({
-      preset: "islands#redClusterIcons",
-      clusterDisableClickZoom: false,
-      clusterOpenBalloonOnClick: true,
-      clusterBalloonContentLayout: "cluster#balloonCarousel",
-      clusterBalloonPagerSize: 5,
-    });
-
-    // Создаем метки
-    const placemarks = pointsData
-      .map((point) => {
-        if (!point.coordinates[0] || !point.coordinates[1]) return null;
-
-        return new window.ymaps.Placemark(
-          point.coordinates,
+        // Create placemarker
+        const placemark = new window.ymaps.Placemark(
+          [55.76, 37.64],
+          {},
           {
-            balloonContentHeader: point.name,
-            balloonContentBody: `
-            <div style="padding: 10px">
-              <p><b>Адрес:</b> ${point.address}</p>
-              ${point.metro ? `<p><b>Метро:</b> ${point.metro}</p>` : ""}
-              <p><b>Режим работы:</b> ${point.schedule}</p>
-              ${point.phone ? `<p><b>Телефон:</b> ${point.phone}</p>` : ""}
-              ${
-                point.description
-                  ? `<p><b>Как добраться:</b> ${point.description}</p>`
-                  : ""
-              }
-              <button id="select-point-${point.id}" 
-                style="background: #FF3333; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-top: 10px">
-                Выбрать этот пункт
-              </button>
-            </div>
-          `,
-            clusterCaption: point.address,
-          },
-          {
-            preset: "islands#redDotIcon",
+            draggable: true,
           }
         );
-      })
-      .filter(Boolean);
 
-    // Добавляем метки в кластеризатор
-    clusterer.add(placemarks);
-    map.geoObjects.add(clusterer);
+        // Add placemarker to map
+        map.geoObjects.add(placemark);
 
-    // Добавляем обработчики событий для меток
-    placemarks.forEach((placemark, index) => {
-      placemark.events.add("balloonopen", () => {
-        setTimeout(() => {
-          const point = pointsData[index];
-          const selectBtn = document.getElementById(`select-point-${point.id}`);
-          if (selectBtn) {
-            selectBtn.addEventListener("click", () => {
-              setSelectedPoint(point);
-              placemark.balloon.close();
-            });
-          }
-        }, 100);
-      });
+        // Handle placemarker drag end
+        placemark.events.add("dragend", () => {
+          const coords = placemark.geometry.getCoordinates();
+          setCoordinates(coords);
 
-      placemark.events.add("click", () => {
-        setSelectedPoint(pointsData[index]);
-      });
-    });
-
-    // Подгоняем карту под все метки
-    if (placemarks.length > 1) {
-      map.setBounds(clusterer.getBounds(), {
-        checkZoomRange: true,
-        zoomMargin: 30,
-      });
-    } else if (placemarks.length === 1) {
-      map.setCenter(pointsData[0].coordinates, 15);
-    }
-  };
-
-  // Инициализация карты
-  useEffect(() => {
-    if (isOpen && !isMapLoaded) {
-      const initYandexMap = () => {
-        if (!window.ymaps) {
-          const script = document.createElement("script");
-          script.src = `https://api-maps.yandex.ru/2.1/?apikey=${API_KEY}&lang=ru_RU`;
-          script.async = true;
-          script.onload = () => window.ymaps.ready(initializeMap);
-          document.body.appendChild(script);
-        } else {
-          window.ymaps.ready(initializeMap);
-        }
-      };
-
-      const initializeMap = () => {
-        try {
-          const map = new window.ymaps.Map(mapRef.current, {
-            center: [56.48, 84.98], // Томск по умолчанию
-            zoom: 11,
-            controls: ["zoomControl", "fullscreenControl"],
+          // Reverse geocode to get address
+          window.ymaps.geocode(coords).then((res) => {
+            const firstGeoObject = res.geoObjects.get(0);
+            const address = firstGeoObject.getAddressLine();
+            setSelectedAddress(address);
+            setSearchQuery(address);
+            // Set flag to prevent search results from showing
+            setIsAddressSelected(true);
           });
+        });
 
-          setMapInstance(map);
-          setIsMapLoaded(true);
+        // Handle map click
+        map.events.add("click", (e) => {
+          const coords = e.get("coords");
+          placemark.geometry.setCoordinates(coords);
+          setCoordinates(coords);
 
-          // Если у нас уже есть точки к моменту инициализации карты
-          if (points.length > 0) {
-            updateMapWithPoints(points, map);
-          }
-        } catch (error) {
-          console.error("Ошибка инициализации карты:", error);
-        }
-      };
+          // Reverse geocode to get address
+          window.ymaps.geocode(coords).then((res) => {
+            const firstGeoObject = res.geoObjects.get(0);
+            const address = firstGeoObject.getAddressLine();
+            setSelectedAddress(address);
+            setSearchQuery(address);
+            // Set flag to prevent search results from showing
+            setIsAddressSelected(true);
+          });
+        });
 
-      initYandexMap();
-    }
+        // Save references
+        yandexMapRef.current = map;
+        placemarkerRef.current = placemark;
+        setIsMapInitialized(true);
+      }
+    });
+  }, [isMapInitialized]);
 
-    return () => {
-      if (mapInstance) {
-        mapInstance.destroy();
-        setMapInstance(null);
-        setIsMapLoaded(false);
+  // Load Yandex Maps script and initialize map
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const loadYandexMaps = () => {
+      // Проверяем, что скрипт еще не загружен
+      let scriptElement = document.querySelector(
+        'script[src*="api-maps.yandex.ru"]'
+      );
+
+      if (!scriptElement) {
+        // Load Yandex Maps script if not already loaded
+        scriptElement = document.createElement("script");
+        scriptElement.src = `https://api-maps.yandex.ru/2.1/?apikey=${API_KEY}&lang=ru_RU`;
+        scriptElement.async = true;
+        scriptElement.onload = () => {
+          // Initialize map after script is loaded
+          initMap();
+        };
+        document.head.appendChild(scriptElement);
+      } else if (window.ymaps) {
+        // If the script is already loaded, just initialize the map
+        initMap();
       }
     };
-  }, [isOpen, API_KEY]);
 
-  // Загрузка точек при изменении выбранного города
+    // Даем время модальному окну полностью открыться перед загрузкой карты
+    const timer = setTimeout(loadYandexMaps, 300);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isOpen, initMap]);
+
+  // Clean up map instance when component unmounts or modal closes
   useEffect(() => {
-    if (selectedCity.code && isOpen) {
-      loadBoxberryPoints(selectedCity.code);
+    if (!isOpen && yandexMapRef.current) {
+      // Destroy map when modal closes
+      console.log("Destroying map instance");
+      yandexMapRef.current.destroy();
+      yandexMapRef.current = null;
+      placemarkerRef.current = null;
+      setIsMapInitialized(false);
     }
-  }, [selectedCity.code, isOpen]);
+  }, [isOpen]);
 
-  // Поиск городов при вводе
-  const handleSearchChange = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(e.target.value);
+  // Resize handler
+  useEffect(() => {
+    if (!mapRef.current || !isOpen || !yandexMapRef.current) return;
 
-    if (query.length >= 2) {
-      const filteredCities = cities
-        .filter((city) => city.Name.toLowerCase().includes(query))
-        .slice(0, 10); // Ограничиваем результаты
+    const handleResize = () => {
+      if (yandexMapRef.current) {
+        yandexMapRef.current.container.fitToViewport();
+      }
+    };
 
-      setSearchResults(filteredCities);
-    } else {
-      setSearchResults([]);
-    }
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(mapRef.current);
+
+    // Also handle window resize
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isOpen, isMapInitialized]);
+
+  // Search for address
+  const searchAddress = (query) => {
+    if (!window.ymaps) return;
+    window.ymaps.geocode(query).then((res) => {
+      const results = [];
+      res.geoObjects.each((obj) => {
+        results.push({
+          address: obj.getAddressLine(),
+          coordinates: obj.geometry.getCoordinates(),
+        });
+      });
+      setSearchResults(results);
+    });
   };
 
-  // Выбор города из списка
-  const handleCitySelect = (city) => {
-    setSelectedCity({ name: city.Name, code: city.Code });
-    setSearchQuery(city.Name);
+  // Handle address selection from search results
+  const handleAddressSelect = (result) => {
+    setSelectedAddress(result.address);
+    setSearchQuery(result.address);
+    setCoordinates(result.coordinates);
     setSearchResults([]);
+    // Set flag to prevent search results from showing
+    setIsAddressSelected(true);
+
+    if (yandexMapRef.current && placemarkerRef.current) {
+      yandexMapRef.current.setCenter(result.coordinates, 15);
+      placemarkerRef.current.geometry.setCoordinates(result.coordinates);
+    }
   };
 
-  // Подтверждение выбора пункта
-  const handleConfirmSelection = () => {
+  // Handle input change
+  const handleSearchQueryChange = (e) => {
+    setSearchQuery(e.target.value);
+    // Reset the selected flag when user manually types
+    setIsAddressSelected(false);
+  };
+
+  // Debounce search
+  useEffect(() => {
+    // Only perform search if user is actively typing (not after selection)
+    if (isAddressSelected) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      if (searchQuery.trim()) {
+        searchAddress(searchQuery);
+      } else {
+        setSearchResults([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, isAddressSelected]);
+
+  // Функция для выбора пункта BoxBerry
+  const handleSelectPoint = (point) => {
+    setSelectedPoint(point);
+    // Центрируем карту на выбранном пункте
+    if (yandexMapRef.current && point.coordinates) {
+      yandexMapRef.current.setCenter(point.coordinates, 15);
+      placemarkerRef.current.geometry.setCoordinates(point.coordinates);
+    }
+  };
+
+  // Функция для подтверждения выбора точки
+  const confirmSelection = () => {
     if (selectedPoint) {
       onSelectStore(selectedPoint);
       onClose();
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div
+      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ${
+        isOpen ? "block" : "hidden"
+      }`}
+    >
       <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Заголовок */}
         <div className="p-4 border-b flex items-center justify-between">
-          <div className="flex items-center">
+          <Link target="_blank" to={"https://boxberry.ru/"}>
             <img
-              src="https://boxberry.ru/upload/iblock/e9b/logo-main.svg"
+              src="/img/logo_header_new.png"
               alt="Boxberry"
               className="h-8 mr-2"
             />
-            <h2 className="text-lg font-medium">Выберите пункт выдачи</h2>
-          </div>
+          </Link>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
@@ -295,23 +266,23 @@ export default function BoxberrySelectionModal({
             <input
               type="text"
               value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Введите город для поиска ПВЗ Boxberry..."
+              onChange={handleSearchQueryChange}
+              placeholder="Адрес или объект"
               className="w-full p-3 pl-10 border border-gray-300 rounded focus:outline-none focus:border-red-500"
             />
             <Search
               className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
               size={18}
             />
-            {searchResults.length > 0 && (
+            {!isAddressSelected && searchResults.length > 0 && (
               <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                {searchResults.map((city) => (
+                {searchResults.map((result, index) => (
                   <div
-                    key={city.Code}
+                    key={index}
                     className="p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-none"
-                    onClick={() => handleCitySelect(city)}
+                    onClick={() => handleAddressSelect(result)}
                   >
-                    {city.Name}
+                    {result.address}
                   </div>
                 ))}
               </div>
@@ -319,28 +290,16 @@ export default function BoxberrySelectionModal({
           </div>
         </div>
 
-        {/* Счетчик найденных пунктов */}
-        <div className="px-4 py-2 text-sm text-gray-600">
-          {!isLoading && (
-            <span>
-              Найдено пунктов выдачи: <strong>{points.length}</strong>
-            </span>
-          )}
-        </div>
-
         {/* Контейнер карты */}
         <div className="flex-1 overflow-hidden relative">
           <div
             ref={mapRef}
-            className="w-full h-[500px] rounded-md"
-            style={{ minHeight: "450px" }}
+            className="w-full h-full"
+            style={{
+              minHeight: "400px",
+              height: "100%",
+            }}
           ></div>
-
-          {isLoading && (
-            <div className="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent"></div>
-            </div>
-          )}
         </div>
 
         {/* Выбранный пункт */}
@@ -380,23 +339,21 @@ export default function BoxberrySelectionModal({
         )}
 
         {/* Кнопки действий */}
-        <div className="p-4 border-t flex justify-end bg-gray-50">
+        <div className="p-4 border-t flex justify-center gap-4">
+          <button
+            onClick={confirmSelection}
+            disabled={!selectedPoint}
+            className={`px-4 py-2 rounded text-white text-sm ${
+              selectedPoint ? "bg-primary " : "bg-primary/80 cursor-not-allowed"
+            }`}
+          >
+            Выбрать этот пункт
+          </button>
           <button
             onClick={onClose}
             className="px-4 py-2 border border-gray-300 rounded mr-2 text-sm hover:bg-gray-100"
           >
             Отмена
-          </button>
-          <button
-            onClick={handleConfirmSelection}
-            disabled={!selectedPoint}
-            className={`px-4 py-2 rounded text-white text-sm ${
-              selectedPoint
-                ? "bg-red-500 hover:bg-red-600"
-                : "bg-gray-300 cursor-not-allowed"
-            }`}
-          >
-            Выбрать этот пункт
           </button>
         </div>
       </div>
