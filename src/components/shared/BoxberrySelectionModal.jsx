@@ -30,7 +30,7 @@ export default function BoxberrySelectionModal({
             `${BOXBERRY_API_URL}?token=${BOXBERRY_API_KEY}&method=ListCities`
           );
           const data = await response.json();
-
+          console.log("ListCities", data);
           if (Array.isArray(data)) {
             setCities(data);
             // Найдем код для Томска (по умолчанию)
