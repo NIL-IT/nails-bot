@@ -4,7 +4,7 @@ import { ROUTES } from "../routes/routes";
 
 export default function SearchInput({ value, handleSearch, handleSubmit }) {
   return (
-    <div className="fixed top-0 left-0 bg-white w-[100%] h-[70px]">
+    <div className="fixed top-0 left-0 bg-white w-[100%] h-[70px] z-50">
       <form
         onSubmit={handleSubmit}
         className="flex justify-between items-center  py-1 px-4 gap-[10px] 

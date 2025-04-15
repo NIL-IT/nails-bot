@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button, Title } from "../ui";
-import { useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Product, Sidebar } from "../shared";
 import { basket } from "../../utils/constants";
 import { API } from "../../api";
 import { CategoryItem } from "../shared/CategoryItem";
+import { X } from "lucide-react";
+import SkeletonLoader from "../ui/SkeletonLoader";
 export default function SingleCategory({ categories }) {
   const [searchParams] = useSearchParams(); // Добавлено: получение query-параметров
   const id = searchParams.get("id"); // Извлечение id
@@ -13,7 +15,7 @@ export default function SingleCategory({ categories }) {
   const [itemsData, setItemsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCategory, setIsCategory] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     setLoading(true);
     const fetchAllData = async () => {
@@ -39,27 +41,13 @@ export default function SingleCategory({ categories }) {
     // );
     // setIndex(index);
   };
+  console.log(itemsData);
   return (
     <div>
       {categories.length > 0 && <Sidebar categories={categories} />}
       {itemsData.length > 0 ? (
         <div className="my-[30px] ">
           <Title text={decodedName} className={"mb-5"} />
-          <div className="flex gap-[10px] flex-wrap mb-[30px]">
-            {/* {products.map(({ title }, i) => (
-              <a onClick={() => handleClick(title, i)} key={i}>
-                <p
-                  className={`${
-                    indexItem === i
-                      ? "text-secondary font-semibold underline underline-offset-4"
-                      : ""
-                  } underline decoration-1 text-xl cursor-pointer text-primary font-montserrat`}
-                >
-                  {title.split(" ").slice(1, 3).join(" ")}
-                </p>
-              </a>
-            ))} */}
-          </div>
           <div className="w-full flex justify-center">
             {!isCategory ? (
               <div className="justify-self-center grid grid-cols-2 gap-[20px]">
@@ -82,8 +70,37 @@ export default function SingleCategory({ categories }) {
             )}
           </div>
         </div>
+      ) : !loading && itemsData.length <= 0 ? (
+        <div className="flex items-center flex-col w-full justify-center absolute top-[50%] translate-y-[-50%]">
+          <div className="flex items-center gap-4">
+            <div className="h-[40px] w-[40px] rounded-full bg-primary relative">
+              <X
+                size={24}
+                strokeWidth={3}
+                stroke="#fff"
+                className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+              />
+            </div>
+            <div>
+              <h4>К сожалению, раздел пуст</h4>
+              <p className="text-[12px]">
+                В данный момент нет активных товаров
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate(-1)}
+            className="flex
+             items-center justify-center mt-10 py-[9px] rounded-[10px]
+                w-[200px] bg-primary text-white"
+          >
+            <span>Вернуться назад</span>
+          </button>
+        </div>
       ) : (
-        <div>Загрузка</div>
+        <div className="justify-self-center grid grid-cols-2 gap-[20px]">
+          <SkeletonLoader />
+        </div>
       )}
 
       <Button

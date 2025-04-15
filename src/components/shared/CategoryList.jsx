@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Product } from "./index";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { outline } from "../../utils/constants";
 import { Button, Title } from "../ui";
 import { useDispatch } from "react-redux";
@@ -15,7 +15,8 @@ import SkeletonLoader from "../ui/SkeletonLoader";
 export function CategoryList({ subCategory }) {
   const [itemsData, setItemsData] = useState({});
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     let isMounted = true;
 
@@ -66,13 +67,16 @@ export function CategoryList({ subCategory }) {
           const isCategory = itemData[0].hasOwnProperty("id_section");
           return (
             <div key={item.id} className="">
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center justify-between gap-5 mb-5">
                 <Title size="text-3xl" text={item.name} />
                 <Link
                   onClick={(e) => {
+                    e?.preventDefault();
                     dispatch(changeCategoryName(item.name));
+                    navigate(
+                      `/categories?id=${item.id_section}&name=${item.name}`
+                    );
                   }}
-                  to={`/categories?id=${item.id_section}&name=${item.name}`}
                 >
                   <button
                     className=" rounded-[10px] border

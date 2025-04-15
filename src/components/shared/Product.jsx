@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { changeCurrentProduct } from "../../features/slice/userSlice";
 
-export function Product({ idItem, search }) {
+export function Product({ idItem, search, className }) {
   const dispatch = useDispatch();
 
   const [itemData, setItemData] = useState({});
@@ -32,11 +32,11 @@ export function Product({ idItem, search }) {
       key={itemData.id}
       to={`/product/${itemData.id}`}
       onClick={() => dispatch(changeCurrentProduct(itemData))}
-      className={` max-w-[145px]
+      className={` 
        flex flex-col gap-[10px]  rounded-[10px]
      w-[145px] h-full min-h-[189px] ${
        search ? "bg-gray_dark/10 p-2" : "bg-gray p-[6px]"
-     }`}
+     } ${className ? className : "max-w-[145px]"}`}
     >
       <img
         className="rounded-[10px] w-full h-[89px] object-cover object-center"
@@ -59,7 +59,7 @@ export function Product({ idItem, search }) {
         <div
           className={`text-2xl font-semibold mb-1 ${search ? "pt-5" : "pt-2"}`}
         >
-          {itemData.base_price}₽
+          {itemData.base_price} ₽
         </div>
       </div>
     </Link>

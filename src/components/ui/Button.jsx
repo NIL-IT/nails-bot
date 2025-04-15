@@ -10,6 +10,7 @@ import {
   plus,
 } from "../../utils/constants";
 import { ROUTES } from "../routes/routes";
+import { Minus, Plus } from "lucide-react";
 const cn = (...classes) => classes.filter(Boolean).join(" ");
 export function Button({
   type,
@@ -68,20 +69,11 @@ export function Button({
       <button
         onClick={() => handleIncrement(minus, id)}
         className={cn(
-          "min-w-[35%] min-h-[20px] flex flex-col items-end justify-center",
+          "min-w-[30%] min-h-[20px] flex flex-col items-end justify-center py-2 px-2",
           classNameIcons
         )}
       >
-        <svg
-          width="4"
-          height="2"
-          viewBox="0 0 4 2"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="mr-2"
-        >
-          <path d="M0.684 1.204V0.208H3.912V1.204H0.684Z" fill="#DC46A0" />
-        </svg>
+        <Minus size={12} color="#dc46a0" />
       </button>
 
       <span className="text-primary text-xl font-montserrat font-medium">
@@ -90,23 +82,11 @@ export function Button({
       <button
         onClick={() => handleIncrement(plus, id)}
         className={cn(
-          "min-w-[35%] min-h-[20px] flex flex-col items-start justify-center",
+          "min-w-[30%] min-h-[20px] flex flex-col items-start justify-center py-2 px-2",
           classNameIcons
         )}
       >
-        <svg
-          width="7"
-          height="6"
-          viewBox="0 0 7 6"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="ml-2"
-        >
-          <path
-            d="M2.988 5.428V0.172H3.996V5.428H2.988ZM0.804 3.28V2.332H6.18V3.28H0.804Z"
-            fill="#DC46A0"
-          />
-        </svg>
+        <Plus size={12} color="#dc46a0" />
       </button>
     </div>
   ) : (

@@ -9,8 +9,12 @@ const userSlice = createSlice({
     currentCategory: null,
     product: null,
     categoryName: null,
+    positionSidebar: 0,
   },
   reducers: {
+    changePositionSidebar: (state, { payload }) => {
+      state.positionSidebar = payload;
+    },
     changeCategoryName: (state, { payload }) => {
       state.categoryName = payload;
     },
@@ -36,7 +40,6 @@ const userSlice = createSlice({
         ...payload,
         quantity: payload.quantity,
       });
-      console.log("cartData", cartData);
       const setCookie = (name, value, days) => {
         const expires = new Date(Date.now() + days * 86400000).toUTCString();
         document.cookie = `${name}=${encodeURIComponent(
@@ -92,5 +95,6 @@ export const {
   recoveryAllCart,
   changeCurrentCategory,
   changeCategoryName,
+  changePositionSidebar,
 } = userSlice.actions;
 export default userSlice.reducer;

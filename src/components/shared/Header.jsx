@@ -1,15 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ROUTES } from "../routes/routes";
-import SearchInput from "./SearchInput";
+import { useDispatch } from "react-redux";
+import {
+  changeCurrentCategory,
+  changePositionSidebar,
+} from "../../features/slice/userSlice";
 
 export function Header() {
   const params = useLocation();
+  const dispatch = useDispatch();
   const isSearch = params.pathname === "/search";
 
   return !isSearch ? (
     <header className="flex justify-between items-center mt-[29px] mb-[13px]">
-      <Link to={ROUTES.HOME}>
+      <Link
+        onClick={() => {
+          dispatch(changeCurrentCategory(null));
+          dispatch(changePositionSidebar(0));
+        }}
+        to={ROUTES.HOME}
+      >
         <img src="/img/logo.svg" alt="ШТУЧКИ.PRO" />
       </Link>
       <div className="flex gap-5 items-center">
