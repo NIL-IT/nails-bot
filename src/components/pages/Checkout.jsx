@@ -1,49 +1,139 @@
 import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 import CustomerForm from "../shared/CustomerForm";
 import DeliveryForm from "../shared/DeliveryForm";
 import StoreSelectionModal from "../shared/StoreSelectionModal";
-import BoxberrySelectionModal from "../shared/BoxberrySelectionModal"; // Предполагаем, что такой компонент будет создан
+import BoxberrySelectionModal from "../shared/BoxberrySelectionModal";
 import FinishDesign from "../shared/FinishDesign";
 
-export default function Checkout() {
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    lastName: "",
-    firstName: "",
-    middleName: "",
-    email: "",
-    city: "",
-    phone: "+7",
-    region: "Томская",
-    index: "",
-    street: "",
-    house: "",
-    apartment: "",
+// Cookie configuration
+const COOKIE_CONFIG = {
+  expires: 30, // Set longer expiration (30 days)
+  path: "/", // Make cookies available across the entire site
+  sameSite: "strict",
+};
+
+// Cookie keys
+const COOKIE_KEYS = {
+  FORM_DATA: "checkoutFormData",
+  DELIVERY_OPTION: "deliveryOption",
+  SELECTED_STORE: "selectedStore",
+};
+
+export default function Checkout({ user }) {
+  const [shops, setShops] = useState([]);
+  // Initialize state from cookies immediately with default values as fallback
+  const [formData, setFormData] = useState(() => {
+    try {
+      const savedData = Cookies.get(COOKIE_KEYS.FORM_DATA);
+      return savedData
+        ? JSON.parse(savedData)
+        : {
+            lastName: "",
+            firstName: "",
+            middleName: "",
+            email: user?.email || "", // Use user email if available
+            city: "",
+            phone: "+7",
+            region: "",
+            index: "",
+            street: "",
+            house: "",
+            apartment: "",
+          };
+    } catch (error) {
+      console.error("Error loading form data from cookies:", error);
+      return {
+        lastName: "",
+        firstName: "",
+        middleName: "",
+        email: user?.email || "", // Use user email if available
+        city: "",
+        phone: "+7",
+        region: "",
+        index: "",
+        street: "",
+        house: "",
+        apartment: "",
+      };
+    }
   });
 
+  const [deliveryOption, setDeliveryOption] = useState(() => {
+    try {
+      const savedDelivery = Cookies.get(COOKIE_KEYS.DELIVERY_OPTION);
+      return savedDelivery ? JSON.parse(savedDelivery) : "selfPickup";
+    } catch (error) {
+      return "selfPickup";
+    }
+  });
+
+  const [selectedStore, setSelectedStore] = useState(() => {
+    try {
+      const savedStore = Cookies.get(COOKIE_KEYS.SELECTED_STORE);
+      return savedStore ? JSON.parse(savedStore) : null;
+    } catch (error) {
+      console.error("Error loading selected store from cookies:", error);
+      return null;
+    }
+  });
+
+  const [step, setStep] = useState(1);
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [formIsValid, setFormIsValid] = useState(false);
   const [addressFormIsValid, setAddressFormIsValid] = useState(false);
-  const [deliveryOption, setDeliveryOption] = useState("selfPickup");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStore, setSelectedStore] = useState(null);
-  const [priceDelivery, setPriceDelivery] = useState("0");
+  const [priceDelivery, setPriceDelivery] = useState();
+
+  // Helper function to safely save data to cookies
+  const saveToCookie = (key, value) => {
+    try {
+      const valueToStore =
+        typeof value === "object" ? JSON.stringify(value) : value;
+      Cookies.set(key, valueToStore, COOKIE_CONFIG);
+    } catch (error) {
+      console.error(`Error saving to cookie ${key}:`, error);
+    }
+  };
+
+  // Save form data when it changes
   useEffect(() => {
-    let price =
-      deliveryOption === "selfPickup"
-        ? 0
-        : deliveryOption === "courier"
-        ? 200.0
-        : deliveryOption === "south_gate"
-        ? 300.0
-        : deliveryOption === "park"
-        ? 250.0
-        : deliveryOption === "boxberry"
-        ? 162.0
-        : 0;
-    setPriceDelivery(price);
+    saveToCookie(COOKIE_KEYS.FORM_DATA, formData);
+  }, [formData]);
+
+  // Save delivery option when it changes
+  useEffect(() => {
+    saveToCookie(COOKIE_KEYS.DELIVERY_OPTION, deliveryOption);
   }, [deliveryOption]);
+
+  // Save selected store when it changes
+  useEffect(() => {
+    if (selectedStore) {
+      saveToCookie(COOKIE_KEYS.SELECTED_STORE, selectedStore);
+    } else {
+      Cookies.remove(COOKIE_KEYS.SELECTED_STORE);
+    }
+  }, [selectedStore]);
+
+  // Calculate delivery price
+  // useEffect(() => {
+  //   let price =
+  //     deliveryOption === "selfPickup"
+  //       ? 0
+  //       : deliveryOption === "courier"
+  //       ? 200.0
+  //       : deliveryOption === "south_gate"
+  //       ? 300.0
+  //       : deliveryOption === "park"
+  //       ? 250.0
+  //       : deliveryOption === "boxberry"
+  //       ? 162.0
+  //       : 0;
+
+  //   setPriceDelivery(price);
+  // }, [deliveryOption]);
+
   // Validate the entire form whenever data changes
   useEffect(() => {
     const { lastName, firstName, email, city, phone } = formData;
@@ -67,7 +157,7 @@ export default function Checkout() {
 
   // Validate the address form when delivery option changes or address fields change
   useEffect(() => {
-    if (deliveryOption === "courier") {
+    if (deliveryOption.id !== "selfPickup") {
       const { street, house, apartment } = formData;
       const isAddressComplete =
         street.trim() !== "" && house.trim() !== "" && apartment.trim() !== "";
@@ -78,13 +168,35 @@ export default function Checkout() {
     }
   }, [formData, deliveryOption]);
 
+  // When user data is available, update the form
+  useEffect(() => {
+    if (user && user.email && !formData.email) {
+      setFormData((prev) => ({
+        ...prev,
+        email: user.email,
+      }));
+    }
+  }, [user]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
-    });
-
+    }));
+    if (name === "city") {
+      setSelectedStore(null);
+      Cookies.remove(COOKIE_KEYS.SELECTED_STORE);
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+        region: "",
+        index: "",
+        street: "",
+        house: "",
+        apartment: "",
+      }));
+    }
     // Clear email error when typing
     if (name === "email") {
       setEmailError("");
@@ -142,11 +254,13 @@ export default function Checkout() {
   };
 
   const handleSelectDelivery = (option) => {
-    if (option !== "selfPickup") setSelectedStore(null);
+    if (option.id !== "Самовывоз из магазина ШТУЧКИ.PRO") {
+      setSelectedStore(null);
+      // When changing delivery option, also remove the selected store cookie
+      Cookies.remove(COOKIE_KEYS.SELECTED_STORE);
+    }
 
     setDeliveryOption(option);
-
-    // Reset selected store if switching to another option
   };
 
   const formatPhoneNumber = (value) => {
@@ -203,10 +317,10 @@ export default function Checkout() {
     // Format the phone number properly
     const formattedPhone = formatPhoneNumber(value);
 
-    setFormData({
-      ...formData,
+    setFormData((prevData) => ({
+      ...prevData,
       phone: formattedPhone,
-    });
+    }));
   };
 
   const handleSubmitFirstForm = (e) => {
@@ -214,7 +328,8 @@ export default function Checkout() {
     handleNextStep();
   };
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (data) => {
+    setShops(data);
     setIsModalOpen(true);
   };
 
@@ -234,26 +349,43 @@ export default function Checkout() {
       deliveryOption,
       selectedStore: selectedStore ? selectedStore.id : null,
     });
+
+    // Clear cookies after successful order submission
+    // clearSavedData();
+
     setStep(3);
     // Here you would typically call an API to submit the order
   };
 
-  const isDeliveryComplete = () => {
-    if (deliveryOption === "selfPickup") {
-      return !!selectedStore;
-    }
+  // Add method to clear saved form data (useful for adding a "Reset Form" button)
+  const clearSavedData = () => {
+    Cookies.remove(COOKIE_KEYS.FORM_DATA, { path: "/" });
+    Cookies.remove(COOKIE_KEYS.DELIVERY_OPTION, { path: "/" });
+    Cookies.remove(COOKIE_KEYS.SELECTED_STORE, { path: "/" });
 
-    // For courier delivery, check required address fields
-    if (
-      deliveryOption === "courier" ||
-      deliveryOption === "park" ||
-      deliveryOption === "south_gate" ||
-      deliveryOption === "boxberry"
-    ) {
+    setFormData({
+      lastName: "",
+      firstName: "",
+      middleName: "",
+      email: user?.email || "", // Keep user email if available
+      city: "",
+      phone: "+7",
+      region: "Томская",
+      index: "",
+      street: "",
+      house: "",
+      apartment: "",
+    });
+    setDeliveryOption("selfPickup");
+    setSelectedStore(null);
+  };
+
+  const isDeliveryComplete = () => {
+    if (deliveryOption.id === "selfPickup") {
+      return !!selectedStore;
+    } else {
       return addressFormIsValid;
     }
-
-    return false;
   };
 
   const getModalComponent = () => {
@@ -268,6 +400,9 @@ export default function Checkout() {
     } else {
       return (
         <StoreSelectionModal
+          setSelectedStore={setSelectedStore}
+          selectedStore={selectedStore}
+          shops={shops}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           onSelectStore={handleSelectStore}
@@ -275,7 +410,6 @@ export default function Checkout() {
       );
     }
   };
-
   return (
     <div className="p-4">
       <div className="max-w-md mx-auto">
@@ -294,6 +428,7 @@ export default function Checkout() {
             emailError={emailError}
             formIsValid={formIsValid}
             handleSubmitFirstForm={handleSubmitFirstForm}
+            clearSavedData={clearSavedData}
           />
         ) : step === 2 ? (
           <DeliveryForm
@@ -306,13 +441,16 @@ export default function Checkout() {
             isDeliveryComplete={isDeliveryComplete}
             handleFinalSubmit={handleFinalSubmit}
             handlePrevStep={setStep}
+            setPriceDelivery={setPriceDelivery}
           />
         ) : (
           <FinishDesign
+            deliveryOption={deliveryOption}
             priceDelivery={priceDelivery}
             formData={formData}
             selectedStore={selectedStore}
             handlePrevStep={setStep}
+            user={user}
           />
         )}
       </div>

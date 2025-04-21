@@ -41,7 +41,21 @@ export default function CustomerForm({
             <p className="text-secondary text-[12px] mt-1">{phoneError}</p>
           )}
         </div>
-
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">
+            Город <span className="text-primary">*</span>
+          </label>
+          <input
+            type="text"
+            name="city"
+            value={formData.city}
+            onChange={handleInputChange}
+            placeholder="Ваш город"
+            className="w-full p-3 border border-gray-300 
+              rounded focus:outline-none focus:border-secondary"
+            required
+          />
+        </div>
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">
             Фамилия <span className="text-primary">*</span>
@@ -108,21 +122,6 @@ export default function CustomerForm({
             {emailError && (
               <p className="text-secondary text-[12px] mt-1">{emailError}</p>
             )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Город <span className="text-primary">*</span>
-            </label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleInputChange}
-              placeholder="Ваш город"
-              className="w-full p-3 border border-gray-300 
-              rounded focus:outline-none focus:border-secondary"
-              required
-            />
           </div>
         </div>
 

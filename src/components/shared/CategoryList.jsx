@@ -4,10 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { outline } from "../../utils/constants";
 import { Button, Title } from "../ui";
 import { useDispatch } from "react-redux";
-import {
-  changeCategoryName,
-  changeCurrentProduct,
-} from "../../features/slice/userSlice";
+import { changeCategoryName } from "../../features/slice/userSlice";
 import { API } from "../../api";
 import { CategoryItem } from "./CategoryItem";
 import SkeletonLoader from "../ui/SkeletonLoader";
@@ -112,7 +109,6 @@ export function CategoryList({ subCategory }) {
                         if (index >= 2) return;
                         return (
                           <div key={index}>
-                            {console.log(product)}
                             <CategoryItem category={product} />
                           </div>
                         );

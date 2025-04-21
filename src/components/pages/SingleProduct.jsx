@@ -9,10 +9,9 @@ import { NotificationPopup } from "../shared/NotificationPopup";
 import { API } from "../../api";
 
 // Import or define SkeletonLoader component
-function SkeletonLoader({ categories }) {
+function SkeletonLoader() {
   return (
     <div>
-      {categories.length > 0 && <Sidebar categories={categories} />}
       <div className="flex flex-col gap-5 overflow-scroll mb-[90px]">
         {/* Image skeleton */}
         <div className="flex justify-center">
@@ -48,7 +47,7 @@ function SkeletonLoader({ categories }) {
   );
 }
 
-export default function SingleProduct({ categories }) {
+export default function SingleProduct() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const [count, setCount] = React.useState(1);
@@ -94,7 +93,7 @@ export default function SingleProduct({ categories }) {
   };
 
   if (loading) {
-    return <SkeletonLoader categories={categories} />;
+    return <SkeletonLoader />;
   }
 
   return (
@@ -103,7 +102,6 @@ export default function SingleProduct({ categories }) {
         isVisible={showNotification}
         message={"Товар добавлен в корзину"}
       />
-      {categories.length > 0 && <Sidebar categories={categories} />}
       <div className="flex flex-col gap-5 overflow-scroll mb-[90px]">
         <div className="flex justify-center ">
           <div className="w-[171px] h-[171px] ">

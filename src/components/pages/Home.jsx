@@ -70,7 +70,7 @@ const Home = ({ categories, user }) => {
 
   return category ? (
     <main className="mb-[30px]">
-      <Sidebar categories={categories} />
+      {/* <Sidebar categories={categories} /> */}
       {loading ? <></> : <CategoryList subCategory={subCategory} />}
       <Button
         className={"fixed bottom-[50px] right-[10px]"}

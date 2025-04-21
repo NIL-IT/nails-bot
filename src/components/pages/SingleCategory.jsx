@@ -7,7 +7,7 @@ import { API } from "../../api";
 import { CategoryItem } from "../shared/CategoryItem";
 import { X } from "lucide-react";
 import SkeletonLoader from "../ui/SkeletonLoader";
-export default function SingleCategory({ categories }) {
+export default function SingleCategory() {
   const [searchParams] = useSearchParams(); // Добавлено: получение query-параметров
   const id = searchParams.get("id"); // Извлечение id
   const nameParam = searchParams.get("name"); // Извлечение name
@@ -41,10 +41,8 @@ export default function SingleCategory({ categories }) {
     // );
     // setIndex(index);
   };
-  console.log(itemsData);
   return (
     <div>
-      {categories.length > 0 && <Sidebar categories={categories} />}
       {itemsData.length > 0 ? (
         <div className="my-[30px] ">
           <Title text={decodedName} className={"mb-5"} />

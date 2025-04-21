@@ -1,12 +1,7 @@
 import React from "react";
 import { Title } from "../ui";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { changeCurrentProduct } from "../../features/slice/userSlice";
-
 export function CategoryItem({ category }) {
-  const dispatch = useDispatch();
-  console.log("category", category);
   return (
     <Link
       to={`/categories?id=${category.id_section}&name=${category.name}`}

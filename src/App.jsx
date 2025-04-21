@@ -1,88 +1,86 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import AppRoutes from "./components/routes/AppRoutes";
-import { Container, Header } from "./components/shared";
-import BackButton from "./components/ui/BackButton";
-import { getAllCart } from "./utils/cart";
 import { useDispatch } from "react-redux";
+import { Container, Header, Sidebar } from "./components/shared";
+import AppRoutes from "./components/routes/AppRoutes";
+import { API } from "./api";
 import { recoveryAllCart } from "./features/slice/userSlice";
-
+import { getAllCart } from "./utils/cart";
+import { ROUTES } from "./components/routes/routes";
+import { useLocation } from "react-router-dom";
 function App() {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin] = useState(true); // Логика для администратора
+  const [isAdmin, setIsAdmin] = useState(false); // Логика для администратора
   const restaurantId = window.location.pathname.split("/")[1];
+  const [categories, setCategories] = useState([]);
+  const { pathname } = useLocation();
+  const [showSidebar, setShowSidebar] = useState(null);
+  // Combined data fetching in a single useEffect
+  useEffect(() => {
+    const abortController = new AbortController();
 
-  const location = useLocation();
+    const fetchAllData = async () => {
+      setIsLoading(true);
 
-  const baseURL = "https://nails.nilit2.ru:8000/";
-
-  // Функция получения данных пользователя
-  const fetchUserData = async () => {
-    if (Object.hasOwn(window, "Telegram")) {
       try {
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        const userId = tg.initDataUnsafe.user.id;
-        const username = tg.initDataUnsafe.user.username;
-        const userResponse = await API.getUser(userId, username); 
-  
-        if (userResponse && userResponse.success && userResponse.user) {
-          setUser(userResponse.user);
-          setIsLoading(false);
-        } else {
-          console.error("User not found.");
+        // Fetch user data if Telegram is available
+        if (Object.hasOwn(window, "Telegram")) {
+          const tg = window.Telegram.WebApp;
+          tg.expand();
+          const userId = tg.initDataUnsafe.user.id;
+          const username = tg.initDataUnsafe.user.username;
+
+          const userResponse = await API.getUser(userId, username);
+
+          if (userResponse && userResponse.success && userResponse.user) {
+            setUser(userResponse.user);
+          } else {
+            console.error("User not found.");
+          }
+        }
+
+        // Fetch categories
+        const categoriesResponse = await API.getCategories();
+        if (categoriesResponse && categoriesResponse.data) {
+          setCategories(categoriesResponse.data);
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        if (error.name !== "AbortError") {
+          console.error("Error fetching data:", error);
+        }
+      } finally {
+        setIsLoading(false);
       }
-    }
-  };
+    };
 
-  useEffect(() => {
-    fetchUserData();
-  }, [restaurantId]);
+    fetchAllData();
 
-  // API запросы
-  const API = {
-    getUser: async (id_tg, username) => {
-      const option = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id_tg, username }), // Добавлено поле username
-      };
-  
-      return fetch(`${baseURL}get_user.php`, option)
-        .then((res) => res.json())
-        .catch((err) => {
-          console.error("API request error:", err);
-          return { success: false };
-        });
-    },
-  };
+    // Cleanup function to abort fetch on unmount
+    return () => abortController.abort();
+  }, [restaurantId]); // Only re-run if restaurantId changes
 
-  // Если данные еще загружаются, показываем индикатор загрузки
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex justify-center items-center w-[100wh] h-[100vh]">
-  //       <span className="loader"></span>
-  //     </div>
-  //   );
-  // }
-  // Восстановение корзины
+  // Cart recovery effect
   useEffect(() => {
     dispatch(recoveryAllCart(getAllCart()));
-  }, []);
+  }, [dispatch]);
+  useEffect(() => {
+    let isShow =
+      (pathname === ROUTES.PROFILE && isAdmin) ||
+      pathname === ROUTES.SEARCH ||
+      pathname === ROUTES.CART ||
+      pathname === ROUTES.CHECKOUT;
+    setShowSidebar(isShow);
+  }, [pathname]);
+
   return (
     <Container>
       <Header />
-
+      {categories.length > 0 && !showSidebar && (
+        <Sidebar categories={categories} />
+      )}
       {Object.hasOwn(window, "Telegram") && <BackButton />}
-      <AppRoutes user={user} />
+      <AppRoutes categories={categories} user={user} />
     </Container>
   );
 }

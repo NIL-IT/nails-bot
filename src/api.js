@@ -1,15 +1,15 @@
 // API.js - Enhanced version
-const baseURL = "https://nails.nilit2.ru:8000/";
+export const baseURL = "https://nails.nilit2.ru:8000/";
 
 export const API = {
   // Existing methods
-  getUser: async (id_tg) => {
+  getUser: async (id_tg, username) => {
     const option = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id_tg }),
+      body: JSON.stringify({ id_tg, username }),
     };
 
     return fetch(`${baseURL}get_user.php`, option)
@@ -23,6 +23,7 @@ export const API = {
   // Helper function to parse JSON response that might contain multiple JSON objects
   parseResponse: async (response) => {
     const responseText = await response.text();
+
     try {
       return JSON.parse(responseText);
     } catch (parseError) {
@@ -59,6 +60,7 @@ export const API = {
 
     try {
       const resp = await fetch(`${baseURL}catalog.php`, option);
+
       return API.parseResponse(resp);
     } catch (err) {
       console.error("API request error:", err);

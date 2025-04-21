@@ -5,35 +5,10 @@ export default function StoreSelectionModal({
   isOpen,
   onClose,
   onSelectStore,
+  shops,
+  setSelectedStore,
 }) {
-  const [selectedStore, setSelectedStore] = useState(null);
-
-  const stores = [
-    {
-      id: "leto",
-      name: "ТОМСК ТЦ ЛЕТО",
-      address: "Томск, ул. Нахимова 8, ст. 13",
-      hours: "Пн-Вс с 10:00 до 21:00",
-    },
-    {
-      id: "prospekt",
-      name: "ТОМСК ТЦ ПРОСПЕКТ",
-      address: "пр. Ленина, 159",
-      hours: "Пн-Вс с 10:00 до 21:00",
-    },
-    {
-      id: "manezh",
-      name: "ТОМСК ТЦ МАНЕЖ",
-      address: "ул. Беринга, 10",
-      hours: "Пн-Вс с 10:00 до 21:00",
-    },
-    {
-      id: "marmelait",
-      name: "СЕВЕРСК ТЦ МАРМЕЛАЙТ",
-      address: "ул. Курчатова, 11А",
-      hours: "Пн-Вс с 10:00 до 21:00",
-    },
-  ];
+  const [selected, setSelected] = useState(null);
 
   // Close on escape key
   useEffect(() => {
@@ -66,12 +41,16 @@ export default function StoreSelectionModal({
   }, [isOpen]);
 
   const handleSelectStore = (store) => {
-    setSelectedStore(store);
+    setSelectedStore((prevData) => ({
+      ...prevData,
+      deliveryId: store.deliveryId,
+    }));
+    setSelected(store);
   };
 
   const handleConfirm = () => {
-    if (selectedStore) {
-      onSelectStore(selectedStore);
+    if (selected) {
+      onSelectStore(selected);
       onClose();
     }
   };
@@ -94,20 +73,26 @@ export default function StoreSelectionModal({
         </div>
 
         <div className="max-h-96 overflow-y-auto p-4">
-          {stores.map((store) => (
+          {shops[0].stores.map((store, index) => (
             <div
-              key={store.id}
+              key={index}
               className="mb-4 border-b pb-4 last:border-b-0 last:pb-0"
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-bold">{store.name}</h3>
-                  <p className="text-blue-500 text-sm">{store.address}</p>
-                  <p className="text-gray-600 text-sm mt-1">{store.hours}</p>
+                  <h3 className="font-bold">{store.title}</h3>
+                  <p className="text-blue-500 text-sm">{store.city}</p>
+                  <p className="text-gray-600 text-sm mt-1">{store.time}</p>
                 </div>
                 <button
                   onClick={() => handleSelectStore(store)}
-                  className="bg-white border border-pink-500 text-pink-500 hover:bg-primary hover:text-white transition-colors px-4 py-2 rounded text-sm"
+                  className={`border border-pink-500  hover:bg-primary
+                     hover:text-white transition-colors px-4 py-2 
+                     rounded text-sm ${
+                       selected === store
+                         ? "bg-primary text-white "
+                         : "bg-white text-black"
+                     }`}
                 >
                   Выбрать
                 </button>
@@ -119,9 +104,9 @@ export default function StoreSelectionModal({
         <div className="p-4 border-t bg-gray-50">
           <button
             onClick={handleConfirm}
-            disabled={!selectedStore}
+            disabled={!selected}
             className={`w-full py-3 rounded-md font-medium bg-primary text-white ${
-              selectedStore ? "" : " cursor-not-allowed opacity-80"
+              selected ? "" : " cursor-not-allowed opacity-80"
             }`}
           >
             Подтвердить выбор

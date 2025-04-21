@@ -6,17 +6,19 @@ import {
   addItemToCart,
   removeItemFromCart,
 } from "../../features/slice/userSlice";
-import { ROUTES } from "../routes/routes";
-import { Link } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
 
-export default function FinishDesign({
+import { Link } from "react-router-dom";
+
+import { baseURL } from "../../api";
+
+export default function FinishDsesign({
   formData,
   selectedStore,
   priceDelivery,
   handlePrevStep,
+  user,
+  deliveryOption,
 }) {
-  console.log(selectedStore);
   const dispatch = useDispatch();
   const { cart } = useSelector(({ user }) => user);
 
@@ -58,6 +60,37 @@ export default function FinishDesign({
     dispatch(removeItemFromCart(id));
   };
 
+  const handleSubmit = async () => {
+    try {
+      for (let item of cart) {
+        const option = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: "new_order",
+            name: item.name,
+            price: item.base_price,
+            userId: user?.id || 1,
+            productId: item.id_product,
+            quantity: item.quantity,
+            paySystemId: 1,
+            deliveryId: deliveryOption.deliveryId,
+            fio: `${formData.lastName} ${formData.firstName} ${formData?.middleName}`,
+            phone: formData.phone,
+            email: formData.email,
+            city: formData.city,
+          }),
+        };
+
+        const resp = await fetch(`${baseURL}order.php`, option);
+        const data = await resp.json();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div>
       <div className="bg-white rounded-lg shadow p-6 mb-2">
@@ -81,7 +114,7 @@ export default function FinishDesign({
           </div>
           <span className="ml-3 font-medium">
             {selectedStore
-              ? selectedStore.name
+              ? selectedStore.title
               : `${formData.street} дом ${formData.house} квартира ${formData.apartment} `}
           </span>
         </div>
@@ -189,11 +222,11 @@ export default function FinishDesign({
           </div>
           <div className="flex flex-col  gap-2">
             <span className=" text-[16px]">Доставка</span>
-            <span className="text-[20px]">{priceDelivery} ₽</span>
+            <span className="text-[20px]">{deliveryOption.price || 0} ₽</span>
           </div>
           <div className="flex flex-col  gap-2 text-primary">
             <span className="text-[16px] ">Итого</span>
-            <span className="text-[20px]">{sum + priceDelivery} ₽</span>
+            <span className="text-[20px]">{sum + deliveryOption.price} ₽</span>
           </div>
         </div>
       </div>
@@ -206,11 +239,12 @@ export default function FinishDesign({
             className="font-semibold 
             font-manrope text-3xl"
           >
-            {sum + priceDelivery} ₽
+            {sum + deliveryOption.price} ₽
           </span>
         </div>
         <div className="space-y-2">
           <Link
+            onClick={() => handleSubmit()}
             className="text-white block text-center 
           text-2xl font-manrope font-semibold rounded-[10px]
            bg-secondary  py-[9px] w-full"
