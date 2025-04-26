@@ -77,7 +77,7 @@ export default function FinishDsesign({
         ? JSON.stringify({
             type: "new_order",
             price: sum + deliveryOption.price,
-            userId: user?.id || 1,
+            userId: user?.id_tg || 1,
             products: productsObject,
             paySystemId: 24,
             deliveryId: selectedStore.deliveryId,
@@ -85,12 +85,12 @@ export default function FinishDsesign({
             phone: formData.phone,
             email: formData.email,
             city: formData.city,
-            id_tg_user: user?.id || 1,
+            id_tg_user: user?.id_tg || 1,
           })
         : JSON.stringify({
             type: "new_order",
             price: sum + deliveryOption.price,
-            userId: user?.id || 1,
+            userId: user?.id_tg || 1,
             products: productsObject,
             paySystemId: 24,
             deliveryId: deliveryOption.deliveryId,
@@ -98,7 +98,7 @@ export default function FinishDsesign({
             phone: formData.phone,
             email: formData.email,
             city: formData.city,
-            id_tg_user: user?.id || 1,
+            id_tg_user: user?.id_tg || 1,
             location: formData.region,
             index: formData.index,
             street: formData.street,

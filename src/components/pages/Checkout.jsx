@@ -62,9 +62,9 @@ export default function Checkout({ user }) {
   const [deliveryOption, setDeliveryOption] = useState(() => {
     try {
       const savedDelivery = Cookies.get(COOKIE_KEYS.DELIVERY_OPTION);
-      return savedDelivery ? JSON.parse(savedDelivery) : "selfPickup";
+      return savedDelivery ? JSON.parse(savedDelivery) : { id: "selfPickup" };
     } catch (error) {
-      return "selfPickup";
+      return { id: "selfPickup" };
     }
   });
 
