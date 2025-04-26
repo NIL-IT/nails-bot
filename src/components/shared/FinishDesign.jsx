@@ -254,7 +254,7 @@ export default function FinishDsesign({
           </div>
           <div className="flex flex-col  gap-2 text-primary">
             <span className="text-[16px] ">Итого</span>
-            <span className="text-[20px]">{sum + deliveryOption.price} ₽</span>
+            <span className="text-[20px]">{sum + deliveryOption?.price} ₽</span>
           </div>
         </div>
       </div>
@@ -267,7 +267,7 @@ export default function FinishDsesign({
             className="font-semibold 
             font-manrope text-3xl"
           >
-            {sum + deliveryOption.price} ₽
+            {sum + deliveryOption?.price} ₽
           </span>
         </div>
         <div className="space-y-2">
