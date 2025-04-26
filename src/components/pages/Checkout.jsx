@@ -177,7 +177,7 @@ export default function Checkout({ user }) {
       }));
     }
   }, [user]);
-
+  console.log(selectedStore);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({

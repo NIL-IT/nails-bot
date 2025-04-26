@@ -72,7 +72,7 @@ function App() {
       pathname === ROUTES.CHECKOUT;
     setShowSidebar(isShow);
   }, [pathname]);
-
+  console.log("user", user);
   return (
     <Container>
       <Header />

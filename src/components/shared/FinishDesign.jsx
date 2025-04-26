@@ -61,32 +61,60 @@ export default function FinishDsesign({
   };
 
   const handleSubmit = async () => {
-    try {
-      for (let item of cart) {
-        const option = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+    console.log("user", user);
+    const productsData = cart.map((product) => ({
+      productId: product.id_product,
+      quantity: product.quantity,
+      name: product.name,
+      price: product.base_price,
+    }));
+    const productsObject = productsData.reduce((acc, product, index) => {
+      acc[index] = product;
+      return acc;
+    }, {});
+    const bodyOption =
+      deliveryOption.id === "selfPickup"
+        ? JSON.stringify({
             type: "new_order",
-            name: item.name,
-            price: item.base_price,
+            price: sum + deliveryOption.price,
             userId: user?.id || 1,
-            productId: item.id_product,
-            quantity: item.quantity,
-            paySystemId: 1,
+            products: productsObject,
+            paySystemId: 24,
+            deliveryId: selectedStore.deliveryId,
+            fio: `${formData.lastName} ${formData.firstName} ${formData?.middleName}`,
+            phone: formData.phone,
+            email: formData.email,
+            city: formData.city,
+            id_tg_user: user?.id || 1,
+          })
+        : JSON.stringify({
+            type: "new_order",
+            price: sum + deliveryOption.price,
+            userId: user?.id || 1,
+            products: productsObject,
+            paySystemId: 24,
             deliveryId: deliveryOption.deliveryId,
             fio: `${formData.lastName} ${formData.firstName} ${formData?.middleName}`,
             phone: formData.phone,
             email: formData.email,
             city: formData.city,
-          }),
-        };
+            id_tg_user: user?.id || 1,
+            location: formData.region,
+            index: formData.index,
+            street: formData.street,
+            home: formData.house,
+            flat: formData.apartment,
+          });
+    try {
+      const option = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: bodyOption,
+      };
 
-        const resp = await fetch(`${baseURL}order.php`, option);
-        const data = await resp.json();
-      }
+      const resp = await fetch(`${baseURL}order.php`, option);
     } catch (err) {
       console.log(err);
     }

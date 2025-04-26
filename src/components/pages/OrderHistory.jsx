@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Title } from "../ui";
 import { PRODUCTS, USERS } from "../../utils/data";
 import OrderItem from "../shared/OrderItem";
@@ -7,8 +7,31 @@ import { useSortedOrdersUser } from "../../hooks/useSortedOrdersUser";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../features/slice/userSlice";
 import { ROUTES } from "../routes/routes";
+import { baseURL } from "../../api";
 
-export default function OrderHistory() {
+export default function OrderHistory({ user }) {
+  const fetchOrders = async () => {
+    try {
+      const option = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          method: "user",
+          id_tg_user: user?.id || 1,
+        }),
+      };
+      const resp = await fetch(`${baseURL}get_orders.php`, option);
+      const data = await resp.json();
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    fetchOrders();
+  }, []);
   const dispatch = useDispatch();
   const addItem = (items) => {
     for (let i = 0; i < items.length; i++) {

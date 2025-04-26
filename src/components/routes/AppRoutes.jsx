@@ -8,16 +8,10 @@ import Cart from "../pages/Cart";
 import SearchItems from "../pages/SearchItems";
 import OrderHistory from "../pages/OrderHistory";
 import OrderHistoryAdmin from "../pages/OrderHistoryAdmin";
-import { API, getAllProducts } from "../../api";
 import Checkout from "../pages/Checkout";
-import { Sidebar } from "lucide-react";
 
 const AppRoutes = ({ user, categories }) => {
-  const [products, setProducts] = useState([]);
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  if (loading && !categories) {
+  if (!categories) {
     return (
       <div className="flex justify-center items-center w-[100wh] h-[100vh]">
         <span className="loader"></span>
@@ -33,21 +27,15 @@ const AppRoutes = ({ user, categories }) => {
         />
         <Route path={ROUTES.CATEGORY} element={<SingleCategory />} />
         <Route path={ROUTES.PRODUCT} element={<SingleProduct />} />
-        <Route
-          path={ROUTES.SEARCH}
-          element={<SearchItems products={products} />}
-        />
+        <Route path={ROUTES.SEARCH} element={<SearchItems />} />
         <Route path={ROUTES.CHECKOUT} element={<Checkout user={user} />} />
         {user?.admin ? (
           <Route
             path={ROUTES.PROFILE}
-            element={<OrderHistoryAdmin orders={orders} />}
+            element={<OrderHistoryAdmin user={user} />}
           />
         ) : (
-          <Route
-            path={ROUTES.PROFILE}
-            element={<OrderHistory orders={orders} />}
-          />
+          <Route path={ROUTES.PROFILE} element={<OrderHistory user={user} />} />
         )}
 
         <Route path={ROUTES.CART} element={<Cart />} />
