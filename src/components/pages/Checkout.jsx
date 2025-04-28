@@ -5,16 +5,19 @@ import DeliveryForm from "../shared/DeliveryForm";
 import StoreSelectionModal from "../shared/StoreSelectionModal";
 import BoxberrySelectionModal from "../shared/BoxberrySelectionModal";
 import FinishDesign from "../shared/FinishDesign";
+import { NotificationPopup } from "../shared/NotificationPopup";
+import { useNavigate } from "react-router-dom";
+import { baseURL } from "../../api";
 
-// Cookie configuration
+// Storage configuration
 const COOKIE_CONFIG = {
   expires: 30, // Set longer expiration (30 days)
   path: "/", // Make cookies available across the entire site
   sameSite: "strict",
 };
 
-// Cookie keys
-const COOKIE_KEYS = {
+// Storage keys
+const STORAGE_KEYS = {
   FORM_DATA: "checkoutFormData",
   DELIVERY_OPTION: "deliveryOption",
   SELECTED_STORE: "selectedStore",
@@ -22,62 +25,126 @@ const COOKIE_KEYS = {
 
 export default function Checkout({ user }) {
   const [shops, setShops] = useState([]);
-  // Initialize state from cookies immediately with default values as fallback
-  const [formData, setFormData] = useState(() => {
+  const navigate = useNavigate();
+  const [showNotification, setShowNotification] = useState(false);
+  const [massage, setMassage] = useState("");
+  const verifyPayment = async (id) => {
     try {
-      const savedData = Cookies.get(COOKIE_KEYS.FORM_DATA);
-      return savedData
-        ? JSON.parse(savedData)
-        : {
-            lastName: "",
-            firstName: "",
-            middleName: "",
-            email: user?.email || "", // Use user email if available
-            city: "",
-            phone: "+7",
-            region: "",
-            index: "",
-            street: "",
-            house: "",
-            apartment: "",
-          };
-    } catch (error) {
-      console.error("Error loading form data from cookies:", error);
-      return {
-        lastName: "",
-        firstName: "",
-        middleName: "",
-        email: user?.email || "", // Use user email if available
-        city: "",
-        phone: "+7",
-        region: "",
-        index: "",
-        street: "",
-        house: "",
-        apartment: "",
-      };
+      const fetchPayment = await fetch(`${baseURL}payment.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "verify_payment",
+          payment_id: id,
+        }),
+      });
+      const dataFetchPayment = await fetchPayment.json();
+      console.log("dataFetchPayment", dataFetchPayment);
+      setMassage(dataFetchPayment.message);
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false);
+        if (dataFetchPayment.status !== "failed") {
+          navigate("/");
+        }
+      }, 2000);
+      Cookies.remove("payment_id");
+      localStorage.removeItem("payment_id");
+      sessionStorage.removeItem("payment_id");
+      return dataFetchPayment;
+    } catch (err) {
+      console.log(err);
     }
+  };
+  useEffect(() => {
+    const cookieData = Cookies.get("payment_id");
+    if (cookieData) {
+      verifyPayment(cookieData);
+      return;
+    }
+    const sessionData = sessionStorage.getItem("payment_id");
+    if (sessionData) {
+      verifyPayment(sessionData);
+      return;
+    }
+    const localData = localStorage.getItem("payment_id");
+    if (localData) {
+      verifyPayment(localData);
+      return;
+    }
+  }, []);
+  // Helper function to safely save data to all storage methods
+  const saveToStorage = (key, value) => {
+    try {
+      const valueToStore =
+        typeof value === "object" ? JSON.stringify(value) : value;
+
+      // Save to cookies
+      Cookies.set(key, valueToStore, COOKIE_CONFIG);
+
+      // Save to localStorage
+      localStorage.setItem(key, valueToStore);
+
+      // Save to sessionStorage
+      sessionStorage.setItem(key, valueToStore);
+    } catch (error) {
+      console.error(`Error saving to storage ${key}:`, error);
+    }
+  };
+
+  // Helper function to retrieve data from storage with fallback chain
+  const getFromStorage = (key, defaultValue) => {
+    try {
+      // Try localStorage first
+      const localData = localStorage.getItem(key);
+      if (localData) return JSON.parse(localData);
+
+      // Then try sessionStorage
+      const sessionData = sessionStorage.getItem(key);
+      if (sessionData) return JSON.parse(sessionData);
+
+      // Finally try cookies
+      const cookieData = Cookies.get(key);
+      if (cookieData) return JSON.parse(cookieData);
+
+      // Return default if none exists
+      return defaultValue;
+    } catch (error) {
+      console.error(`Error retrieving data from storage ${key}:`, error);
+      return defaultValue;
+    }
+  };
+
+  // Initialize state from storage immediately with default values as fallback
+  const [formData, setFormData] = useState(() => {
+    const defaultFormData = {
+      lastName: "",
+      firstName: "",
+      middleName: "",
+      email: user?.email || "",
+      city: "",
+      phone: "+7",
+      region: "",
+      index: "",
+      street: "",
+      house: "",
+      apartment: "",
+    };
+
+    return getFromStorage(STORAGE_KEYS.FORM_DATA, defaultFormData);
   });
 
   const [deliveryOption, setDeliveryOption] = useState(() => {
-    try {
-      const savedDelivery = Cookies.get(COOKIE_KEYS.DELIVERY_OPTION);
-      return savedDelivery
-        ? JSON.parse(savedDelivery)
-        : { id: "selfPickup", price: 0 };
-    } catch (error) {
-      return { id: "selfPickup", price: 0 };
-    }
+    return getFromStorage(STORAGE_KEYS.DELIVERY_OPTION, {
+      id: "selfPickup",
+      price: 0,
+    });
   });
 
   const [selectedStore, setSelectedStore] = useState(() => {
-    try {
-      const savedStore = Cookies.get(COOKIE_KEYS.SELECTED_STORE);
-      return savedStore ? JSON.parse(savedStore) : null;
-    } catch (error) {
-      console.error("Error loading selected store from cookies:", error);
-      return null;
-    }
+    return getFromStorage(STORAGE_KEYS.SELECTED_STORE, null);
   });
 
   const [step, setStep] = useState(1);
@@ -88,53 +155,27 @@ export default function Checkout({ user }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [priceDelivery, setPriceDelivery] = useState();
 
-  // Helper function to safely save data to cookies
-  const saveToCookie = (key, value) => {
-    try {
-      const valueToStore =
-        typeof value === "object" ? JSON.stringify(value) : value;
-      Cookies.set(key, valueToStore, COOKIE_CONFIG);
-    } catch (error) {
-      console.error(`Error saving to cookie ${key}:`, error);
-    }
-  };
-
   // Save form data when it changes
   useEffect(() => {
-    saveToCookie(COOKIE_KEYS.FORM_DATA, formData);
+    saveToStorage(STORAGE_KEYS.FORM_DATA, formData);
   }, [formData]);
 
   // Save delivery option when it changes
   useEffect(() => {
-    saveToCookie(COOKIE_KEYS.DELIVERY_OPTION, deliveryOption);
+    saveToStorage(STORAGE_KEYS.DELIVERY_OPTION, deliveryOption);
   }, [deliveryOption]);
 
   // Save selected store when it changes
   useEffect(() => {
     if (selectedStore) {
-      saveToCookie(COOKIE_KEYS.SELECTED_STORE, selectedStore);
+      saveToStorage(STORAGE_KEYS.SELECTED_STORE, selectedStore);
     } else {
-      Cookies.remove(COOKIE_KEYS.SELECTED_STORE);
+      // Remove from all storage methods
+      Cookies.remove(STORAGE_KEYS.SELECTED_STORE);
+      localStorage.removeItem(STORAGE_KEYS.SELECTED_STORE);
+      sessionStorage.removeItem(STORAGE_KEYS.SELECTED_STORE);
     }
   }, [selectedStore]);
-
-  // Calculate delivery price
-  // useEffect(() => {
-  //   let price =
-  //     deliveryOption === "selfPickup"
-  //       ? 0
-  //       : deliveryOption === "courier"
-  //       ? 200.0
-  //       : deliveryOption === "south_gate"
-  //       ? 300.0
-  //       : deliveryOption === "park"
-  //       ? 250.0
-  //       : deliveryOption === "boxberry"
-  //       ? 162.0
-  //       : 0;
-
-  //   setPriceDelivery(price);
-  // }, [deliveryOption]);
 
   // Validate the entire form whenever data changes
   useEffect(() => {
@@ -179,7 +220,9 @@ export default function Checkout({ user }) {
       }));
     }
   }, [user]);
+
   console.log(selectedStore);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -188,7 +231,11 @@ export default function Checkout({ user }) {
     }));
     if (name === "city") {
       setSelectedStore(null);
-      Cookies.remove(COOKIE_KEYS.SELECTED_STORE);
+      // Clear selected store from all storage methods
+      Cookies.remove(STORAGE_KEYS.SELECTED_STORE);
+      localStorage.removeItem(STORAGE_KEYS.SELECTED_STORE);
+      sessionStorage.removeItem(STORAGE_KEYS.SELECTED_STORE);
+
       setFormData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -258,8 +305,10 @@ export default function Checkout({ user }) {
   const handleSelectDelivery = (option) => {
     if (option.id !== "Самовывоз из магазина ШТУЧКИ.PRO") {
       setSelectedStore(null);
-      // When changing delivery option, also remove the selected store cookie
-      Cookies.remove(COOKIE_KEYS.SELECTED_STORE);
+      // Clear selected store from all storage methods
+      Cookies.remove(STORAGE_KEYS.SELECTED_STORE);
+      localStorage.removeItem(STORAGE_KEYS.SELECTED_STORE);
+      sessionStorage.removeItem(STORAGE_KEYS.SELECTED_STORE);
     }
 
     setDeliveryOption(option);
@@ -361,9 +410,18 @@ export default function Checkout({ user }) {
 
   // Add method to clear saved form data (useful for adding a "Reset Form" button)
   const clearSavedData = () => {
-    Cookies.remove(COOKIE_KEYS.FORM_DATA, { path: "/" });
-    Cookies.remove(COOKIE_KEYS.DELIVERY_OPTION, { path: "/" });
-    Cookies.remove(COOKIE_KEYS.SELECTED_STORE, { path: "/" });
+    // Clear data from all storage methods
+    Cookies.remove(STORAGE_KEYS.FORM_DATA, { path: "/" });
+    Cookies.remove(STORAGE_KEYS.DELIVERY_OPTION, { path: "/" });
+    Cookies.remove(STORAGE_KEYS.SELECTED_STORE, { path: "/" });
+
+    localStorage.removeItem(STORAGE_KEYS.FORM_DATA);
+    localStorage.removeItem(STORAGE_KEYS.DELIVERY_OPTION);
+    localStorage.removeItem(STORAGE_KEYS.SELECTED_STORE);
+
+    sessionStorage.removeItem(STORAGE_KEYS.FORM_DATA);
+    sessionStorage.removeItem(STORAGE_KEYS.DELIVERY_OPTION);
+    sessionStorage.removeItem(STORAGE_KEYS.SELECTED_STORE);
 
     setFormData({
       lastName: "",
@@ -414,6 +472,7 @@ export default function Checkout({ user }) {
   };
   return (
     <div className="p-4">
+      <NotificationPopup isVisible={showNotification} message={massage} />
       <div className="max-w-md mx-auto">
         <h1 className="text-3xl font-bold mb-6 opacity-70">
           Оформление заказа

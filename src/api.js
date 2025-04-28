@@ -21,23 +21,92 @@ export const API = {
   },
 
   // Helper function to parse JSON response that might contain multiple JSON objects
+  parseResponseTwo: async (response) => {
+    const responseText = await response.text();
+    console.log("Полученный ответ:", responseText);
+
+    try {
+      // Попытка разобрать весь ответ как JSON
+      return JSON.parse(responseText);
+    } catch (parseError) {
+      console.log(
+        "Не удалось разобрать весь ответ как JSON. Попытка извлечения объектов..."
+      );
+
+      try {
+        // Найти все возможные JSON объекты в строке с помощью регулярного выражения
+        const jsonObjects = [];
+        const regex = /(\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})/g;
+        let match;
+
+        while ((match = regex.exec(responseText)) !== null) {
+          try {
+            const jsonObj = JSON.parse(match[0]);
+            jsonObjects.push(jsonObj);
+          } catch (e) {
+            console.log("Не удалось разобрать найденный объект:", match[0]);
+          }
+        }
+
+        console.log("Найдено JSON объектов:", jsonObjects.length);
+
+        // Возвращаем второй объект, если он есть
+        if (jsonObjects.length >= 2) {
+          console.log("Возвращаем второй объект:", jsonObjects[1]);
+          return jsonObjects[1];
+        } else if (jsonObjects.length === 1) {
+          console.log("Найден только один объект:", jsonObjects[0]);
+          return jsonObjects[0];
+        } else {
+          console.error("JSON объекты не найдены в ответе");
+          return null;
+        }
+      } catch (e) {
+        console.error("Ошибка при разборе ответа:", e);
+        return null;
+      }
+    }
+  },
   parseResponse: async (response) => {
     const responseText = await response.text();
-
+    console.log(responseText);
     try {
       return JSON.parse(responseText);
     } catch (parseError) {
       // If single JSON parse fails, try splitting multiple JSON objects
       const jsonParts = responseText.split("}{");
+      console.log("jsonParts", jsonParts);
       if (jsonParts.length > 1) {
         // Fix the split objects by adding the missing braces
         const dataJson = jsonParts[0] + "}" + "{" + jsonParts[1];
+        console.log("dataJson", dataJson);
         try {
+          console.log("JSON.parse(dataJson)", JSON.parse(dataJson));
           return JSON.parse(dataJson);
         } catch (e) {
           // If that fails, try just the second part
           const secondPart = "{" + jsonParts[1];
           return JSON.parse(secondPart);
+        }
+      } else {
+        try {
+          // Try to parse as is first
+          return JSON.parse(jsonParts[0]);
+        } catch (e) {
+          // If that fails, try to clean the JSON string
+          try {
+            // Find where the first valid JSON object ends
+            const match = jsonParts[0].match(/^\s*(\{.*?\}|\[.*?\])\s*/);
+            if (match) {
+              console.log("Extracted valid JSON part:", match);
+              return JSON.parse(match[1]);
+            }
+            console.error("Could not extract valid JSON:", e);
+            return null;
+          } catch (e2) {
+            console.error("Failed to parse JSON:", e2);
+            return null;
+          }
         }
       }
       // console.error("Unable to parse response data:", responseText);

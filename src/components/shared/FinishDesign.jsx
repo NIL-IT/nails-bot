@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Title } from "../ui";
 import { useDispatch, useSelector } from "react-redux";
 import { minus, normal, quantity } from "../../utils/constants";
+import Cookies from "js-cookie";
 import {
   addItemToCart,
   removeItemFromCart,
@@ -9,7 +10,7 @@ import {
 
 import { Link } from "react-router-dom";
 
-import { baseURL } from "../../api";
+import { API, baseURL } from "../../api";
 
 export default function FinishDsesign({
   formData,
@@ -20,8 +21,8 @@ export default function FinishDsesign({
   deliveryOption,
 }) {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const { cart } = useSelector(({ user }) => user);
-
   const sum = cart.reduce((acc, item) => {
     let price =
       item?.base_price && item?.base_price !== "0.00"
@@ -61,6 +62,7 @@ export default function FinishDsesign({
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     console.log("user", user);
     const productsData = cart.map((product) => ({
       productId: product.id_product,
@@ -72,11 +74,12 @@ export default function FinishDsesign({
       acc[index] = product;
       return acc;
     }, {});
+    const sumPrice = sum + deliveryOption?.price;
     const bodyOption =
       deliveryOption.id === "selfPickup"
         ? JSON.stringify({
             type: "new_order",
-            price: sum + deliveryOption.price,
+            price: sumPrice,
             userId: user?.id_tg || 1,
             products: productsObject,
             paySystemId: 24,
@@ -89,7 +92,7 @@ export default function FinishDsesign({
           })
         : JSON.stringify({
             type: "new_order",
-            price: sum + deliveryOption.price,
+            price: sumPrice,
             userId: user?.id_tg || 1,
             products: productsObject,
             paySystemId: 24,
@@ -115,12 +118,41 @@ export default function FinishDsesign({
       };
 
       const resp = await fetch(`${baseURL}order.php`, option);
+      const { data } = await API.parseResponseTwo(resp);
+      console.log(sumPrice);
+      const fetchPayment = await fetch(`${baseURL}payment.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "init_payment",
+          amont: sumPrice * 100,
+          id_tg_user: user?.id_tg || 1,
+          order_id: data.order_id,
+        }),
+      });
+      const dataFetchPayment = await fetchPayment.json();
+      const paymentId = dataFetchPayment.payment_id;
+      Cookies.set("payment_id", paymentId);
+      localStorage.setItem("payment_id", paymentId);
+      sessionStorage.setItem("payment_id", paymentId);
+      window.location.href = dataFetchPayment.payment_url;
+      setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
       console.log(err);
     }
   };
   return (
     <div>
+      {isLoading && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black/20 z-40">
+          <div className="fixed top-0 left-0  w-full h-full z-50 flex items-center flex-col justify-center">
+            <div className="loader"></div>
+          </div>
+        </div>
+      )}
       <div className="bg-white rounded-lg shadow p-6 mb-2">
         <div className="flex items-center ">
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
