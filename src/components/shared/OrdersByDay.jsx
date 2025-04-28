@@ -2,45 +2,76 @@ import React, { useEffect, useState } from "react";
 
 import { Title } from "../ui";
 import OrderAdminItem from "./OrderAdminItem";
-import { PRODUCTS, USERS } from "../../utils/data";
 
-export default function OrdersByDay({ order, index }) {
+export default function OrdersByDay({ order }) {
+  console.log("order", order);
   const [sum, setSum] = useState(0);
-  const calcSum = () => {
-    let price = 0;
-    for (let { id, quantity } of order.items) {
-      const currentItem = PRODUCTS.find((item) => item.id === id);
-      price += currentItem.price * quantity;
-    }
-    return price;
-  };
+  const [time, setTime] = useState(null);
+  const [timezone, setTimezone] = useState(null);
   useEffect(() => {
-    if (!order) return;
-    setSum(calcSum());
+    if (order?.orderDate) {
+      setTime(
+        order?.orderDate.getHours() +
+          ":" +
+          order?.orderDate.getMinutes() +
+          ":" +
+          order?.orderDate.getSeconds()
+      );
+      setTimezone(order?.orderDate.toString().match(/GMT\+\d{2}:\d{2}/)[0]);
+    }
+  }, []);
+
+  // Calculate total sum whenever order products change
+  useEffect(() => {
+    if (order && Array.isArray(order.products)) {
+      const totalSum = order.products.reduce((acc, item) => {
+        return acc + item.base_price * (item.quantity || 1);
+      }, 0);
+      setSum(totalSum);
+    }
   }, [order]);
+
+  // If order is undefined or missing properties, don't render anything
+  if (!order) {
+    return null;
+  }
 
   return (
     <div>
-      {index === 0 && (
-        <Title
-          text={`Заказы от ${order.date}`}
-          className={"mb-5 text-primary"}
-        />
-      )}
+      <Title
+        text={`Заказы от ${
+          order.time.split(" ")[0].split("-").reverse().join(".") ||
+          "неизвестная дата"
+        }`}
+        className={"mb-5 text-primary"}
+      />
+
       <div className="mb-[10px] bg-gray p-[6px] rounded-[10px]">
-        <Title text={`Заказ №${order.number}`} size={"2xl"} />
+        <Title text={`Заказ №${order.order_id || "б/н"}`} size={"2xl"} />
         <div className="mt-[10px] mb-5 text-base font-montserrat text-gray_dark">
-          <p className="mb-[5px]">Имя:&nbsp;{order.userName}</p>
-          <p>Время заказа:&nbsp;{order.time}</p>
+          <p className="mb-[5px]">Имя:&nbsp;{order.fio || "Не указано"}</p>
+          <p>
+            Время заказа:&nbsp;
+            {time
+              ? `${time} ${timezone}`
+              : `${order.time
+                  .split(" ")[0]
+                  .split("-")
+                  .reverse()
+                  .join(".")} GMT+07:00`}
+          </p>
         </div>
         <div className="flex flex-col gap-[5px]">
-          {order.items.map((item) => (
-            <OrderAdminItem item={item} key={item.id} />
-          ))}
+          {Array.isArray(order.products) ? (
+            order.products.map((item) => (
+              <OrderAdminItem item={item} key={item.id} />
+            ))
+          ) : (
+            <p>Нет данных о товарах</p>
+          )}
         </div>
         <div className="flex justify-between items-center mt-5">
           <p>Общая стоимость заказа</p>
-
           <span className="font-manrope text-3xl font-semibold">{sum}₽</span>
         </div>
       </div>

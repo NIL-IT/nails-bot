@@ -80,7 +80,7 @@ export default function FinishDsesign({
         ? JSON.stringify({
             type: "new_order",
             price: sumPrice,
-            userId: user?.id_tg || 1,
+            userId: user?.id_tg || 792820756,
             products: productsObject,
             paySystemId: 24,
             deliveryId: selectedStore.deliveryId,
@@ -88,12 +88,12 @@ export default function FinishDsesign({
             phone: formData.phone,
             email: formData.email,
             city: formData.city,
-            id_tg_user: user?.id_tg || 1,
+            id_tg_user: user?.id_tg || 792820756,
           })
         : JSON.stringify({
             type: "new_order",
             price: sumPrice,
-            userId: user?.id_tg || 1,
+            userId: user?.id_tg || 792820756,
             products: productsObject,
             paySystemId: 24,
             deliveryId: deliveryOption.deliveryId,
@@ -101,7 +101,7 @@ export default function FinishDsesign({
             phone: formData.phone,
             email: formData.email,
             city: formData.city,
-            id_tg_user: user?.id_tg || 1,
+            id_tg_user: user?.id_tg || 792820756,
             location: formData.region,
             index: formData.index,
             street: formData.street,
@@ -128,7 +128,7 @@ export default function FinishDsesign({
         body: JSON.stringify({
           type: "init_payment",
           amont: sumPrice * 100,
-          id_tg_user: user?.id_tg || 1,
+          id_tg_user: user?.id_tg || 792820756,
           order_id: data.order_id,
         }),
       });

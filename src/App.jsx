@@ -67,13 +67,12 @@ function App() {
   }, [dispatch]);
   useEffect(() => {
     let isShow =
-      (pathname === ROUTES.PROFILE && isAdmin) ||
+      (pathname === ROUTES.PROFILE && user?.admin) ||
       pathname === ROUTES.SEARCH ||
       pathname === ROUTES.CART ||
       pathname === ROUTES.CHECKOUT;
     setShowSidebar(isShow);
   }, [pathname]);
-  console.log("user", user);
   return (
     <Container>
       <Header />

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Title } from "../ui";
 import { PRODUCTS, USERS } from "../../utils/data";
 import OrderItem from "../shared/OrderItem";
@@ -7,9 +7,11 @@ import { useSortedOrdersUser } from "../../hooks/useSortedOrdersUser";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../features/slice/userSlice";
 import { ROUTES } from "../routes/routes";
-import { baseURL } from "../../api";
+import { API, baseURL } from "../../api";
 
 export default function OrderHistory({ user }) {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
   const fetchOrders = async () => {
     try {
       const option = {
@@ -19,38 +21,50 @@ export default function OrderHistory({ user }) {
         },
         body: JSON.stringify({
           method: "user",
-          id_tg_user: toString(user?.id_tg) || 1,
+          id_tg_user: user?.id_tg || 792820756,
         }),
       };
       const resp = await fetch(`${baseURL}get_orders.php`, option);
-      const data = await resp.json();
-      console.log(data);
+      const { data } = await API.parseResponse(resp);
+      setData(useSortedOrdersUser(data));
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
     fetchOrders();
   }, []);
   const dispatch = useDispatch();
-  const addItem = (items) => {
-    for (let i = 0; i < items.length; i++) {
-      let product = PRODUCTS.filter((item) => item.id === items[i].id);
-      let item = product[0];
-      dispatch(addItemToCart({ ...item, quantity: items[i].quantity }));
+  const addItem = async (items) => {
+    for (let item of items) {
+      const fetchProduct = await API.getProduct(item.id);
+      dispatch(
+        addItemToCart({ ...fetchProduct.data[0], quantity: item.quantity })
+      );
     }
   };
-  return (
+  return loading ? (
+    <></>
+  ) : data.length > 0 ? (
     <div className="mb-[30px]">
-      {useSortedOrdersUser(USERS[0]).map((order, index) => (
+      {data.map((order, index) => (
         <div key={index}>
-          <Title text={`Заказ от ${order.date}`} className={"mt-[30px]"} />
+          <Title
+            text={`Заказ от ${order.time
+              .split(" ")[0]
+              .split("-")
+              .reverse()
+              .join("-")}`}
+            className={"mt-[30px]"}
+          />
           <div className="mt-5 flex flex-col gap-[10px]">
-            {order.items.map((item) => (
+            {order.products.map((item) => (
               <OrderItem key={item.id} item={item} />
             ))}
           </div>
-          <div onClick={() => addItem(order.items)}>
+          <div onClick={() => addItem(order.products)}>
             <Button
               to={ROUTES.CART}
               text="Повторный заказ"
@@ -61,5 +75,7 @@ export default function OrderHistory({ user }) {
         </div>
       ))}
     </div>
+  ) : (
+    <div>Заказов нет</div>
   );
 }

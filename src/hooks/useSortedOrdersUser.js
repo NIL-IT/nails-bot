@@ -1,23 +1,25 @@
-export const useSortedOrdersUser = (object) => {
-  const sortedOrders = object.orders.sort((a, b) => {
-    const [dayA, monthA, yearA] = a.date.split(".");
-    const [dayB, monthB, yearB] = b.date.split(".");
-    const [timeA] = a.time.split(" ");
-    const [timeB] = b.time.split(" ");
-    const dateTimeA = new Date(
-      `20${yearA}`,
-      monthA - 1,
-      dayA,
-      ...timeA.split(":")
-    );
-    const dateTimeB = new Date(
-      `20${yearB}`,
-      monthB - 1,
-      dayB,
-      ...timeB.split(":")
-    );
+export const useSortedOrdersUser = (arr) => {
+  const sortedOrders = arr
+    .map((order) => {
+      // Преобразуем строку products в JSON массив
+      if (typeof order.products === "string") {
+        try {
+          order.products = JSON.parse(order.products.replace(/'/g, '"'));
+        } catch (e) {
+          console.error("Ошибка при парсинге products:", e);
+          order.products = [];
+        }
+      }
 
-    return dateTimeB.getTime() - dateTimeA.getTime();
-  });
+      return order;
+    })
+    .sort((a, b) => {
+      // Адаптируем для формата времени "2025-04-27 17:16:11.103915"
+      const dateTimeA = new Date(a.time);
+      const dateTimeB = new Date(b.time);
+
+      return dateTimeB.getTime() - dateTimeA.getTime();
+    });
+
   return sortedOrders;
 };

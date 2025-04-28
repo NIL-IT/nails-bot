@@ -53,7 +53,7 @@ export default function SingleProduct() {
   const [count, setCount] = React.useState(1);
   const [itemData, setItemData] = useState({});
   const [loading, setLoading] = useState(true);
-
+  console.log(itemData);
   useEffect(() => {
     if (!loading) return;
     const fetchAllData = async () => {

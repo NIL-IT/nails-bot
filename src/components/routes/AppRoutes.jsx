@@ -29,6 +29,7 @@ const AppRoutes = ({ user, categories }) => {
         <Route path={ROUTES.PRODUCT} element={<SingleProduct />} />
         <Route path={ROUTES.SEARCH} element={<SearchItems />} />
         <Route path={ROUTES.CHECKOUT} element={<Checkout user={user} />} />
+
         {user?.admin ? (
           <Route
             path={ROUTES.PROFILE}

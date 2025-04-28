@@ -2,49 +2,71 @@ import React from "react";
 
 export const useSortedOrders = (data) => {
   const sortedOrders = React.useMemo(() => {
-    return data
-      .flatMap((user) =>
-        user.orders.map((order) => ({
+    // Преобразуем и выравниваем данные
+    const flattenedOrders = Array.isArray(data) ? data : [data];
+
+    return flattenedOrders
+      .map((order) => {
+        // Преобразуем строку products в JSON массив
+        try {
+          // Преобразуем одинарные кавычки в двойные для корректного JSON.parse
+          if (typeof order.products === "string") {
+            order.products = JSON.parse(order.products.replace(/'/g, '"'));
+          }
+        } catch (error) {
+          console.error("Ошибка при парсинге products:", error);
+          order.products = [];
+        }
+
+        // Извлекаем дату из ISO строки
+        const orderDate = new Date(order.time);
+
+        return {
           ...order,
-          userName: user.name,
-          isAdmin: user.isAdmin,
-          userId: user.id,
-        }))
-      )
-      .sort((a, b) => {
-        const [dayA, monthA, yearA] = a.date.split(".");
-        const [dayB, monthB, yearB] = b.date.split(".");
-        const dateA = new Date(`20${yearA}`, monthA - 1, dayA);
-        const dateB = new Date(`20${yearB}`, monthB - 1, dayB);
-        return dateB.getTime() - dateA.getTime();
-      });
-  }, []);
-  const groupedOrders = sortedOrders.reduce((acc, order) => {
-    const [day, month, year] = order.date.split(".");
-    const key = `${month}.${year}`;
+          orderDate,
+          // Добавляем отформатированную дату для группировки
+          formattedDate: `${orderDate.getMonth() + 1}.${orderDate
+            .getFullYear()
+            .toString()
+            .substr(2)}`,
+        };
+      })
+      .sort((a, b) => b.orderDate - a.orderDate); // Сортировка по дате (новые сначала)
+  }, [data]);
 
-    if (!acc[key]) {
-      acc[key] = [];
-    }
+  // Группируем заказы по месяцу и году
+  const groupedOrders = React.useMemo(() => {
+    return sortedOrders.reduce((acc, order) => {
+      const key = order.formattedDate;
 
-    acc[key].push(order);
-    return acc;
-  }, {});
-  const result = Object.entries(groupedOrders)
-    .map(([key, orders]) => ({
-      monthYear: key,
-      orders: orders,
-    }))
-    .sort((a, b) => {
-      const [monthA, yearA] = a.monthYear.split(".");
-      const [monthB, yearB] = b.monthYear.split(".");
-
-      // Compare years first
-      if (yearA !== yearB) {
-        return yearB.localeCompare(yearA);
+      if (!acc[key]) {
+        acc[key] = [];
       }
-      // If years are same, compare months
-      return monthB.localeCompare(monthA);
-    });
+
+      acc[key].push(order);
+      return acc;
+    }, {});
+  }, [sortedOrders]);
+
+  // Преобразуем сгруппированные данные в массив для удобного использования
+  const result = React.useMemo(() => {
+    return Object.entries(groupedOrders)
+      .map(([key, orders]) => ({
+        monthYear: key,
+        orders: orders,
+      }))
+      .sort((a, b) => {
+        const [monthA, yearA] = a.monthYear.split(".");
+        const [monthB, yearB] = b.monthYear.split(".");
+
+        // Сравниваем сначала годы
+        if (yearA !== yearB) {
+          return yearB - yearA;
+        }
+        // Если годы одинаковые, сравниваем месяцы
+        return monthB - monthA;
+      });
+  }, [groupedOrders]);
+
   return result;
 };
