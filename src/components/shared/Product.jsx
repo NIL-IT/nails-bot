@@ -33,7 +33,7 @@ export function Product({ idItem, search, className }) {
       to={`/product/${itemData.id}`}
       onClick={() => dispatch(changeCurrentProduct(itemData))}
       className={` 
-       flex flex-col gap-[10px]  rounded-[10px]
+       flex flex-col gap-[10px]  rounded-[10px] transition-all duration-200
      w-[145px] h-full min-h-[189px] ${
        search ? "bg-gray_dark/10 p-2" : "bg-gray p-[6px]"
      } ${className ? className : "max-w-[145px]"}`}

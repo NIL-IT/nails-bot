@@ -17,6 +17,12 @@ export default function SingleCategory() {
   const [isCategory, setIsCategory] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
+  useEffect(() => {
     setLoading(true);
     const fetchAllData = async () => {
       try {

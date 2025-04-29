@@ -8,79 +8,108 @@ import { getAllCart } from "./utils/cart";
 import { ROUTES } from "./components/routes/routes";
 import { useLocation } from "react-router-dom";
 import BackButton from "./components/ui/BackButton";
+
 function App() {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const restaurantId = window.location.pathname.split("/")[1];
   const [categories, setCategories] = useState([]);
   const { pathname } = useLocation();
   const [showSidebar, setShowSidebar] = useState(null);
-  // Combined data fetching in a single useEffect
+
+  // Single data fetching effect
   useEffect(() => {
+    // Use a closure variable to track if we've already fetched
+    let isMounted = true;
     const abortController = new AbortController();
 
-    const fetchAllData = async () => {
+    const fetchInitialData = async () => {
       setIsLoading(true);
-
       try {
-        // Fetch user data if Telegram is available
-        if (Object.hasOwn(window, "Telegram")) {
+        // Create an array of promises to fetch all data at once
+        const fetchPromises = [];
+        let userPromise = null;
+
+        // Add user fetch promise if Telegram is available
+        if (window.Telegram) {
           const tg = window.Telegram.WebApp;
           tg.expand();
           const userId = tg.initDataUnsafe.user.id;
           const username = tg.initDataUnsafe.user.username;
 
-          const userResponse = await API.getUser(userId, username);
+          userPromise = API.getUser(userId, username);
+          fetchPromises.push(userPromise);
+        }
 
-          if (userResponse && userResponse.success && userResponse.user) {
-            setUser(userResponse.user);
-          } else {
-            console.error("User not found.");
+        // Add categories fetch promise
+        const categoriesPromise = API.getCategories();
+        fetchPromises.push(categoriesPromise);
+
+        // Wait for all promises to resolve
+        const results = await Promise.all(fetchPromises);
+
+        // Only update state if component is still mounted
+        if (isMounted) {
+          // Process user data if it was fetched
+          if (userPromise) {
+            const userResponse = results[0];
+            if (userResponse && userResponse.success && userResponse.user) {
+              setUser(userResponse.user);
+            } else {
+              console.error("User not found.");
+            }
+          }
+
+          // Process categories data (will be last item if userPromise exists, otherwise first)
+          const categoriesIndex = userPromise ? 1 : 0;
+          const categoriesResponse = results[categoriesIndex];
+          if (categoriesResponse && categoriesResponse.data) {
+            setCategories(categoriesResponse.data);
           }
         }
-
-        // Fetch categories
-        const categoriesResponse = await API.getCategories();
-        if (categoriesResponse && categoriesResponse.data) {
-          setCategories(categoriesResponse.data);
-        }
       } catch (error) {
-        if (error.name !== "AbortError") {
+        if (error.name !== "AbortError" && isMounted) {
           console.error("Error fetching data:", error);
         }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    fetchAllData();
+    fetchInitialData();
 
-    // Cleanup function to abort fetch on unmount
-    return () => abortController.abort();
-  }, [restaurantId]); // Only re-run if restaurantId changes
+    // Cleanup function to abort fetch and prevent state updates after unmount
+    return () => {
+      isMounted = false;
+      abortController.abort();
+    };
+  }, []);
 
   // Cart recovery effect
   useEffect(() => {
     dispatch(recoveryAllCart(getAllCart()));
   }, [dispatch]);
+
+  // Sidebar visibility effect
   useEffect(() => {
-    let isShow =
+    const isShow =
       (pathname === ROUTES.PROFILE && user?.admin) ||
       pathname === ROUTES.SEARCH ||
       pathname === ROUTES.CART ||
       pathname === ROUTES.CHECKOUT;
     setShowSidebar(isShow);
-  }, [pathname]);
-  console.log("user", user);
+  }, [pathname, user]);
+
   return (
     <Container>
       <Header />
       {categories.length > 0 && !showSidebar && (
         <Sidebar categories={categories} />
       )}
-      {Object.hasOwn(window, "Telegram") && <BackButton />}
-      <AppRoutes categories={categories} user={user} />
+      {window.Telegram && <BackButton />}
+      <AppRoutes categories={categories} user={user} isLoading={isLoading} />
     </Container>
   );
 }

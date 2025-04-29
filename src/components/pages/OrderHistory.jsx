@@ -76,6 +76,21 @@ export default function OrderHistory({ user }) {
       ))}
     </div>
   ) : (
-    <div>Заказов нет</div>
+    <div className="h-[70vh] flex flex-col justify-center items-center   text-center">
+      <div className="w-[200px] h-[200px]">
+        <img width={200} src="/img/nofaund.png" alt="" />
+      </div>
+      <div className="font-montserrat text-center flex flex-col gap-0">
+        <p className="text-[18px]">Заказов нет</p>
+      </div>
+      <div className="w-[80%]">
+        <Button
+          text={"Перейти в каталог"}
+          type={normal}
+          to={ROUTES.HOME}
+          className={"w-[80%] bg-secondary mt-[20px] mb-[30px]"}
+        />
+      </div>
+    </div>
   );
 }
