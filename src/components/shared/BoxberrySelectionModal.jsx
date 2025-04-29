@@ -89,6 +89,9 @@ export default function BoxberrySelectionModal({
   formData,
   setFormData,
 }) {
+  if (isOpen) {
+    document.body.style.overflow = "hidden";
+  }
   const API_KEY = "275f4252-f50b-4872-91e3-17f3e668263f";
   const [selectedPoint, setSelectedPoint] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -672,7 +675,7 @@ export default function BoxberrySelectionModal({
         isOpen ? "block" : "hidden"
       }`}
     >
-      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg w-full  h-[100vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="p-4 border-b flex items-center justify-between">
           <Link target="_blank" to={"https://boxberry.ru/"}>
@@ -684,7 +687,10 @@ export default function BoxberrySelectionModal({
           </Link>
 
           <button
-            onClick={onClose}
+            onClick={() => {
+              document.body.style.overflow = "auto";
+              onClose();
+            }}
             className="text-gray-500 hover:text-gray-700"
           >
             <X size={24} />
@@ -722,72 +728,78 @@ export default function BoxberrySelectionModal({
         </div>
 
         {/* Map container */}
-        <div className="flex-1 overflow-hidden relative">
-          <div
-            ref={mapRef}
-            className="w-full h-full"
-            style={{
-              minHeight: "400px",
-              height: "100%",
-            }}
-          ></div>
+        <div className="max-h-[1000px] overflow-y-auto">
+          <div className="flex-1 overflow-hidden relative max-h-[400px]">
+            <div
+              ref={mapRef}
+              className="w-full h-full"
+              style={{
+                minHeight: "400px",
+                height: "100%",
+              }}
+            ></div>
 
-          {isLoading && (
-            <div className="absolute  inset-0 bg-white bg-opacity-70 flex flex-col items-center justify-center">
-              <div className="text-lg font-medium">
-                Загрузка карты и пунктов выдачи...
+            {isLoading && (
+              <div className="absolute  inset-0 bg-white bg-opacity-70 flex flex-col items-center justify-center">
+                <div className="text-lg font-medium">
+                  Загрузка карты и пунктов выдачи...
+                </div>
+                <div className="loader"></div>
               </div>
-              <div className="loader"></div>
+            )}
+          </div>
+
+          {/* Selected point info */}
+          {selectedPoint && (
+            <div className="p-4 border-t bg-red-50">
+              <div className="flex items-start">
+                <MapPin
+                  className="mr-2 text-red-600 mt-1 flex-shrink-0"
+                  size={18}
+                />
+                <div className="flex-1 space-y-1">
+                  <div className="font-medium">
+                    {selectedPoint.name.split("_")[0]}
+                  </div>
+                  <div className="text-[12px] text-black/90">
+                    {selectedPoint.address}
+                  </div>
+                  {selectedPoint.metro && (
+                    <div className="text-[12px] text-black/90 ">
+                      <span className="font-medium">Метро:</span>{" "}
+                      {selectedPoint.metro}
+                    </div>
+                  )}
+                  {selectedPoint.schedule && (
+                    <div className="text-[12px] text-black/90">
+                      <span className="font-medium">Режим работы:</span>{" "}
+                      {selectedPoint.schedule}
+                    </div>
+                  )}
+                  {selectedPoint.phone && (
+                    <div className="text-[12px] text-black/90">
+                      <span className="font-medium">Телефон:</span>{" "}
+                      {selectedPoint.phone}
+                    </div>
+                  )}
+                  {selectedPoint.tripdescription && (
+                    <div className="text-[12px] text-black/90">
+                      <span className="font-medium">Как найти:</span>{" "}
+                      {selectedPoint.tripdescription}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </div>
-
-        {/* Selected point info */}
-        {selectedPoint && (
-          <div className="p-4 border-t bg-red-50">
-            <div className="flex items-start">
-              <MapPin
-                className="mr-2 text-red-600 mt-1 flex-shrink-0"
-                size={18}
-              />
-              <div className="flex-1">
-                <div className="font-medium">{selectedPoint.name}</div>
-                <div className="text-sm text-gray-600">
-                  {selectedPoint.address}
-                </div>
-                {selectedPoint.metro && (
-                  <div className="text-sm text-gray-600 mt-1">
-                    <span className="font-medium">Метро:</span>{" "}
-                    {selectedPoint.metro}
-                  </div>
-                )}
-                {selectedPoint.schedule && (
-                  <div className="text-sm text-gray-600">
-                    <span className="font-medium">Режим работы:</span>{" "}
-                    {selectedPoint.schedule}
-                  </div>
-                )}
-                {selectedPoint.phone && (
-                  <div className="text-sm text-gray-600">
-                    <span className="font-medium">Телефон:</span>{" "}
-                    {selectedPoint.phone}
-                  </div>
-                )}
-                {selectedPoint.tripdescription && (
-                  <div className="text-sm text-gray-600">
-                    <span className="font-medium">Как найти:</span>{" "}
-                    {selectedPoint.tripdescription}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Action buttons */}
         <div className="p-4 border-t flex justify-center gap-4">
           <button
-            onClick={confirmSelection}
+            onClick={() => {
+              confirmSelection();
+              document.body.style.overflow = "auto";
+            }}
             disabled={!selectedPoint}
             className={`px-4 py-2 rounded text-white text-sm ${
               selectedPoint
@@ -798,7 +810,10 @@ export default function BoxberrySelectionModal({
             Выбрать этот пункт
           </button>
           <button
-            onClick={onClose}
+            onClick={() => {
+              onClose();
+              document.body.style.overflow = "auto";
+            }}
             className="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-100"
           >
             Отмена

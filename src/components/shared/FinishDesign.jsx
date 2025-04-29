@@ -163,6 +163,8 @@ export default function FinishDsesign({
       console.log(err);
     }
   };
+  console.log("formData", formData);
+  console.log("selectedStore", selectedStore);
   return (
     <div>
       <NotificationPopup
@@ -197,7 +199,7 @@ export default function FinishDsesign({
           </div>
           <span className="ml-3 font-medium">
             {selectedStore
-              ? selectedStore.title
+              ? selectedStore?.title || "Самовывоз из ПВЗ Boxberry"
               : `${formData.street} дом ${formData.house} квартира ${formData.apartment} `}
           </span>
         </div>
