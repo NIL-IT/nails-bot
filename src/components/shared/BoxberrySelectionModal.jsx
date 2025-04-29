@@ -757,6 +757,7 @@ export default function BoxberrySelectionModal({
                   className="mr-2 text-red-600 mt-1 flex-shrink-0"
                   size={18}
                 />
+                {console.log("selectedPoint", selectedPoint)}
                 <div className="flex-1 space-y-1">
                   <div className="font-medium">
                     {selectedPoint.name.split("_")[0]}
