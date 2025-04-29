@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { baseURL } from "../../api";
 
 export default function CustomerForm({
   formData,
@@ -11,6 +12,33 @@ export default function CustomerForm({
   formIsValid,
   handleSubmitFirstForm,
 }) {
+  const [loading, setLoading] = useState(false);
+  const fetchSearch = async (search) => {
+    setLoading(true);
+    try {
+      const option = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          search: search,
+        }),
+      };
+      const searchAPI = await fetch(`${baseURL}region.php`, option);
+      const data = await searchAPI.json();
+      console.log("search, data", data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    setTimeout(() => {
+      fetchSearch(formData.city);
+    }, 200);
+  }, [formData.city]);
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex items-center mb-6">
@@ -41,7 +69,7 @@ export default function CustomerForm({
             <p className="text-secondary text-[12px] mt-1">{phoneError}</p>
           )}
         </div>
-        <div className="mb-4">
+        <div className="mb-4 relative">
           <label className="block text-sm font-medium mb-1">
             Город <span className="text-primary">*</span>
           </label>
@@ -55,6 +83,9 @@ export default function CustomerForm({
               rounded focus:outline-none focus:border-secondary"
             required
           />
+          {loading && (
+            <div className="absolute bottom-0 left-0 w-full h-[300px] bg-white"></div>
+          )}
         </div>
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">

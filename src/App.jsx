@@ -12,7 +12,6 @@ function App() {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false); // Логика для администратора
   const restaurantId = window.location.pathname.split("/")[1];
   const [categories, setCategories] = useState([]);
   const { pathname } = useLocation();
