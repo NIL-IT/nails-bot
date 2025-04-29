@@ -240,17 +240,17 @@ export default function DeliveryForm({
             </div>
           )}
 
-          {/* {deliveryOption === "boxberry" && !selectedStore && (
-          <div className="mb-4">
-            <MapPin className="inline-block text-primary mr-2" size={20} />
-            <button
-              onClick={handleOpenModal}
-              className="border border-gray-300 rounded px-4 py-2 text-sm font-medium hover:border-secondary transition-colors"
-            >
-              Выбрать ПВЗ Boxberry
-            </button>
-          </div>
-        )} */}
+          {deliveryOption.id === "boxberry" && (
+            <div className="mb-4">
+              <MapPin className="inline-block text-primary mr-2" size={20} />
+              <button
+                onClick={handleOpenModal}
+                className="border border-gray-300 rounded px-4 py-2 text-sm font-medium hover:border-secondary transition-colors"
+              >
+                Выбрать ПВЗ Boxberry
+              </button>
+            </div>
+          )}
 
           {!isShowForm && (
             <div className="mb-4 border rounded-lg p-4">

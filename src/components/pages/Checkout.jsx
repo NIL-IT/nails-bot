@@ -449,12 +449,14 @@ export default function Checkout({ user }) {
   };
 
   const getModalComponent = () => {
-    if (deliveryOption === "boxberry") {
+    if (deliveryOption.id === "boxberry") {
       return (
         <BoxberrySelectionModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           onSelectStore={handleSelectStore}
+          formData={formData}
+          setFormData={setFormData}
         />
       );
     } else {
@@ -490,6 +492,7 @@ export default function Checkout({ user }) {
             formIsValid={formIsValid}
             handleSubmitFirstForm={handleSubmitFirstForm}
             clearSavedData={clearSavedData}
+            setFormData={setFormData}
           />
         ) : step === 2 ? (
           <DeliveryForm

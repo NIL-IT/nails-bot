@@ -61,7 +61,7 @@ export default function StoreSelectionModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg w-full max-w-md mx-4 overflow-hidden">
         <div className="flex justify-between items-center p-4 border-b">
-          <h2 className="text-lg font-medium">
+          <h2 className="text-lg font-medium w-[90%]">
             Выберите магазин, откуда хотите забрать покупку
           </h2>
           <button

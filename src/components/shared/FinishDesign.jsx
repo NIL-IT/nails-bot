@@ -11,7 +11,17 @@ import {
 import { Link } from "react-router-dom";
 
 import { API, baseURL } from "../../api";
-
+import { NotificationPopup } from "./NotificationPopup";
+const paymentData = [
+  {
+    id: 24,
+    name: "Картой / СБП онлайн прямо сейчас",
+  },
+  {
+    id: 10,
+    name: "При получении (Карта / СБП / Наличные)",
+  },
+];
 export default function FinishDsesign({
   formData,
   selectedStore,
@@ -20,8 +30,10 @@ export default function FinishDsesign({
   user,
   deliveryOption,
 }) {
+  const [showNotification, setShowNotification] = useState(false);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [activePayment, setActivePayment] = useState(paymentData[0].id);
   const { cart } = useSelector(({ user }) => user);
   const sum = cart.reduce((acc, item) => {
     let price =
@@ -95,7 +107,7 @@ export default function FinishDsesign({
             price: sumPrice,
             userId: user?.id_tg || 792820756,
             products: productsObject,
-            paySystemId: 24,
+            paySystemId: activePayment,
             deliveryId: deliveryOption.deliveryId,
             fio: `${formData.lastName} ${formData.firstName} ${formData?.middleName}`,
             phone: formData.phone,
@@ -137,7 +149,14 @@ export default function FinishDsesign({
       Cookies.set("payment_id", paymentId);
       localStorage.setItem("payment_id", paymentId);
       sessionStorage.setItem("payment_id", paymentId);
-      window.location.href = dataFetchPayment.payment_url;
+      if (activePayment === 24) {
+        window.location.href = dataFetchPayment.payment_url;
+      } else {
+        setShowNotification(true);
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 2000);
+      }
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
@@ -146,6 +165,10 @@ export default function FinishDsesign({
   };
   return (
     <div>
+      <NotificationPopup
+        isVisible={showNotification}
+        message={"Заказ успешно создан"}
+      />
       {isLoading && (
         <div className="fixed top-0 left-0 w-full h-full bg-black/20 z-40">
           <div className="fixed top-0 left-0  w-full h-full z-50 flex items-center flex-col justify-center">
@@ -155,7 +178,7 @@ export default function FinishDsesign({
       )}
       <div className="bg-white rounded-lg shadow p-6 mb-2">
         <div className="flex items-center ">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+          <div className="min-w-8 min-h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
             1
           </div>
 
@@ -169,7 +192,7 @@ export default function FinishDsesign({
       </div>
       <div className="bg-white rounded-lg shadow p-6 mb-2">
         <div className="flex items-center ">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+          <div className="min-w-8 min-h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
             2
           </div>
           <span className="ml-3 font-medium">
@@ -179,10 +202,36 @@ export default function FinishDsesign({
           </span>
         </div>
       </div>
+      <div className="bg-white rounded-lg shadow p-6 mb-2">
+        <div className="flex items-center ">
+          <div className="min-w-8 min-h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+            3
+          </div>
+          <span className="ml-3 font-medium">Выбор способа оплаты</span>
+        </div>
+        <div className="mt-7 space-y-4 pl-1">
+          {paymentData.map((el) => (
+            <button
+              onClick={() => setActivePayment(el.id)}
+              key={el.id}
+              className="flex items-center  gap-3"
+            >
+              <div className="min-h-[18px] min-w-[18px] rounded-full border border-primary flex items-center flex-col justify-center">
+                <span
+                  className={`h-[10px] w-[10px] rounded-full bg-primary ${
+                    el.id === activePayment ? "block" : "hidden"
+                  }`}
+                ></span>
+              </div>
+              <p className="text-start">{el.name}</p>
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="bg-white rounded-lg shadow p-6 ">
         <div className="flex items-center mb-6">
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
-            3
+            4
           </div>
           <span className="ml-3 font-medium">Завершение оформления</span>
         </div>

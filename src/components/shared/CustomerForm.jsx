@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { baseURL } from "../../api";
+import React, { useEffect, useState, useRef } from "react";
+import { API, baseURL } from "../../api";
 
 export default function CustomerForm({
   formData,
@@ -11,9 +11,19 @@ export default function CustomerForm({
   emailError,
   formIsValid,
   handleSubmitFirstForm,
+  setFormData,
 }) {
   const [loading, setLoading] = useState(false);
+  const [searchData, setSearchData] = useState([]);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const cityInputRef = useRef(null);
+  const cityDropdownRef = useRef(null);
+
   const fetchSearch = async (search) => {
+    if (!search || search.trim() === "") {
+      setSearchData([]);
+      return;
+    }
     setLoading(true);
     try {
       const option = {
@@ -25,8 +35,9 @@ export default function CustomerForm({
           search: search,
         }),
       };
-      const searchAPI = await fetch(`${baseURL}region.php`, option);
-      const data = await searchAPI.json();
+      const searchAPI = await fetch(`${baseURL}get_region.php`, option);
+      const { data } = await API.parseResponse(searchAPI);
+      setSearchData(data);
       console.log("search, data", data);
     } catch (err) {
       console.log(err);
@@ -34,11 +45,48 @@ export default function CustomerForm({
       setLoading(false);
     }
   };
+
   useEffect(() => {
-    setTimeout(() => {
-      fetchSearch(formData.city);
-    }, 200);
-  }, [formData.city]);
+    let debounceTimer;
+    if (isInputFocused && formData.city) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        fetchSearch(formData.city);
+      }, 200);
+    }
+    return () => clearTimeout(debounceTimer);
+  }, [formData.city, isInputFocused]);
+
+  // Обработчик кликов вне списка городов
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        cityDropdownRef.current &&
+        !cityDropdownRef.current.contains(event.target) &&
+        cityInputRef.current &&
+        !cityInputRef.current.contains(event.target)
+      ) {
+        setSearchData([]);
+        setIsInputFocused(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleCitySelect = (city, region) => {
+    setFormData((prev) => ({
+      ...prev,
+      city: city,
+      region: region,
+    }));
+    setSearchData([]);
+    setIsInputFocused(false);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex items-center mb-6">
@@ -76,15 +124,30 @@ export default function CustomerForm({
           <input
             type="text"
             name="city"
+            ref={cityInputRef}
             value={formData.city}
             onChange={handleInputChange}
+            onFocus={() => setIsInputFocused(true)}
             placeholder="Ваш город"
             className="w-full p-3 border border-gray-300 
               rounded focus:outline-none focus:border-secondary"
             required
           />
-          {loading && (
-            <div className="absolute bottom-0 left-0 w-full h-[300px] bg-white"></div>
+          {isInputFocused && searchData.length > 0 && (
+            <div
+              ref={cityDropdownRef}
+              className="absolute top-[74px] left-0 w-full h-auto bg-white py-3  border border-t-0 border-secondary space-y-3 z-10"
+            >
+              {searchData.map((el, index) => (
+                <div
+                  key={index}
+                  className="text-black/80 cursor-pointer hover:bg-gray-100 px-3 py-1"
+                  onClick={() => handleCitySelect(el.name, el.region)}
+                >
+                  {el.name}, {el.region}
+                </div>
+              ))}
+            </div>
           )}
         </div>
         <div className="mb-4">
