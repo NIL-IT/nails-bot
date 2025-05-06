@@ -14,14 +14,38 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Copy repository contents to remote server
+      - name: Upload or update code on remote server
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
+          PAT: ${{ secrets.PAT }}
         run: |
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "rm -rf /var/www/nails-bot/github/frontend/*"
-          sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no -r ./ $USERNAME@$HOST:/var/www/nails-bot/github/frontend/
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST '
+            if [ "$(ls -A /var/www/nails-bot/github/frontend 2>/dev/null)" ]; then
+              echo "📦 Папка не пуста — выполняем git pull"
+              cd /var/www/nails-bot/github/frontend && \
+              git pull origin main || echo "⚠️ Не удалось выполнить git pull"
+            else
+              echo "🆕 Папка пуста — копируем весь проект"
+            fi
+          '
+
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST '
+            if [ ! "$(ls -A /var/www/nails-bot/github/frontend 2>/dev/null)" ]; then
+              mkdir -p /var/www/nails-bot/github/frontend
+            fi
+          '
+
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST '
+            if [ ! "$(ls -A /var/www/nails-bot/github/frontend 2>/dev/null)" ]; then
+              echo "📤 Отправляем файлы через SCP"
+            fi
+          '
+
+          if sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST '! [ "$(ls -A /var/www/nails-bot/github/frontend 2>/dev/null)" ]'; then
+            sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no -r ./ $USERNAME@$HOST:/var/www/nails-bot/github/frontend/
+          fi
 
       - name: Build project using npm (only if index.html exists)
         env:
