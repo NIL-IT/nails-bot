@@ -17,6 +17,7 @@ function App() {
   const { pathname } = useLocation();
   const [showSidebar, setShowSidebar] = useState(null);
 
+  // Single data fetching effect
   useEffect(() => {
     // Use a closure variable to track if we've already fetched
     let isMounted = true;
