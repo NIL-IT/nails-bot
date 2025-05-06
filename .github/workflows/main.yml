@@ -14,38 +14,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Deploy repository to /var/www/nails-bot/github/frontend/
+      - name: Copy repository contents to remote server
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
-          PAT: ${{ secrets.PAT }}
         run: |
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-            if [ -d /var/www/nails-bot/github/frontend/.git ]; then
-              cd /var/www/nails-bot/github/frontend && \
-              git fetch && \
-              git checkout main && \
-              git pull origin main
-            else
-              rm -rf /var/www/nails-bot/github/frontend/* && \
-              git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/github/frontend && \
-              cd /var/www/nails-bot/github/frontend && \
-              git checkout main
-            fi
-          "
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "rm -rf /var/www/nails-bot/github/frontend/*"
+          sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no -r ./ $USERNAME@$HOST:/var/www/nails-bot/github/frontend/
 
-      - name: Build project using npm
+      - name: Build project using npm (only if index.html exists)
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-            cd /var/www/nails-bot/github/frontend && \
-            npm install && \
-            npm run build
-          "
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST '
+            cd /var/www/nails-bot/github/frontend &&
+            if [ -f index.html ]; then
+              echo "🛠️ index.html найден — запускаем сборку"
+              npm install && npm run build
+            else
+              echo "⚠️ index.html не найден — сборка пропущена"
+            fi
+          '
 
       - name: Copy built files to production directory
         env:
@@ -54,6 +46,10 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-            rm -rf /var/www/nails-bot/frontend/* && \
-            cp -r /var/www/nails-bot/github/frontend/dist/* /var/www/nails-bot/frontend/
+            if [ -d /var/www/nails-bot/github/frontend/dist ]; then
+              rm -rf /var/www/nails-bot/frontend/* && \
+              cp -r /var/www/nails-bot/github/frontend/dist/* /var/www/nails-bot/frontend/
+            else
+              echo '⚠️ Папка dist не найдена, файлы не скопированы.'
+            fi
           "
