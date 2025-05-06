@@ -149,7 +149,8 @@ export default function FinishDsesign({
 
 
       console.log("dataFetchPayments", dataFetchPayment)
-
+      console.log("dataFetchPayments", dataFetchPayment)
+      console.log("dataFetchPayments", dataFetchPayment)
       Cookies.set("payment_id", paymentId);
       localStorage.setItem("payment_id", paymentId);
       sessionStorage.setItem("payment_id", paymentId);
