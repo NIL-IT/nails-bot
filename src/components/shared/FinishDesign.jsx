@@ -150,6 +150,7 @@ export default function FinishDsesign({
       Cookies.set("payment_id", paymentId);
       localStorage.setItem("payment_id", paymentId);
       sessionStorage.setItem("payment_id", paymentId);
+      if(!dataFetchPayment) window.location.href = '/'
       if (activePayment === 24) {
         window.location.href = dataFetchPayment.payment_url;
       } else {
