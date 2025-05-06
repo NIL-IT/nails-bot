@@ -139,13 +139,14 @@ export default function FinishDsesign({
         },
         body: JSON.stringify({
           type: "init_payment",
-          amont: sumPrice * 100,
+          amount: sumPrice * 100,
           id_tg_user: user?.id_tg || 792820756,
           order_id: data.order_id,
         }),
       });
       const dataFetchPayment = await fetchPayment.json();
       const paymentId = dataFetchPayment.payment_id;
+      console.log("dataFetchPayment", dataFetchPayment)
       Cookies.set("payment_id", paymentId);
       localStorage.setItem("payment_id", paymentId);
       sessionStorage.setItem("payment_id", paymentId);
