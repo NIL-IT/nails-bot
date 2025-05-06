@@ -22,14 +22,12 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "
-            # Проверка, существует ли репозиторий
             if [ -d /var/www/nails-bot/github/frontend/.git ]; then
               cd /var/www/nails-bot/github/frontend && \
               git fetch && \
               git checkout main && \
               git pull origin main
             else
-              # Если репозиторий не найден, очищаем директорию и клонируем репозиторий
               rm -rf /var/www/nails-bot/github/frontend/* && \
               git clone https://$USERNAME:$PAT@github.com/NIL-IT/nails-bot.git /var/www/nails-bot/github/frontend && \
               cd /var/www/nails-bot/github/frontend && \
