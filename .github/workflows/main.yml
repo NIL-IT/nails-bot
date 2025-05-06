@@ -22,30 +22,20 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST '
-            if [ "$(ls -A /var/www/nails-bot/github/frontend 2>/dev/null)" ]; then
-              echo "📦 Папка не пуста — выполняем git pull"
+            if [ -d /var/www/nails-bot/github/frontend/.git ]; then
+              echo "📦 Git-репозиторий найден — выполняем pull"
               cd /var/www/nails-bot/github/frontend && \
-              git pull origin main || echo "⚠️ Не удалось выполнить git pull"
+              git remote set-url origin https://'"$USERNAME:$PAT"'@github.com/NIL-IT/nails-bot.git && \
+              git pull origin main || echo "⚠️ Git pull не удался"
             else
-              echo "🆕 Папка пуста — копируем весь проект"
-            fi
-          '
-
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST '
-            if [ ! "$(ls -A /var/www/nails-bot/github/frontend 2>/dev/null)" ]; then
+              echo "🆕 Git-репозиторий не найден — копируем проект через SCP"
               mkdir -p /var/www/nails-bot/github/frontend
             fi
           '
 
-          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST '
-            if [ ! "$(ls -A /var/www/nails-bot/github/frontend 2>/dev/null)" ]; then
-              echo "📤 Отправляем файлы через SCP"
-            fi
-          '
-
-          if sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST '! [ "$(ls -A /var/www/nails-bot/github/frontend 2>/dev/null)" ]'; then
-            sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no -r ./ $USERNAME@$HOST:/var/www/nails-bot/github/frontend/
-          fi
+          # Если .git нет — отправляем файлы через SCP
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST '! [ -d /var/www/nails-bot/github/frontend/.git ]' && \
+          sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no -r ./ $USERNAME@$HOST:/var/www/nails-bot/github/frontend/
 
       - name: Build project using npm (only if index.html exists)
         env:
