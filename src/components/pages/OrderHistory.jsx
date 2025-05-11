@@ -14,6 +14,7 @@ export default function OrderHistory({ user }) {
   console.log("user orders", user)
   const [data, setData] = useState([]);
   const fetchOrders = async () => {
+    if(!user) return
     try {
       const option = {
         method: "POST",
@@ -36,7 +37,7 @@ export default function OrderHistory({ user }) {
   };
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [user]);
   const dispatch = useDispatch();
   const addItem = async (items) => {
     for (let item of items) {
