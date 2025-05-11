@@ -55,6 +55,9 @@ export default function Checkout({ user }) {
       sessionStorage.removeItem("payment_id");
       return dataFetchPayment;
     } catch (err) {
+      Cookies.remove("payment_id");
+      localStorage.removeItem("payment_id");
+      sessionStorage.removeItem("payment_id");
       console.log(err);
     }
   };
@@ -474,7 +477,7 @@ export default function Checkout({ user }) {
   };
   return (
     <div className="p-4">
-      <NotificationPopup isVisible={showNotification} message={massage} />
+      <NotificationPopup isError={true} isVisible={showNotification} message={massage} />
       <div className="max-w-md mx-auto">
         <h1 className="text-3xl font-bold mb-6 opacity-70">
           Оформление заказа
