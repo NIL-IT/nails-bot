@@ -11,6 +11,7 @@ import { API, baseURL } from "../../api";
 
 export default function OrderHistory({ user }) {
   const [loading, setLoading] = useState(true);
+  console.log("user orders", user)
   const [data, setData] = useState([]);
   const fetchOrders = async () => {
     try {
