@@ -31,6 +31,8 @@ export default function FinishDsesign({
   deliveryOption,
 }) {
   const [showNotification, setShowNotification] = useState(false);
+  const [massage, setMassage] = useState("")
+  const [isError, setIsError] = useState(false)
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [activePayment, setActivePayment] = useState(paymentData[0].id);
@@ -74,8 +76,17 @@ export default function FinishDsesign({
   };
 
   const handleSubmit = async () => {
+    if(!user?.id_tg) {
+      setMassage("Не удалось распознать пользователя")
+      setIsError(true)
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false);
+        setMassage("")
+        setIsError(false)
+      }, 2000);
+    }
     setIsLoading(true);
-    console.log("user", user);
     const productsData = cart.map((product) => ({
       productId: product.id_product,
       quantity: product.quantity,
@@ -92,7 +103,7 @@ export default function FinishDsesign({
         ? JSON.stringify({
             type: "new_order",
             price: sumPrice,
-            userId: user?.id_tg || 792820756,
+            userId: user?.id_tg,
             products: productsObject,
             paySystemId: 24,
             deliveryId: selectedStore.deliveryId,
@@ -100,12 +111,12 @@ export default function FinishDsesign({
             phone: formData.phone,
             email: formData.email,
             city: formData.city,
-            id_tg_user: user?.id_tg || 792820756,
+            id_tg_user: user?.id_tg,
           })
         : JSON.stringify({
             type: "new_order",
             price: sumPrice,
-            userId: user?.id_tg || 792820756,
+            userId: user?.id_tg,
             products: productsObject,
             paySystemId: activePayment,
             deliveryId: deliveryOption.deliveryId,
@@ -113,7 +124,7 @@ export default function FinishDsesign({
             phone: formData.phone,
             email: formData.email,
             city: formData.city,
-            id_tg_user: user?.id_tg || 792820756,
+            id_tg_user: user?.id_tg,
             location: formData.region,
             index: formData.index,
             street: formData.street,
@@ -162,9 +173,11 @@ export default function FinishDsesign({
       if (activePayment === 24) {
         window.location.href = dataFetchPayment.payment_url;
       } else {
+        setMassage("Заказ успешно создан")
         setShowNotification(true);
         setTimeout(() => {
           setShowNotification(false);
+          setMassage("")
         }, 2000);
       }
       setIsLoading(false);
@@ -179,7 +192,8 @@ export default function FinishDsesign({
     <div>
       <NotificationPopup
         isVisible={showNotification}
-        message={"Заказ успешно создан"}
+        message={massage}
+        isError={isError}
       />
       {isLoading && (
         <div className="fixed top-0 left-0 w-full h-full bg-black/20 z-40">
