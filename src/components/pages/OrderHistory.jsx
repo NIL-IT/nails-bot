@@ -21,7 +21,7 @@ export default function OrderHistory({ user }) {
         },
         body: JSON.stringify({
           method: "user",
-          id_tg_user: user?.id_tg || 792820756,
+          id_tg_user: user?.id_tg,
         }),
       };
       const resp = await fetch(`${baseURL}get_orders.php`, option);
