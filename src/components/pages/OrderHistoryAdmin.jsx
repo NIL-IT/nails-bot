@@ -15,6 +15,7 @@ export default function OrderHistoryAdmin() {
 
   // Move useSortedOrders to the component body
   const sortedOrdersByDate = useSortedOrders(rawData);
+ console.log("sortedOrdersByDate", sortedOrdersByDate)
   const fetchOrders = async () => {
     try {
       const option = {

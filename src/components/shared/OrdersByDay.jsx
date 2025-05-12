@@ -4,7 +4,7 @@ import { Title } from "../ui";
 import OrderAdminItem from "./OrderAdminItem";
 
 export default function OrdersByDay({ order }) {
-  console.log("order", order);
+  console.log("OrdersByDay", order);
   const [sum, setSum] = useState(0);
   const [time, setTime] = useState(null);
   const [timezone, setTimezone] = useState(null);
