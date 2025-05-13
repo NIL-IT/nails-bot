@@ -2,20 +2,26 @@ import { useEffect } from "react";
 
 const BackButton = () => {
   const goBack = () => {
-    window.history.back();
+    if (window.Telegram?.WebApp?.isExpanded) {
+      Telegram.WebApp.close(); // Закрыть WebView полностью
+    } else {
+      window.history.back(); // Попробовать вернуться назад (если внутри мини-приложения)
+    }
   };
 
   useEffect(() => {
-    window.Telegram.WebApp.BackButton.onClick(goBack);
-    window.Telegram.WebApp.BackButton.show();
+    if (!window.Telegram?.WebApp) return;
+
+    Telegram.WebApp.BackButton.onClick(goBack);
+    Telegram.WebApp.BackButton.show();
 
     return () => {
-      window.Telegram.WebApp.BackButton.hide();
-      window.Telegram.WebApp.BackButton.offClick(goBack);
+      Telegram.WebApp.BackButton.offClick(goBack);
+      Telegram.WebApp.BackButton.hide();
     };
   }, []);
 
-  return null; // Вернем null вместо пустого фрагмента
+  return null;
 };
 
 export default BackButton;
