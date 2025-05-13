@@ -166,7 +166,7 @@ export default function FinishDsesign({
         }
       };
       const handlePaymentClickTwo = (link) => {
-        window.open(link, "_self");
+        window.location.assign(link);
       };
       console.log("dataFetchPayments", dataFetchPayment);
       Cookies.set("payment_id", paymentId);
