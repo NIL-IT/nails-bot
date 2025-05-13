@@ -60,7 +60,19 @@ export default function OrdersByDay({ order }) {
                   .reverse()
                   .join(".")} GMT+07:00`}
           </p>
-          <p className="my-[5px]">Доставка: {order.deliveryName}</p>
+          {order.deliveryName && (
+            <p className="my-[5px]">Доставка: {order.deliveryName}</p>
+          )}
+
+          {order?.street && (
+            <div className="space-y-[5px]">
+              <p>Местоположение: {order.location}</p>
+              <p>Улица: {order.street}</p>
+              <p>Квартира: {order.flat}</p>
+              <p>Дом: {order.home}</p>
+              <p>Индекс: {order.index}</p>
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-[5px]">
           {Array.isArray(order.products) ? (
