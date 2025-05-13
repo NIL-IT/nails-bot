@@ -165,13 +165,16 @@ export default function FinishDsesign({
           window.open(link, "_blank");
         }
       };
+      const handlePaymentClickTwo = (link) => {
+        window.open(link, "_self");
+      };
       console.log("dataFetchPayments", dataFetchPayment);
       Cookies.set("payment_id", paymentId);
       localStorage.setItem("payment_id", paymentId);
       sessionStorage.setItem("payment_id", paymentId);
       if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
-        handlePaymentClick(dataFetchPayment.payment_url);
+        handlePaymentClickTwo(dataFetchPayment.payment_url);
       } else {
         setMassage("Заказ успешно создан");
         setShowNotification(true);
