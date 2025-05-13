@@ -31,8 +31,8 @@ export default function FinishDsesign({
   deliveryOption,
 }) {
   const [showNotification, setShowNotification] = useState(false);
-  const [massage, setMassage] = useState("")
-  const [isError, setIsError] = useState(false)
+  const [massage, setMassage] = useState("");
+  const [isError, setIsError] = useState(false);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [activePayment, setActivePayment] = useState(paymentData[0].id);
@@ -76,14 +76,14 @@ export default function FinishDsesign({
   };
 
   const handleSubmit = async () => {
-    if(!user?.id_tg) {
-      setMassage("Не удалось распознать пользователя")
-      setIsError(true)
+    if (!user?.id_tg) {
+      setMassage("Не удалось распознать пользователя");
+      setIsError(true);
       setShowNotification(true);
       setTimeout(() => {
         setShowNotification(false);
-        setMassage("")
-        setIsError(false)
+        setMassage("");
+        setIsError(false);
       }, 2000);
     }
     setIsLoading(true);
@@ -119,12 +119,12 @@ export default function FinishDsesign({
             userId: user?.id_tg,
             products: productsObject,
             paySystemId: activePayment,
-            deliveryId: deliveryOption.deliveryId,
             fio: `${formData.lastName} ${formData.firstName} ${formData?.middleName}`,
             phone: formData.phone,
             email: formData.email,
-            city: formData.city,
             id_tg_user: user?.id_tg,
+            deliveryId: deliveryOption.deliveryId,
+            city: formData.city,
             location: formData.region,
             index: formData.index,
             street: formData.street,
@@ -157,27 +157,26 @@ export default function FinishDsesign({
       });
       const dataFetchPayment = await fetchPayment.json();
       const paymentId = dataFetchPayment.payment_id;
-
-
-      console.log("dataFetchPayments", dataFetchPayment)
-      console.log("dataFetchPayments", dataFetchPayment)
-      console.log("dataFetchPayments", dataFetchPayment)
-      
-      console.log("dataFetchPayments", dataFetchPayment)
-      console.log("dataFetchPayments", dataFetchPayment)
-      console.log("dataFetchPayments", dataFetchPayment)
+      const handlePaymentClick = (link) => {
+        if (window.Telegram?.WebApp) {
+          Telegram.WebApp.openLink(link, { try_instant_view: true });
+        } else {
+          window.open(link, "_blank");
+        }
+      };
+      console.log("dataFetchPayments", dataFetchPayment);
       Cookies.set("payment_id", paymentId);
       localStorage.setItem("payment_id", paymentId);
       sessionStorage.setItem("payment_id", paymentId);
-      if(!dataFetchPayment) window.location.href = '/'
+      if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
-        window.location.href = dataFetchPayment.payment_url;
+        handlePaymentClick(dataFetchPayment.payment_url);
       } else {
-        setMassage("Заказ успешно создан")
+        setMassage("Заказ успешно создан");
         setShowNotification(true);
         setTimeout(() => {
           setShowNotification(false);
-          setMassage("")
+          setMassage("");
         }, 2000);
       }
       setIsLoading(false);
