@@ -159,6 +159,14 @@ export default function FinishDsesign({
       const paymentId = dataFetchPayment.payment_id;
       const handlePaymentClick = (link) => {
         if (window.Telegram?.WebApp) {
+          // Показываем кнопку "Назад" перед переходом
+          Telegram.WebApp.BackButton.show();
+          // Устанавливаем обработчик для кнопки "Назад"
+          Telegram.WebApp.BackButton.onClick(() => {
+            // Закрываем платежное окно или возвращаемся назад
+            window.location.href = "/"; // или другая логика возврата
+          });
+
           Telegram.WebApp.openLink(link, { try_instant_view: true });
         } else {
           window.open(link, "_blank");
