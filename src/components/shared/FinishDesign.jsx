@@ -159,9 +159,9 @@ export default function FinishDsesign({
       const paymentId = dataFetchPayment.payment_id;
       const handlePaymentClick = (link) => {
         if (window.Telegram?.WebApp) {
-          Telegram.WebApp.openLink(link);
+          Telegram.WebApp.openLink(link, { try_instant_view: true });
         } else {
-          // window.open(link, "_blank");
+          window.open(link, "_blank");
         }
       };
       console.log("dataFetchPayments", dataFetchPayment);
