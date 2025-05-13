@@ -68,8 +68,8 @@ export default function OrdersByDay({ order }) {
             <div className="space-y-[5px]">
               <p>Местоположение: {order.location}</p>
               <p>Улица: {order.street}</p>
-              <p>Квартира: {order.flat}</p>
               <p>Дом: {order.home}</p>
+              <p>Квартира: {order.flat}</p>
               <p>Индекс: {order.index}</p>
             </div>
           )}
