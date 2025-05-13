@@ -8,7 +8,7 @@ import {
   removeItemFromCart,
 } from "../../features/slice/userSlice";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { API, baseURL } from "../../api";
 import { NotificationPopup } from "./NotificationPopup";
@@ -30,7 +30,6 @@ export default function FinishDsesign({
   user,
   deliveryOption,
 }) {
-  const navigate = useNavigate();
   const [showNotification, setShowNotification] = useState(false);
   const [massage, setMassage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -160,15 +159,8 @@ export default function FinishDsesign({
       const paymentId = dataFetchPayment.payment_id;
       const handlePaymentClick = (link) => {
         if (window.Telegram?.WebApp) {
-          // Показываем кнопку "Назад" перед переходом
-          Telegram.WebApp.BackButton.show();
-          // Устанавливаем обработчик для кнопки "Назад"
-          Telegram.WebApp.BackButton.onClick(() => {
-            // Закрываем платежное окно или возвращаемся назад
-            window.location.href = "/"; // или другая логика возврата
-          });
-
-          Telegram.WebApp.openLink(link, { try_instant_view: true });
+          // Use try_instant_view: false to ensure proper back button behavior
+          Telegram.WebApp.openLink(link, { try_instant_view: false });
         } else {
           window.open(link, "_blank");
         }
@@ -179,7 +171,7 @@ export default function FinishDsesign({
       sessionStorage.setItem("payment_id", paymentId);
       if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
-        navigate(dataFetchPayment.payment_url);
+        handlePaymentClick(dataFetchPayment.payment_url);
       } else {
         setMassage("Заказ успешно создан");
         setShowNotification(true);

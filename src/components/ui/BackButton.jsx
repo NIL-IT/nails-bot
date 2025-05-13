@@ -5,6 +5,7 @@ const BackButton = () => {
     if (window.Telegram?.WebApp?.isExpanded) {
       Telegram.WebApp.close(); // Закрыть WebView полностью
     } else {
+      console.log(window.location.href.includes("web"));
       window.history.back(); // Попробовать вернуться назад (если внутри мини-приложения)
     }
   };
