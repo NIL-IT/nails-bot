@@ -8,7 +8,7 @@ import {
   removeItemFromCart,
 } from "../../features/slice/userSlice";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { API, baseURL } from "../../api";
 import { NotificationPopup } from "./NotificationPopup";
@@ -30,6 +30,7 @@ export default function FinishDsesign({
   user,
   deliveryOption,
 }) {
+  const navigate = useNavigate();
   const [showNotification, setShowNotification] = useState(false);
   const [massage, setMassage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -178,7 +179,7 @@ export default function FinishDsesign({
       sessionStorage.setItem("payment_id", paymentId);
       if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
-        handlePaymentClick(dataFetchPayment.payment_url);
+        navigate(dataFetchPayment.payment_url);
       } else {
         setMassage("Заказ успешно создан");
         setShowNotification(true);
