@@ -61,7 +61,9 @@ export default function OrdersByDay({ order }) {
                   .join(".")} GMT+07:00`}
           </p>
           {order.deliveryName && (
-            <p className="my-[5px]">Доставка: {order.deliveryName}</p>
+            <p className="my-[5px]">
+              Доставка: {order.deliveryName.replace("city", "")}
+            </p>
           )}
 
           {order?.street && (
