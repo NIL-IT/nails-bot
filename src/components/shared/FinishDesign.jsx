@@ -161,7 +161,7 @@ export default function FinishDsesign({
         if (window.Telegram?.WebApp) {
           Telegram.WebApp.openLink(link, { try_instant_view: true });
         } else {
-          window.open(link, "_blank");
+          // window.open(link, "_blank");
         }
       };
       console.log("dataFetchPayments", dataFetchPayment);
