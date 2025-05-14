@@ -178,7 +178,7 @@ export default function FinishDsesign({
         // Создаем кнопку (если она еще не видна)
         const mainButton = Telegram.MainButton;
         // Настраиваем кнопку
-        mainButton.text = "Моя кнопка";
+        mainButton.text = "Вернуться назад";
         mainButton.color = "#5AC8FB"; // Цвет кнопки (Telegram-синий)
         mainButton.textColor = "#FFFFFF"; // Цвет текста
 
@@ -187,7 +187,7 @@ export default function FinishDsesign({
 
         // Добавляем обработчик нажатия
         mainButton.onClick(() => {
-          alert("Кнопка нажата!");
+          window.history.back();
           // Можно отправить данные в бота
           Telegram.sendData(JSON.stringify({ action: "button_clicked" }));
         });
