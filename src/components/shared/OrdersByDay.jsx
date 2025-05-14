@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Title } from "../ui";
 import OrderAdminItem from "./OrderAdminItem";
 
-export default function OrdersByDay({ order }) {
+export default function OrdersByDay({ order, noDay }) {
   console.log("OrdersByDay", order);
   const [sum, setSum] = useState(0);
   const [time, setTime] = useState(null);
@@ -39,7 +39,7 @@ export default function OrdersByDay({ order }) {
   return (
     <div>
       <Title
-        text={`Заказы от ${
+        text={`Заказ от ${
           order.time.split(" ")[0].split("-").reverse().join(".") ||
           "неизвестная дата"
         }`}

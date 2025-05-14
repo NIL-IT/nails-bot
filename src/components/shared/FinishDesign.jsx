@@ -174,6 +174,23 @@ export default function FinishDsesign({
       sessionStorage.setItem("payment_id", paymentId);
       if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
+        const Telegram = window.Telegram.WebApp;
+        // Создаем кнопку (если она еще не видна)
+        const mainButton = Telegram.MainButton;
+        // Настраиваем кнопку
+        mainButton.text = "Моя кнопка";
+        mainButton.color = "#5AC8FB"; // Цвет кнопки (Telegram-синий)
+        mainButton.textColor = "#FFFFFF"; // Цвет текста
+
+        // Показываем кнопку
+        mainButton.show();
+
+        // Добавляем обработчик нажатия
+        mainButton.onClick(() => {
+          alert("Кнопка нажата!");
+          // Можно отправить данные в бота
+          Telegram.sendData(JSON.stringify({ action: "button_clicked" }));
+        });
         handlePaymentClickTwo(dataFetchPayment.payment_url);
       } else {
         setMassage("Заказ успешно создан");

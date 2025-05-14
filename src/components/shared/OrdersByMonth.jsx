@@ -13,7 +13,7 @@ export default function OrdersByMonth({ orders }) {
       <Title text={`${getMonth} ${year}`} className={"mb-5"} />
       {orders.orders.map((item, index) => (
         <div key={index}>
-          <OrdersByDay index={index} order={item} />
+          <OrdersByDay noDay={true} index={index} order={item} />
         </div>
       ))}
     </div>
