@@ -15,7 +15,7 @@ export default function OrderHistoryAdmin() {
 
   // Move useSortedOrders to the component body
   const sortedOrdersByDate = useSortedOrders(rawData);
- console.log("sortedOrdersByDate", sortedOrdersByDate)
+  console.log("sortedOrdersByDate", sortedOrdersByDate);
   const fetchOrders = async () => {
     try {
       const option = {
@@ -57,6 +57,13 @@ export default function OrderHistoryAdmin() {
     setList(filter);
   };
   console.log("rawData", rawData);
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center min-h-[70vh]">
+        <div className="loader"></div>
+      </div>
+    );
+  }
   return (
     <div className="mb-8">
       <Title text={"История заказов"} />
@@ -76,9 +83,7 @@ export default function OrderHistoryAdmin() {
       )}
 
       {loading ? (
-        <div className="flex justify-center mt-6">
-          <p>Loading...</p>
-        </div>
+        <></>
       ) : sortedOrdersByDate.length > 0 && list === null ? (
         <div className="mt-5">
           {sortedOrdersByDate.map((orders, index) => (
