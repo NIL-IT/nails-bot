@@ -179,7 +179,7 @@ export default function FinishDsesign({
         const mainButton = Telegram.MainButton;
         // Настраиваем кнопку
         mainButton.text = "Вернуться назад";
-        mainButton.color = "#5AC8FB"; // Цвет кнопки (Telegram-синий)
+        mainButton.color = "#DC46A0"; // Цвет кнопки (Telegram-синий)
         mainButton.textColor = "#FFFFFF"; // Цвет текста
 
         // Показываем кнопку
