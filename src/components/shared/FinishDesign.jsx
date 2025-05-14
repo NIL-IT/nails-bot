@@ -174,25 +174,6 @@ export default function FinishDsesign({
       sessionStorage.setItem("payment_id", paymentId);
       if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
-        const Telegram = window.Telegram.WebApp;
-        // Создаем кнопку (если она еще не видна)
-        const mainButton = Telegram.MainButton;
-        // Настраиваем кнопку
-        mainButton.text = "Вернуться назад";
-        mainButton.color = "#DC46A0"; // Цвет кнопки (Telegram-синий)
-        mainButton.textColor = "#FFFFFF"; // Цвет текста
-
-        // Показываем кнопку
-        mainButton.show();
-
-        // Добавляем обработчик нажатия
-        mainButton.onClick(() => {
-          if (Telegram.WebApp.isBackButtonVisible) {
-            Telegram.WebApp.goBack();
-          } else {
-            Telegram.WebApp.close(); // или другая логика
-          }
-        });
         handlePaymentClickTwo(dataFetchPayment.payment_url);
       } else {
         setMassage("Заказ успешно создан");

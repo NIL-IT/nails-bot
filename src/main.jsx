@@ -10,7 +10,8 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <div>sdadasd</div>
+        {/* <App /> */}
       </BrowserRouter>
     </Provider>
   </StrictMode>
