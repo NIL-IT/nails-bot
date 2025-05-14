@@ -187,9 +187,11 @@ export default function FinishDsesign({
 
         // Добавляем обработчик нажатия
         mainButton.onClick(() => {
-          window.history.back();
-          // Можно отправить данные в бота
-          Telegram.sendData(JSON.stringify({ action: "button_clicked" }));
+          if (Telegram.WebApp.isBackButtonVisible) {
+            Telegram.WebApp.goBack();
+          } else {
+            Telegram.WebApp.close(); // или другая логика
+          }
         });
         handlePaymentClickTwo(dataFetchPayment.payment_url);
       } else {
