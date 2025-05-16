@@ -17,7 +17,6 @@ function App() {
   const { pathname } = useLocation();
   const [showSidebar, setShowSidebar] = useState(null);
 
-
   useEffect(() => {
     // Use a closure variable to track if we've already fetched
     let isMounted = true;
@@ -101,7 +100,13 @@ function App() {
       pathname === ROUTES.CHECKOUT;
     setShowSidebar(isShow);
   }, [pathname, user]);
-
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center">
+        <div className="loader"></div>
+      </div>
+    );
+  }
   return (
     <Container>
       <Header />
