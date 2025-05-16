@@ -28,6 +28,10 @@ export default function Card() {
       return acc + price * 1;
     }
   }, 0);
+
+  const MIN_ORDER_AMOUNT = 300;
+  const isOrderValid = sum >= MIN_ORDER_AMOUNT;
+
   const handleIncrement = (variant, id) => {
     let currentItem = cart.find((item) => item.id === id);
     if (variant === minus) {
@@ -138,7 +142,11 @@ export default function Card() {
           );
         })}
       </div>
-      <div className="fixed left-0 bottom-0 w-[100vw] h-[123px] p-[10px] bg-white">
+      <div
+        className={`fixed left-0 bottom-0 w-[100vw] shadow-[0px_0px_20px_rgba(0,0,0,0.1)]  p-[10px] bg-white ${
+          isOrderValid ? "h-[123px]" : "h-[170px]"
+        }`}
+      >
         <div className="flex justify-between items-center mb-[15px]">
           <p className="text-base font-montserrat text-black ]">
             Общая стоимость заказа
@@ -147,13 +155,22 @@ export default function Card() {
         </div>
 
         <Link
-          to={"/checkout"}
-          className="text-white block text-center 
+          to={isOrderValid ? "/checkout" : "#"}
+          className={`text-white block text-center 
           text-2xl font-manrope font-semibold rounded-[10px]
-           bg-secondary  py-[9px] w-full"
+           ${
+             isOrderValid
+               ? "bg-secondary"
+               : "bg-secondary/60 cursor-not-allowed"
+           } py-[9px] w-full`}
         >
           Оформить
         </Link>
+        {!isOrderValid && (
+          <p className="text-[16px] text-gray_dark mb-1 text-center mt-2 ">
+            Минимальная сумма заказа 300 ₽. Добавьте еще товаров в корзину.
+          </p>
+        )}
       </div>
     </div>
   ) : (
