@@ -97,6 +97,7 @@ export default function FinishDsesign({
       acc[index] = product;
       return acc;
     }, {});
+    console.log("deliveryOption", deliveryOption);
     const sumPrice = sum + deliveryOption?.price;
     const bodyOption =
       deliveryOption.id === "selfPickup"
