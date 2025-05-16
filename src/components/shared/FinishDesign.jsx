@@ -181,14 +181,27 @@ export default function FinishDsesign({
       sessionStorage.setItem("payment_id", paymentId);
       if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
-        Telegram.WebApp.BackButton.hide();
-        setIsOpen(true);
-        Telegram.WebApp.setupClosingBehavior({
-          need_confirmation: true,
-          confirmation_text:
-            "Вы уверены, что хотите выйти? Оплата не завершена!", // (опционально)
-        });
-        handlePaymentClickTwo(dataFetchPayment.payment_url);
+        if (window.Telegram?.WebApp) {
+          // Скрываем кнопку "Назад"
+          if (typeof Telegram.WebApp.BackButton?.hide === "function") {
+            Telegram.WebApp.BackButton.hide();
+          }
+
+          // Настраиваем подтверждение закрытия
+          if (typeof Telegram.WebApp.setupClosingBehavior === "function") {
+            Telegram.WebApp.setupClosingBehavior({
+              need_confirmation: true,
+              confirmation_text:
+                "Вы уверены, что хотите выйти? Оплата не завершена!",
+            });
+          }
+
+          // Переходим на страницу оплаты
+          setIsOpen(true);
+          handlePaymentClickTwo(dataFetchPayment.payment_url);
+        } else {
+          window.location.assign(dataFetchPayment.payment_url);
+        }
       } else {
         setMassage("Заказ успешно создан");
         setShowNotification(true);
