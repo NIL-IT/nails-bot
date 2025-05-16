@@ -30,6 +30,7 @@ export default function FinishDsesign({
   user,
   deliveryOption,
 }) {
+  console.log("deliveryOption", deliveryOption);
   const [showNotification, setShowNotification] = useState(false);
   const [massage, setMassage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -211,7 +212,7 @@ export default function FinishDsesign({
       <div className="bg-white rounded-lg shadow p-6 mb-2">
         <div className="flex items-center ">
           <div className="min-w-8 min-h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">
-            1
+            1sdasdada
           </div>
 
           <span className="ml-3 font-medium">
