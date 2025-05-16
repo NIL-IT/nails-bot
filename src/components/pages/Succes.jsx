@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../routes/routes";
 import Cookies from "js-cookie";
+import { baseURL } from "../../api";
 export default function Succes() {
   const urlParams = new URLSearchParams(window.location.search);
   const paramValue = urlParams.get("succes");
