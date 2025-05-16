@@ -114,7 +114,7 @@ export default function FinishDsesign({
             id_tg_user: user?.id_tg,
           })
         : JSON.stringify({
-            type: "new_order",
+            type: "new_order_and_delivery",
             price: sumPrice,
             userId: user?.id_tg,
             products: productsObject,
@@ -143,6 +143,8 @@ export default function FinishDsesign({
 
       const resp = await fetch(`${baseURL}order.php`, option);
       const { data } = await API.parseResponseTwo(resp);
+      console.log("data", data);
+      console.log("data.order_id", data.order_id);
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
         method: "POST",
         headers: {
