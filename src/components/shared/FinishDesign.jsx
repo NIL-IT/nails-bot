@@ -132,6 +132,7 @@ export default function FinishDsesign({
             flat: formData.apartment,
           });
     try {
+      console.log("bodyOption", bodyOption);
       const option = {
         method: "POST",
         headers: {
@@ -142,7 +143,6 @@ export default function FinishDsesign({
 
       const resp = await fetch(`${baseURL}order.php`, option);
       const { data } = await API.parseResponseTwo(resp);
-      console.log(sumPrice);
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
         method: "POST",
         headers: {
