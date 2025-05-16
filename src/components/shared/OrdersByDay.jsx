@@ -67,12 +67,13 @@ export default function OrdersByDay({ order, noDay }) {
           )}
 
           {order?.street && (
-            <div className="space-y-[5px]">
-              <p>Местоположение: {order.location}</p>
-              <p>Улица: {order.street}</p>
-              <p>Дом: {order.home}</p>
-              <p>Квартира: {order.flat}</p>
-              <p>Индекс: {order.index}</p>
+            <div className="space-y-[3px] mt-[5px]">
+              <p>Город: {order?.city}</p>
+              <p>Область: {order?.location}</p>
+              <p>Улица: {order?.street}</p>
+              <p>Дом: {order?.home}</p>
+              <p>Квартира: {order?.flat}</p>
+              <p>Индекс: {order?.index}</p>
             </div>
           )}
         </div>
