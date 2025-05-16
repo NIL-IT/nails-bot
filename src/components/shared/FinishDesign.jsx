@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 
 import { API, baseURL } from "../../api";
 import { NotificationPopup } from "./NotificationPopup";
+import WebAppCloser from "../ui/WebAppCloser";
 const paymentData = [
   {
     id: 24,
@@ -31,6 +32,7 @@ export default function FinishDsesign({
   deliveryOption,
 }) {
   console.log("deliveryOption", deliveryOption);
+  const [isOpen, setIsOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [massage, setMassage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -164,6 +166,7 @@ export default function FinishDsesign({
       const handlePaymentClick = (link) => {
         if (window.Telegram?.WebApp) {
           // Use try_instant_view: false to ensure proper back button behavior
+
           Telegram.WebApp.openLink(link, { try_instant_view: false });
         } else {
           window.open(link, "_blank");
@@ -178,6 +181,13 @@ export default function FinishDsesign({
       sessionStorage.setItem("payment_id", paymentId);
       if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
+        Telegram.WebApp.BackButton.hide();
+        setIsOpen(true);
+        Telegram.WebApp.setupClosingBehavior({
+          need_confirmation: true,
+          confirmation_text:
+            "Вы уверены, что хотите выйти? Оплата не завершена!", // (опционально)
+        });
         handlePaymentClickTwo(dataFetchPayment.payment_url);
       } else {
         setMassage("Заказ успешно создан");
@@ -197,6 +207,8 @@ export default function FinishDsesign({
   console.log("selectedStore", selectedStore);
   return (
     <div>
+      {isOpen && <WebAppCloser />}
+
       <NotificationPopup
         isVisible={showNotification}
         message={massage}
