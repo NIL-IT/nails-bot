@@ -3,6 +3,7 @@ import { useEffect } from "react";
 const BackButton = () => {
   const goBack = () => {
     if (window.Telegram?.WebApp?.isExpanded) {
+      console.log("window.Telegram?.WebApp?.isExpanded");
       Telegram.WebApp.close(); // Закрыть WebView полностью
     } else {
       console.log(window.location.href.includes("web"));

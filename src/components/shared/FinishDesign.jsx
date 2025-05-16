@@ -214,8 +214,7 @@ export default function FinishDsesign({
   console.log("selectedStore", selectedStore);
   return (
     <div>
-      {isOpen && <WebAppCloser />}
-
+      {/* {isOpen && <WebAppCloser />} */}
       <NotificationPopup
         isVisible={showNotification}
         message={massage}
