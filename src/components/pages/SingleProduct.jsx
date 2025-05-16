@@ -55,6 +55,12 @@ export default function SingleProduct() {
   const [loading, setLoading] = useState(true);
   console.log(itemData);
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
+  useEffect(() => {
     if (!loading) return;
     const fetchAllData = async () => {
       try {

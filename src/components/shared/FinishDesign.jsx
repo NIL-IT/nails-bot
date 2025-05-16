@@ -173,7 +173,17 @@ export default function FinishDsesign({
         }
       };
       const handlePaymentClickTwo = (link) => {
-        window.location.assign(link);
+        if (window.Telegram?.WebApp) {
+          // Скрываем BackButton перед переходом на оплату
+          Telegram.WebApp.BackButton.hide();
+
+          // Показываем WebAppCloser только для страницы оплаты
+          setIsOpen(true);
+
+          window.location.assign(link);
+        } else {
+          window.location.assign(link);
+        }
       };
       console.log("dataFetchPayments", dataFetchPayment);
       Cookies.set("payment_id", paymentId);
@@ -182,22 +192,6 @@ export default function FinishDsesign({
       if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
         if (window.Telegram?.WebApp) {
-          // // Скрываем кнопку "Назад"
-          // if (typeof Telegram.WebApp.BackButton?.hide === "function") {
-          //   Telegram.WebApp.BackButton.hide();
-          // }
-
-          // // Настраиваем подтверждение закрытия
-          // if (typeof Telegram.WebApp.setupClosingBehavior === "function") {
-          //   Telegram.WebApp.setupClosingBehavior({
-          //     need_confirmation: true,
-          //     confirmation_text:
-          //       "Вы уверены, что хотите выйти? Оплата не завершена!",
-          //   });
-          // }
-
-          // Переходим на страницу оплаты
-          setIsOpen(true);
           handlePaymentClickTwo(dataFetchPayment.payment_url);
         } else {
           window.location.assign(dataFetchPayment.payment_url);
