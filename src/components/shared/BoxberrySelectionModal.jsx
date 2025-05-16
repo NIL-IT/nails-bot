@@ -125,7 +125,7 @@ export default function BoxberrySelectionModal({
       ? getCityCoordinates(formData.city)
       : DEFAULT_COORDINATES;
 
-  const initialZoom = 10;
+  const initialZoom = 12;
 
   // Fetch Boxberry points from the API
   const fetchAPIBoxberry = async () => {
