@@ -28,56 +28,7 @@ export default function Checkout({ user }) {
   const navigate = useNavigate();
   const [showNotification, setShowNotification] = useState(false);
   const [massage, setMassage] = useState("");
-  const verifyPayment = async (id) => {
-    try {
-      const fetchPayment = await fetch(`${baseURL}payment.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          type: "verify_payment",
-          payment_id: id,
-        }),
-      });
-      const dataFetchPayment = await fetchPayment.json();
-      console.log("dataFetchPayment", dataFetchPayment);
-      setMassage(dataFetchPayment.message);
-      setShowNotification(true);
-      setTimeout(() => {
-        setShowNotification(false);
-        if (dataFetchPayment.status !== "failed") {
-          navigate("/");
-        }
-      }, 2000);
-      Cookies.remove("payment_id");
-      localStorage.removeItem("payment_id");
-      sessionStorage.removeItem("payment_id");
-      return dataFetchPayment;
-    } catch (err) {
-      Cookies.remove("payment_id");
-      localStorage.removeItem("payment_id");
-      sessionStorage.removeItem("payment_id");
-      console.log(err);
-    }
-  };
-  useEffect(() => {
-    const cookieData = Cookies.get("payment_id");
-    if (cookieData) {
-      verifyPayment(cookieData);
-      return;
-    }
-    const sessionData = sessionStorage.getItem("payment_id");
-    if (sessionData) {
-      verifyPayment(sessionData);
-      return;
-    }
-    const localData = localStorage.getItem("payment_id");
-    if (localData) {
-      verifyPayment(localData);
-      return;
-    }
-  }, []);
+
   // Helper function to safely save data to all storage methods
   const saveToStorage = (key, value) => {
     try {
@@ -477,7 +428,11 @@ export default function Checkout({ user }) {
   };
   return (
     <div className="p-4">
-      <NotificationPopup isError={true} isVisible={showNotification} message={massage} />
+      <NotificationPopup
+        isError={true}
+        isVisible={showNotification}
+        message={massage}
+      />
       <div className="max-w-md mx-auto">
         <h1 className="text-3xl font-bold mb-6 opacity-70">
           Оформление заказа

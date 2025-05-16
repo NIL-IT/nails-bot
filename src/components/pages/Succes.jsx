@@ -1,13 +1,54 @@
 import { ArrowLeft, Ban, CheckCircle, ShoppingBag } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../routes/routes";
-
+import Cookies from "js-cookie";
 export default function Succes() {
   const urlParams = new URLSearchParams(window.location.search);
   const paramValue = urlParams.get("succes");
   const isSucces = paramValue == "true";
-
+  const verifyPayment = async (id) => {
+    try {
+      const fetchPayment = await fetch(`${baseURL}payment.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "verify_payment",
+          payment_id: id,
+        }),
+      });
+      const dataFetchPayment = await fetchPayment.json();
+      console.log("dataFetchPayment", dataFetchPayment);
+      Cookies.remove("payment_id");
+      localStorage.removeItem("payment_id");
+      sessionStorage.removeItem("payment_id");
+      return dataFetchPayment;
+    } catch (err) {
+      Cookies.remove("payment_id");
+      localStorage.removeItem("payment_id");
+      sessionStorage.removeItem("payment_id");
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    const cookieData = Cookies.get("payment_id");
+    if (cookieData) {
+      verifyPayment(cookieData);
+      return;
+    }
+    const sessionData = sessionStorage.getItem("payment_id");
+    if (sessionData) {
+      verifyPayment(sessionData);
+      return;
+    }
+    const localData = localStorage.getItem("payment_id");
+    if (localData) {
+      verifyPayment(localData);
+      return;
+    }
+  }, []);
   return (
     <div className="min-h-[60vh] bg-gray-50 flex flex-col justify-center items-center">
       <div className="flex-1 flex flex-col items-center justify-center p-3">
