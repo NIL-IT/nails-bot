@@ -40,11 +40,13 @@ export default function DeliveryForm({
           stores: [
             {
               deliveryId: 486,
+              bitrix_id: 115,
               title: "НОВОСИБИРСК ТЦ КОНТИНЕНТ",
               city: "Новосибирск",
               time: "Пн-Вс с 10:00 до 21:00",
             },
             {
+              bitrix_id: 125,
               deliveryId: 494,
               title: "НОВОСИБИРСК ТЦ АУРА",
               city: "Новосибирск",
@@ -56,12 +58,14 @@ export default function DeliveryForm({
         },
         {
           id: "courier",
+          bitrix_id: 131,
           deliveryId: 497,
           title: "Доставка курьером в Новосибирске",
           price: 300,
           priceDisplay: "300.00 ₽",
         },
         {
+          bitrix_id: 151,
           deliveryId: 510,
           id: "boxberry",
           title: "Самовывоз из ПВЗ Boxberry",
@@ -76,24 +80,28 @@ export default function DeliveryForm({
           title: "Самовывоз из магазина ШТУЧКИ.PRO",
           stores: [
             {
+              bitrix_id: 2,
               deliveryId: 59,
               title: "ТОМСК ТЦ ЛЕТО",
               city: "Томск, ул. Нахимова 8, ст. 13",
               time: "Пн-Вс с 10:00 до 21:00",
             },
             {
+              bitrix_id: 107,
               deliveryId: 82,
               title: "ТОМСК ТЦ ПРОСПЕКТ",
               city: "пр. Ленина, 159",
               time: "Пн-Вс с 10:00 до 21:00",
             },
             {
+              bitrix_id: 110,
               deliveryId: 84,
               title: "ТОМСК ТЦ МАНЕЖ",
               city: "ул. Беринга, 10",
               time: "Пн-Вс с 10:00 до 21:00",
             },
             {
+              bitrix_id: 83,
               deliveryId: 68,
               title: "СЕВЕРСК ТЦ МАРМЕЛАЙТ",
               city: "ул. Курчатова, 11А",
@@ -104,6 +112,7 @@ export default function DeliveryForm({
           priceDisplay: "Бесплатно",
         },
         {
+          bitrix_id: 1,
           deliveryId: 457,
           id: "courier",
           title: "Курьером по Томску",
@@ -111,6 +120,7 @@ export default function DeliveryForm({
           priceDisplay: "200.00 ₽",
         },
         {
+          bitrix_id: 129,
           deliveryId: 495,
           id: "south_gate",
           title: "Курьером в Южные ворота",
@@ -118,6 +128,7 @@ export default function DeliveryForm({
           priceDisplay: "300.00 ₽",
         },
         {
+          bitrix_id: 130,
           deliveryId: 496,
           id: "park",
           title: "Курьером в Северный Парк",
@@ -125,6 +136,7 @@ export default function DeliveryForm({
           priceDisplay: "250.00 ₽",
         },
         {
+          bitrix_id: 151,
           deliveryId: 510,
           id: "boxberry",
           title: "Самовывоз из ПВЗ Boxberry",
@@ -136,6 +148,7 @@ export default function DeliveryForm({
       // Default options for other cities
       setDeliveryOptions([
         {
+          bitrix_id: 72,
           deliveryId: 463,
           id: "russian_post",
           title: "Доставка по РФ Почтой России",
@@ -143,6 +156,7 @@ export default function DeliveryForm({
           priceDisplay: "500.00 ₽",
         },
         {
+          bitrix_id: 133,
           deliveryId: 499,
           id: "cdek",
           title: "СДЭК (Стоимость рассчитывается индивидуально)",
@@ -150,6 +164,7 @@ export default function DeliveryForm({
           priceDisplay: null,
         },
         {
+          bitrix_id: 151,
           deliveryId: 510,
           id: "boxberry",
           title: "Самовывоз из ПВЗ Boxberry",
@@ -187,7 +202,7 @@ export default function DeliveryForm({
                     handleSelectDelivery({
                       id: option.id,
                       price: option.price,
-                      deliveryId: option?.deliveryId || null,
+                      bitrix_id: option?.bitrix_id || null,
                     });
                     setPriceDelivery(option.price);
                   }}
