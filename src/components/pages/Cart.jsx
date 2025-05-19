@@ -29,7 +29,7 @@ export default function Card() {
     }
   }, 0);
 
-  const MIN_ORDER_AMOUNT = 300;
+  const MIN_ORDER_AMOUNT = 100;
   const isOrderValid = sum >= MIN_ORDER_AMOUNT;
 
   const handleIncrement = (variant, id) => {
