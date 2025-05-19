@@ -168,7 +168,7 @@ export default function Card() {
         </Link>
         {!isOrderValid && (
           <p className="text-[16px] text-gray_dark mb-1 text-center mt-2 ">
-            Минимальная сумма заказа 300 ₽. Добавьте еще товаров в корзину.
+            Минимальная сумма заказа 100 ₽. Добавьте еще товаров в корзину.
           </p>
         )}
       </div>
