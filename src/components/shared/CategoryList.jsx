@@ -62,6 +62,7 @@ export function CategoryList({ subCategory }) {
         {subCategory.map((item, index) => {
           return (
             <Link
+              key={index}
               onClick={(e) => {
                 e?.preventDefault();
                 dispatch(changeCategoryName(item.name));
