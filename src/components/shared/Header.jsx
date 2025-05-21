@@ -21,7 +21,11 @@ export function Header() {
         }}
         to={ROUTES.HOME}
       >
-        <img src="/img/logo.svg" alt="ШТУЧКИ.PRO" />
+        <img
+          className="w-[164px] h-[40px]"
+          src="https://shtuchki.pro/local/templates/redline/dist/assets/img/icons/header-mobile__logo.svg"
+          alt="ШТУЧКИ.PRO"
+        />
       </Link>
       <div className="flex gap-5 items-center">
         <Link to={ROUTES.SEARCH}>

@@ -63,7 +63,9 @@ function App() {
           const categoriesIndex = userPromise ? 1 : 0;
           const categoriesResponse = results[categoriesIndex];
           if (categoriesResponse && categoriesResponse.data) {
-            setCategories(categoriesResponse.data);
+            const arr = categoriesResponse.data;
+            [arr[0], arr[1]] = [arr[1], arr[0]];
+            setCategories(arr);
           }
         }
       } catch (error) {

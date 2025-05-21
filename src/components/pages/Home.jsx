@@ -22,10 +22,10 @@ const Home = ({ categories, user }) => {
       if (!currentCategory) {
         // Check if categories is available and not empty
         if (categories && categories.length > 0) {
-          if (isMounted) setCategory(categories[1]);
+          if (isMounted) setCategory(categories[0]);
           try {
             const subCategoryData = await API.getProducts(
-              categories[1].id_section
+              categories[0].id_section
             );
             setSubCategory(subCategoryData.data);
           } catch (error) {

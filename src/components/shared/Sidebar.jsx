@@ -13,10 +13,10 @@ export const Sidebar = ({ categories }) => {
   const { currentCategory, positionSidebar } = useSelector(({ user }) => user);
   const dispatch = useDispatch();
   const [active, setActive] = useState(
-    currentCategory ? currentCategory : categories[1]?.id
+    currentCategory ? currentCategory : categories[0]?.id
   );
   useEffect(() => {
-    setActive(currentCategory ? currentCategory : categories[1]?.id);
+    setActive(currentCategory ? currentCategory : categories[0]?.id);
   }, [currentCategory]);
   useEffect(() => {
     if (!id) return;

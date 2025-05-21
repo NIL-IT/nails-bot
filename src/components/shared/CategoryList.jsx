@@ -55,98 +55,117 @@ export function CategoryList({ subCategory }) {
       isMounted = false;
     };
   }, [subCategory]);
+  console.log("subCategory", subCategory);
   return (
-    <div className="space-y-[30px]">
-      {subCategory.map((item, index) => {
-        const itemData = itemsData[item.id];
-        if (itemData) {
-          if (itemData.length === 0) return;
-          const isCategory = itemData[0].hasOwnProperty("id_section");
+    <div className="flex w-full justify-center">
+      <div className="grid grid-cols-2 gap-[20px_10px] ">
+        {subCategory.map((item, index) => {
           return (
-            <div key={item.id} className="">
-              <div className="flex items-center justify-between gap-5 mb-5">
-                <Title size="text-3xl" text={item.name} />
-                <Link
-                  onClick={(e) => {
-                    e?.preventDefault();
-                    dispatch(changeCategoryName(item.name));
-                    navigate(
-                      `/categories?id=${item.id_section}&name=${item.name}`
-                    );
-                  }}
-                >
-                  <button
-                    className=" rounded-[10px] border
-                   border-primary px-[10px] py-[7px]"
-                  >
-                    <div className="flex items-center gap-[5px]">
-                      <span
-                        className="text-primary
-                       text-base font-montserrat"
-                      >
-                        Все
-                      </span>
-                      <img
-                        className={index == 0 ? "translate-y-[-1px]" : ""}
-                        src="/img/arrow-right.svg"
-                        alt="arrow-right"
-                      />
-                    </div>
-                  </button>
-                </Link>
-              </div>
-
-              {loading ? (
-                <div>Загрузка...</div>
-              ) : (
-                <div
-                  className="justify-self-center
-                 grid grid-cols-2 gap-[20px] w-[310px] mx-auto"
-                >
-                  {isCategory ? (
-                    <>
-                      {itemData.map((product, index) => {
-                        if (index >= 2) return;
-                        return (
-                          <div key={index}>
-                            <CategoryItem category={product} />
-                          </div>
-                        );
-                      })}
-                    </>
-                  ) : (
-                    <>
-                      {itemData.map(({ id }, index) => {
-                        if (index >= 2) return;
-                        return (
-                          <div key={index}>
-                            <Product idItem={id} />
-                          </div>
-                        );
-                      })}
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
+            <Link
+              onClick={(e) => {
+                e?.preventDefault();
+                dispatch(changeCategoryName(item.name));
+                navigate(`/categories?id=${item.id_section}&name=${item.name}`);
+              }}
+              className="w-[46.2vw] h-[150px] relative  "
+            >
+              <img
+                className="absolute top-0 left-0 w-full h-full rounded-2xl object-cover "
+                src={`https://shtuchki.pro/${item.detail_picture}`}
+                alt=""
+              />
+            </Link>
           );
-        } else {
-          return (
-            <div key={item.id}>
-              <div
-                className="flex items-center justify-between mb-5"
-                key={item.id}
-              >
-                <Title size="text-3xl" text={item.name} />
-                <Button text="Все" type={outline} id={item.id} />
-              </div>
-              <div className="justify-self-center grid grid-cols-2 gap-[20px]  w-[310px] mx-auto">
-                <SkeletonLoader count={2} />
-              </div>
-            </div>
-          );
-        }
-      })}
+        })}
+      </div>
     </div>
   );
 }
+//   const itemData = itemsData[item.id];
+//   if (itemData) {
+//     if (itemData.length === 0) return;
+//     const isCategory = itemData[0].hasOwnProperty("id_section");
+//     return (
+//       <div key={item.id} className="">
+//         <div className="flex items-center justify-between gap-5 mb-5">
+//           <Title size="text-3xl" text={item.name} />
+//           <Link
+//             onClick={(e) => {
+//               e?.preventDefault();
+//               dispatch(changeCategoryName(item.name));
+//               navigate(
+//                 `/categories?id=${item.id_section}&name=${item.name}`
+//               );
+//             }}
+//           >
+//             <button
+//               className=" rounded-[10px] border
+//              border-primary px-[10px] py-[7px]"
+//             >
+//               <div className="flex items-center gap-[5px]">
+//                 <span
+//                   className="text-primary
+//                  text-base font-montserrat"
+//                 >
+//                   Все
+//                 </span>
+//                 <img
+//                   className={index == 0 ? "translate-y-[-1px]" : ""}
+//                   src="/img/arrow-right.svg"
+//                   alt="arrow-right"
+//                 />
+//               </div>
+//             </button>
+//           </Link>
+//         </div>
+
+//         {loading ? (
+//           <div>Загрузка...</div>
+//         ) : (
+//           <div
+//             className="justify-self-center
+//            grid grid-cols-2 gap-[20px] w-[310px] mx-auto"
+//           >
+//             {isCategory ? (
+//               <>
+//                 {itemData.map((product, index) => {
+//                   if (index >= 2) return;
+//                   return (
+//                     <div key={index}>
+//                       <CategoryItem category={product} />
+//                     </div>
+//                   );
+//                 })}
+//               </>
+//             ) : (
+//               <>
+//                 {itemData.map(({ id }, index) => {
+//                   if (index >= 2) return;
+//                   return (
+//                     <div key={index}>
+//                       <Product idItem={id} />
+//                     </div>
+//                   );
+//                 })}
+//               </>
+//             )}
+//           </div>
+//         )}
+//       </div>
+//     );
+//   } else {
+//     return (
+//       <div key={item.id}>
+//         <div
+//           className="flex items-center justify-between mb-5"
+//           key={item.id}
+//         >
+//           <Title size="text-3xl" text={item.name} />
+//           <Button text="Все" type={outline} id={item.id} />
+//         </div>
+//         <div className="justify-self-center grid grid-cols-2 gap-[20px]  w-[310px] mx-auto">
+//           <SkeletonLoader count={2} />
+//         </div>
+//       </div>
+//     );
+//   }

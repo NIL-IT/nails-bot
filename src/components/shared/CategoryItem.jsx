@@ -2,26 +2,24 @@ import React from "react";
 import { Title } from "../ui";
 import { Link } from "react-router-dom";
 export function CategoryItem({ category }) {
+  console.log("category", category);
   return (
     <Link
       to={`/categories?id=${category.id_section}&name=${category.name}`}
       onClick={() => {
         console.log("Category", category.id_section);
       }}
-      className="p-[6px] max-w-[145px]  flex flex-col justify-between gap-[10px] bg-gray rounded-[10px]
-     w-[145px] h-full min-h-[189px]"
+      className="w-[46.2vw] h-[150px] relative"
     >
       <img
-        className="rounded-[10px] w-full h-[120px] object-cover object-center"
+        className=" w-full h-full object-cover rounded-2xl"
         src={
-          category?.picture
-            ? `https://shtuchki.pro/${category.picture}`
+          category?.detail_picture
+            ? `https://shtuchki.pro/${category.detail_picture}`
             : `/img/no_photo.webp`
         }
         alt={category.name}
       />
-
-      <Title text={category.name} size={"text-2xl"} />
     </Link>
   );
 }
