@@ -56,7 +56,7 @@ export function CategoryList({ subCategory }) {
     };
   }, [subCategory]);
   console.log("subCategory", subCategory);
-  return (
+  return subCategory.length > 0 ? (
     <div className="flex w-full justify-center">
       <div className="grid grid-cols-2 gap-[20px_10px] ">
         {subCategory.map((item, index) => {
@@ -78,6 +78,10 @@ export function CategoryList({ subCategory }) {
           );
         })}
       </div>
+    </div>
+  ) : (
+    <div className="justify-self-center grid grid-cols-2 gap-[20px]  w-[310px] mx-auto">
+      <SkeletonLoader count={2} />
     </div>
   );
 }

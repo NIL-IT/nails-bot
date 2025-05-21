@@ -86,18 +86,14 @@ export default function SearchItems() {
         ) : list.length > 0 ? (
           <div
             className="grid grid-cols-2  
-          gap-[20px] mb-[30px] mx-auto max-w-[360px]"
+          gap-[10px] mb-[30px] mx-auto "
           >
             {list.map((item, i) => {
               // Check before rendering
               if (!item?.id) return null;
               return (
-                <div key={i} className="w-[145px] ">
-                  <Product
-                    className={"w-[170px]"}
-                    search={true}
-                    idItem={item.id}
-                  />
+                <div key={i} className=" ">
+                  <Product className={""} search={true} idItem={item.id} />
                 </div>
               );
             })}

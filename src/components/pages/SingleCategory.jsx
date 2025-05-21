@@ -58,7 +58,7 @@ export default function SingleCategory() {
           <Title text={decodedName} className={"mb-5"} />
           <div className="w-full flex justify-center h-full">
             {!isCategory ? (
-              <div className="justify-self-center grid grid-cols-2 gap-[10px_20px]">
+              <div className="justify-self-center grid grid-cols-2 gap-[10px_10px]">
                 {itemsData.map((product, index) => {
                   return (
                     <div key={index}>
@@ -68,7 +68,7 @@ export default function SingleCategory() {
                 })}
               </div>
             ) : (
-              <div className="justify-self-center grid grid-cols-2 gap-[20px_10px]">
+              <div className="justify-self-center grid grid-cols-2 gap-[10px_10px]">
                 {itemsData.map((product, index) => (
                   <div key={index}>
                     <CategoryItem category={product} />
@@ -106,8 +106,11 @@ export default function SingleCategory() {
           </button>
         </div>
       ) : (
-        <div className="justify-self-center grid grid-cols-2 gap-[20px]">
-          <SkeletonLoader />
+        <div className="my-[30px] ">
+          <Title text={decodedName} className={"mb-5"} />
+          <div className="justify-self-center grid grid-cols-2 gap-[10px]">
+            <SkeletonLoader />
+          </div>
         </div>
       )}
 

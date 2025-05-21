@@ -4,6 +4,7 @@ import { API } from "../../api";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { changeCurrentProduct } from "../../features/slice/userSlice";
+import SkeletonLoader from "../ui/SkeletonLoader";
 
 export function Product({ idItem, search, className }) {
   const dispatch = useDispatch();
@@ -27,36 +28,31 @@ export function Product({ idItem, search, className }) {
   }, []);
   console.log("product", itemData);
   return loading ? (
-    <div className="w-[145px] h-[225px]"></div>
+    <SkeletonLoader />
   ) : (
     <Link
       key={itemData.id}
       to={`/product/${itemData.id}`}
       onClick={() => dispatch(changeCurrentProduct(itemData))}
       className={` 
-       flex flex-col gap-[10px]  rounded-[10px] transition-all duration-200
-     w-[145px] h-full min-h-[189px] ${
-       search ? "bg-gray_dark/10 p-2" : "bg-gray p-[6px]"
-     } ${className ? className : "max-w-[145px]"}`}
+        flex flex-col h-full rounded-[10px] transition-all duration-200
+        min-w-[46.2vw] ${search ? "bg-gray_dark/10 p-2" : "bg-gray p-[6px]"} ${
+        className ? className : ""
+      }`}
     >
-      <img
-        className="rounded-[10px] w-full h-[89px] object-cover object-center"
-        src={
-          itemData?.preview_picture
-            ? `https://shtuchki.pro${itemData.preview_picture}`
-            : "/img/no_photo.webp"
-        }
-        alt={itemData.name}
-      />
-      <div className="flex flex-col justify-between h-full">
-        <div>
-          <Title text={itemData.name} size={"text-2xl"} />
-          {/* <div className="text-base font-medium">
-            <p>{itemData.desc}</p>
-            <p>{itemData.volume}</p>
-          </div> */}
-        </div>
-
+      <div className="flex-grow-0">
+        <img
+          className="rounded-[10px] w-full h-[100px] object-contain object-center"
+          src={
+            itemData?.preview_picture
+              ? `https://shtuchki.pro${itemData.preview_picture}`
+              : "/img/no_photo.webp"
+          }
+          alt={itemData.name}
+        />
+      </div>
+      <div className="flex flex-col justify-between flex-grow">
+        <Title text={itemData.name} size={"text-2xl"} />
         <div
           className={`text-2xl font-semibold mb-1 ${search ? "pt-5" : "pt-2"}`}
         >

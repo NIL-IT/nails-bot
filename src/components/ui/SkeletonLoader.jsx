@@ -8,9 +8,9 @@ export default function SkeletonLoader({ count = 10 }) {
         .map((_, index) => (
           <div
             key={`skeleton-${index}`}
-            className="p-[6px] max-w-[145px]
+            className="p-[6px] 
              flex flex-col gap-[10px] bg-gray rounded-[10px] 
-                w-[145px] h-full min-h-[189px]"
+                w-[46.2vw] h-[150px] "
           >
             <div
               className="w-full h-[89px] bg-gray_dark
