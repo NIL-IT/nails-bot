@@ -8,6 +8,7 @@ import { CategoryItem } from "../shared/CategoryItem";
 import { X } from "lucide-react";
 import SkeletonLoader from "../ui/SkeletonLoader";
 export default function SingleCategory() {
+  console.log("SingleCategory");
   const [searchParams] = useSearchParams(); // Добавлено: получение query-параметров
   const id = searchParams.get("id"); // Извлечение id
   const nameParam = searchParams.get("name"); // Извлечение name
@@ -17,11 +18,13 @@ export default function SingleCategory() {
   const [isCategory, setIsCategory] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, []);
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }, 0);
+  }, [searchParams]);
   useEffect(() => {
     setLoading(true);
     const fetchAllData = async () => {

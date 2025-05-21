@@ -25,6 +25,7 @@ export function Product({ idItem, search, className }) {
 
     fetchAllData();
   }, []);
+  console.log("product", itemData);
   return loading ? (
     <div className="w-[145px] h-[225px]"></div>
   ) : (
