@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Title } from "../ui";
 import { useDispatch, useSelector } from "react-redux";
 import { minus, normal, quantity } from "../../utils/constants";
@@ -31,6 +31,12 @@ export default function FinishDsesign({
   user,
   deliveryOption,
 }) {
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
   console.log("deliveryOption", deliveryOption);
   const [isOpen, setIsOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
@@ -136,8 +142,6 @@ export default function FinishDsesign({
             flat: formData.apartment,
           });
     try {
-      alert(bodyOption);
-
       console.log("bodyOption", bodyOption);
       const option = {
         method: "POST",
@@ -149,8 +153,6 @@ export default function FinishDsesign({
 
       const resp = await fetch(`${baseURL}order.php`, option);
       const { data } = await API.parseResponseTwo(resp);
-
-      alert(data);
 
       console.log("data", data);
       console.log("data.order_id", data.order_id);
@@ -167,8 +169,6 @@ export default function FinishDsesign({
         }),
       });
       const dataFetchPayment = await fetchPayment.json();
-
-      alert(dataFetchPayment);
 
       const paymentId = dataFetchPayment.payment_id;
 
@@ -215,6 +215,7 @@ export default function FinishDsesign({
       }
       setIsLoading(false);
     } catch (err) {
+      alert(`Произошла ошибка: ${err.message}`);
       setIsLoading(false);
       console.log(err);
     }
