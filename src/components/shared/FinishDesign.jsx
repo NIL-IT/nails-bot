@@ -206,6 +206,7 @@ export default function FinishDsesign({
       }
       setIsLoading(false);
     } catch (err) {
+      alert(err);
       setIsLoading(false);
       console.log(err);
     }
