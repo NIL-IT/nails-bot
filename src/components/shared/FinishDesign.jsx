@@ -153,9 +153,9 @@ export default function FinishDsesign({
 
       const resp = await fetch(`${baseURL}order.php`, option);
       const { data } = await API.parseResponseTwo(resp);
-
-      console.log("data", data);
-      console.log("data.order_id", data.order_id);
+      if (!data || !data.order_id) {
+        throw new Error("Не удалось получить order_id из ответа сервера");
+      }
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
         method: "POST",
         headers: {
