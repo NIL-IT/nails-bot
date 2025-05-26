@@ -163,6 +163,7 @@ export default function FinishDsesign({
       });
       const dataFetchPayment = await fetchPayment.json();
       const paymentId = dataFetchPayment.payment_id;
+      alert("data", data, "dataFetchPayment", dataFetchPayment);
       const handlePaymentClick = (link) => {
         if (window.Telegram?.WebApp) {
           // Use try_instant_view: false to ensure proper back button behavior
@@ -206,7 +207,6 @@ export default function FinishDsesign({
       }
       setIsLoading(false);
     } catch (err) {
-      alert(err);
       setIsLoading(false);
       console.log(err);
     }

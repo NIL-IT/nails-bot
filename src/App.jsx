@@ -104,7 +104,7 @@ function App() {
   }, [pathname, user]);
   if (isLoading) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center">
+      <div className="fixed top-0 left-0 w-screen h-screen flex flex-col justify-center items-center ">
         <div className="loader"></div>
       </div>
     );
