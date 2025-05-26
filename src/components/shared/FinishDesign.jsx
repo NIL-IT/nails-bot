@@ -136,6 +136,8 @@ export default function FinishDsesign({
             flat: formData.apartment,
           });
     try {
+      alert(bodyOption);
+
       console.log("bodyOption", bodyOption);
       const option = {
         method: "POST",
@@ -147,6 +149,9 @@ export default function FinishDsesign({
 
       const resp = await fetch(`${baseURL}order.php`, option);
       const { data } = await API.parseResponseTwo(resp);
+
+      alert(data);
+
       console.log("data", data);
       console.log("data.order_id", data.order_id);
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
@@ -162,8 +167,11 @@ export default function FinishDsesign({
         }),
       });
       const dataFetchPayment = await fetchPayment.json();
+
+      alert(dataFetchPayment);
+
       const paymentId = dataFetchPayment.payment_id;
-      alert("data", data, "dataFetchPayment", dataFetchPayment);
+
       const handlePaymentClick = (link) => {
         if (window.Telegram?.WebApp) {
           // Use try_instant_view: false to ensure proper back button behavior
