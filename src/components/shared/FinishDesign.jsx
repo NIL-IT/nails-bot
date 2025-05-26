@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { API, baseURL } from "../../api";
 import { NotificationPopup } from "./NotificationPopup";
 import WebAppCloser from "../ui/WebAppCloser";
+import { ROUTES } from "../routes/routes";
 const paymentData = [
   {
     id: 24,
@@ -37,7 +38,7 @@ export default function FinishDsesign({
       behavior: "smooth",
     });
   }, []);
-  console.log("deliveryOption", deliveryOption);
+
   const [isOpen, setIsOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [massage, setMassage] = useState("");
@@ -46,6 +47,30 @@ export default function FinishDsesign({
   const [isLoading, setIsLoading] = useState(false);
   const [activePayment, setActivePayment] = useState(paymentData[0].id);
   const { cart } = useSelector(({ user }) => user);
+
+  if (cart.length === 0) {
+    return (
+      <div className="h-[70vh] flex flex-col justify-center items-center   text-center">
+        <div className="w-[100px] h-[100px]">
+          <img width={100} src="/img/cart.png" alt="" />
+        </div>
+        <div className="font-montserrat text-center flex flex-col gap-0">
+          <p>В корзине пока пусто</p>
+          <span className="text-base text-gray_dark">
+            Корзина ждёт что её наполнят!
+          </span>
+        </div>
+        <div className="w-[80%]">
+          <Button
+            text={"Перейти в каталог"}
+            type={normal}
+            to={ROUTES.HOME}
+            className={"w-[80%] bg-secondary mt-[20px] mb-[30px]"}
+          />
+        </div>
+      </div>
+    );
+  }
   const sum = cart.reduce((acc, item) => {
     let price =
       item?.base_price && item?.base_price !== "0.00"
@@ -154,7 +179,11 @@ export default function FinishDsesign({
       const resp = await fetch(`${baseURL}order.php`, option);
       const { data } = await API.parseResponseTwo(resp);
       if (!data || !data.order_id) {
-        throw new Error("Не удалось получить order_id из ответа сервера");
+        for (item of cart) {
+          removeItem(item.id);
+        }
+        alert("Не удалось получить ваши товары, пожалуйста добавьте их снова");
+        window.location.assign("/");
       }
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
         method: "POST",
@@ -215,7 +244,6 @@ export default function FinishDsesign({
       }
       setIsLoading(false);
     } catch (err) {
-      alert(`Произошла ошибка: ${err.message}`);
       setIsLoading(false);
       console.log(err);
     }
