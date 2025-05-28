@@ -179,7 +179,7 @@ export default function FinishDsesign({
       const { data } = await API.parseResponseTwo(resp);
       if (!data || !data.order_id) {
         // Clear the cart
-        for (const item of cart) {
+        for (item of cart) {
           removeItem(item.id);
         }
 
