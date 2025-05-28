@@ -182,9 +182,7 @@ export default function FinishDsesign({
         // // Clear the cart
         // cart.forEach((item) => removeItem(item.id));
         // Show error notification
-        setMassage(
-          "Ошибка при создании заказа. Не удалось получить данные заказа."
-        );
+        setMassage("Ошибка при создании заказа.");
         setIsError(true);
         setShowNotification(true);
         setIsLoading(false);
@@ -195,7 +193,7 @@ export default function FinishDsesign({
           setMassage("");
           setIsError(false);
           navigate("/");
-        }, 3000);
+        }, 2000);
 
         return; // Exit the function early
       }
