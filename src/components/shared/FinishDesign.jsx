@@ -8,7 +8,7 @@ import {
   removeItemFromCart,
 } from "../../features/slice/userSlice";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { API, baseURL } from "../../api";
 import { NotificationPopup } from "./NotificationPopup";
@@ -39,6 +39,7 @@ export default function FinishDsesign({
   }, []);
 
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const [showNotification, setShowNotification] = useState(false);
   const [massage, setMassage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -140,7 +141,7 @@ export default function FinishDsesign({
             userId: user?.id_tg,
             products: productsObject,
             paySystemId: 24,
-            deliveryId: selectedStore.bitrix_id,
+            deliveryId: selectedStore?.bitrix_id || selectedStore.deliveryId,
             fio: `${formData.lastName} ${formData.firstName} ${formData?.middleName}`,
             phone: formData.phone,
             email: formData.email,
@@ -157,7 +158,7 @@ export default function FinishDsesign({
             phone: formData.phone,
             email: formData.email,
             id_tg_user: user?.id_tg,
-            deliveryId: deliveryOption.bitrix_id,
+            deliveryId: deliveryOption?.bitrix_id || deliveryOption?.deliveryId,
             city: formData.city,
             location: formData.region,
             index: formData.index,
@@ -178,11 +179,8 @@ export default function FinishDsesign({
       const resp = await fetch(`${baseURL}order.php`, option);
       const { data } = await API.parseResponseTwo(resp);
       if (!data || !data.order_id) {
-        // Clear the cart
-        for (item of cart) {
-          removeItem(item.id);
-        }
-
+        // // Clear the cart
+        // cart.forEach((item) => removeItem(item.id));
         // Show error notification
         setMassage(
           "Ошибка при создании заказа. Не удалось получить данные заказа."
@@ -192,11 +190,11 @@ export default function FinishDsesign({
         setIsLoading(false);
 
         // Redirect to home page after showing the error
-        setTimeout(() => {
+        await setTimeout(() => {
           setShowNotification(false);
           setMassage("");
           setIsError(false);
-          window.location.assign("/");
+          navigate("/");
         }, 3000);
 
         return; // Exit the function early
