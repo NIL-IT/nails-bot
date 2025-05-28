@@ -216,8 +216,7 @@ export default function FinishDsesign({
       const handlePaymentClick = (link) => {
         if (window.Telegram?.WebApp) {
           // Use try_instant_view: false to ensure proper back button behavior
-
-          Telegram.WebApp.openLink(link, { try_instant_view: false });
+          window.Telegram.WebApp.openLink(link, { try_instant_view: true });
         } else {
           window.open(link, "_blank");
         }
@@ -230,9 +229,9 @@ export default function FinishDsesign({
           // Показываем WebAppCloser только для страницы оплаты
           setIsOpen(true);
 
-          window.location.assign(link);
+          window.Telegram.WebApp.openLink(link, { try_instant_view: true });
         } else {
-          window.location.assign(link);
+          window.open(link, "_blank");
         }
       };
       console.log("dataFetchPayments", dataFetchPayment);
