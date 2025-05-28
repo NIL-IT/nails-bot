@@ -225,11 +225,9 @@ export default function FinishDsesign({
         if (window.Telegram?.WebApp) {
           // Скрываем BackButton перед переходом на оплату
           Telegram.WebApp.BackButton.hide();
-
           // Показываем WebAppCloser только для страницы оплаты
           setIsOpen(true);
-
-          window.Telegram.WebApp.openLink(link, { try_instant_view: true });
+          window.Telegram.WebApp.openLink(link, { try_instant_view: false });
         } else {
           window.open(link, "_blank");
         }
