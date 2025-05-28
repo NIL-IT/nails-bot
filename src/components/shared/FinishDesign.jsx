@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Title } from "../ui";
 import { useDispatch, useSelector } from "react-redux";
 import { minus, normal, quantity } from "../../utils/constants";
@@ -12,7 +12,6 @@ import { Link } from "react-router-dom";
 
 import { API, baseURL } from "../../api";
 import { NotificationPopup } from "./NotificationPopup";
-import WebAppCloser from "../ui/WebAppCloser";
 import { ROUTES } from "../routes/routes";
 const paymentData = [
   {
@@ -72,7 +71,7 @@ export default function FinishDsesign({
     );
   }
   const sum = cart.reduce((acc, item) => {
-    let price =
+    const price =
       item?.base_price && item?.base_price !== "0.00"
         ? item.base_price
         : item?.purchasingprice
@@ -87,7 +86,7 @@ export default function FinishDsesign({
     }
   }, 0);
   const handleIncrement = (variant, id) => {
-    let currentItem = cart.find((item) => item.id === id);
+    const currentItem = cart.find((item) => item.id === id);
     if (variant === minus) {
       dispatch(
         currentItem.quantity > 1
@@ -179,11 +178,28 @@ export default function FinishDsesign({
       const resp = await fetch(`${baseURL}order.php`, option);
       const { data } = await API.parseResponseTwo(resp);
       if (!data || !data.order_id) {
-        for (item of cart) {
+        // Clear the cart
+        for (const item of cart) {
           removeItem(item.id);
         }
-        alert("Не удалось получить ваши товары, пожалуйста добавьте их снова");
-        window.location.assign("/");
+
+        // Show error notification
+        setMassage(
+          "Ошибка при создании заказа. Не удалось получить данные заказа."
+        );
+        setIsError(true);
+        setShowNotification(true);
+        setIsLoading(false);
+
+        // Redirect to home page after showing the error
+        setTimeout(() => {
+          setShowNotification(false);
+          setMassage("");
+          setIsError(false);
+          window.location.assign("/");
+        }, 3000);
+
+        return; // Exit the function early
       }
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
         method: "POST",
@@ -326,7 +342,7 @@ export default function FinishDsesign({
         </div>
         <div className="flex flex-col gap-[15px]  overflow-y-scroll">
           {cart.map((item) => {
-            let price =
+            const price =
               item?.base_price && item?.base_price !== "0.00"
                 ? item.base_price
                 : item?.purchasingprice
