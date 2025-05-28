@@ -192,7 +192,7 @@ export default function FinishDsesign({
           setShowNotification(false);
           setMassage("");
           setIsError(false);
-          navigate("/");
+          // navigate("/");
         }, 2000);
 
         return; // Exit the function early
@@ -223,11 +223,7 @@ export default function FinishDsesign({
       };
       const handlePaymentClickTwo = (link) => {
         if (window.Telegram?.WebApp) {
-          // Скрываем BackButton перед переходом на оплату
-          Telegram.WebApp.BackButton.hide();
-          // Показываем WebAppCloser только для страницы оплаты
-          setIsOpen(true);
-          window.Telegram.WebApp.openLink(link, { try_instant_view: false });
+          Telegram.WebApp.openLink(link, { try_instant_view: false });
         } else {
           window.open(link, "_blank");
         }
