@@ -12,6 +12,7 @@ export default function DeliveryForm({
   handleFinalSubmit,
   handlePrevStep,
   setPriceDelivery,
+  sum,
 }) {
   // Delivery options based on city
   const [deliveryOptions, setDeliveryOptions] = useState([]);
@@ -209,7 +210,7 @@ export default function DeliveryForm({
                 >
                   <div className="font-medium text-sm">{option.title}</div>
                   <div className="text-primary text-sm">
-                    {option.priceDisplay}
+                    {sum() >= 2000 ? "Бесплатно" : option.priceDisplay}
                   </div>
                 </div>
               ))}

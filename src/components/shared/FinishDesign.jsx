@@ -30,6 +30,7 @@ export default function FinishDsesign({
   handlePrevStep,
   user,
   deliveryOption,
+  sum,
 }) {
   useEffect(() => {
     window.scrollTo({
@@ -37,7 +38,6 @@ export default function FinishDsesign({
       behavior: "smooth",
     });
   }, []);
-
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const [showNotification, setShowNotification] = useState(false);
@@ -71,21 +71,7 @@ export default function FinishDsesign({
       </div>
     );
   }
-  const sum = cart.reduce((acc, item) => {
-    const price =
-      item?.base_price && item?.base_price !== "0.00"
-        ? item.base_price
-        : item?.purchasingprice
-        ? item.purchasingprice
-        : item?.opt_price
-        ? item.opt_price
-        : 0;
-    if (item.quantity) {
-      return acc + price * item.quantity;
-    } else {
-      return acc + price * 1;
-    }
-  }, 0);
+
   const handleIncrement = (variant, id) => {
     const currentItem = cart.find((item) => item.id === id);
     if (variant === minus) {
@@ -131,8 +117,8 @@ export default function FinishDsesign({
       acc[index] = product;
       return acc;
     }, {});
-    console.log("deliveryOption", deliveryOption);
-    const sumPrice = sum + deliveryOption?.price;
+
+    const sumPrice = sum() >= 2000 ? sum() : sum() + deliveryOption?.price;
     const bodyOption =
       deliveryOption.id === "selfPickup"
         ? JSON.stringify({
@@ -167,7 +153,6 @@ export default function FinishDsesign({
             flat: formData.apartment,
           });
     try {
-      console.log("bodyOption", bodyOption);
       const option = {
         method: "POST",
         headers: {
@@ -228,7 +213,7 @@ export default function FinishDsesign({
           window.open(link, "_blank");
         }
       };
-      console.log("dataFetchPayments", dataFetchPayment);
+
       Cookies.set("payment_id", paymentId);
       localStorage.setItem("payment_id", paymentId);
       sessionStorage.setItem("payment_id", paymentId);
@@ -253,8 +238,7 @@ export default function FinishDsesign({
       console.log(err);
     }
   };
-  console.log("formData", formData);
-  console.log("selectedStore", selectedStore);
+
   return (
     <div>
       {/* {isOpen && <WebAppCloser />} */}
@@ -421,15 +405,19 @@ export default function FinishDsesign({
         <div className=" mt-4  flex justify-between">
           <div className="flex flex-col  gap-2">
             <span className=" text-[16px]">Cумма</span>
-            <span className="text-[20px]">{sum} ₽</span>
+            <span className="text-[20px]">{sum()} ₽</span>
           </div>
           <div className="flex flex-col  gap-2">
             <span className=" text-[16px]">Доставка</span>
-            <span className="text-[20px]">{deliveryOption.price || 0} ₽</span>
+            <span className="text-[20px]">
+              {sum() >= 2000 ? 0 : deliveryOption.price || 0} ₽
+            </span>
           </div>
           <div className="flex flex-col  gap-2 text-primary">
             <span className="text-[16px] ">Итого</span>
-            <span className="text-[20px]">{sum + deliveryOption?.price} ₽</span>
+            <span className="text-[20px]">
+              {sum() >= 2000 ? sum() : sum() + deliveryOption?.price} ₽
+            </span>
           </div>
         </div>
       </div>
@@ -442,7 +430,7 @@ export default function FinishDsesign({
             className="font-semibold 
             font-manrope text-3xl"
           >
-            {sum + deliveryOption?.price} ₽
+            {sum() >= 2000 ? sum() : sum() + deliveryOption?.price} ₽
           </span>
         </div>
         <div className="space-y-2">

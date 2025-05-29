@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Cookies from "js-cookie";
 import CustomerForm from "../shared/CustomerForm";
 import DeliveryForm from "../shared/DeliveryForm";
@@ -8,6 +8,7 @@ import FinishDesign from "../shared/FinishDesign";
 import { NotificationPopup } from "../shared/NotificationPopup";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../../api";
+import { useSelector } from "react-redux";
 
 // Storage configuration
 const COOKIE_CONFIG = {
@@ -108,7 +109,25 @@ export default function Checkout({ user }) {
   const [addressFormIsValid, setAddressFormIsValid] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [priceDelivery, setPriceDelivery] = useState();
+  const { cart } = useSelector(({ user }) => user);
 
+  const sum = useCallback(() => {
+    return cart.reduce((acc, item) => {
+      const price =
+        item?.base_price && item?.base_price !== "0.00"
+          ? item.base_price
+          : item?.purchasingprice
+          ? item.purchasingprice
+          : item?.opt_price
+          ? item.opt_price
+          : 0;
+      if (item.quantity) {
+        return acc + price * item.quantity;
+      } else {
+        return acc + price * 1;
+      }
+    }, 0);
+  }, [cart]);
   // Save form data when it changes
   useEffect(() => {
     saveToStorage(STORAGE_KEYS.FORM_DATA, formData);
@@ -454,6 +473,7 @@ export default function Checkout({ user }) {
           />
         ) : step === 2 ? (
           <DeliveryForm
+            sum={sum}
             formData={formData}
             handleInputChange={handleInputChange}
             deliveryOption={deliveryOption}
@@ -467,6 +487,7 @@ export default function Checkout({ user }) {
           />
         ) : (
           <FinishDesign
+            sum={sum}
             deliveryOption={deliveryOption}
             priceDelivery={priceDelivery}
             formData={formData}
