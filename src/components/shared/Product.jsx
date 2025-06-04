@@ -56,7 +56,7 @@ export function Product({ idItem, search, className }) {
         <div
           className={`text-2xl font-semibold mb-1 ${search ? "pt-5" : "pt-2"}`}
         >
-          {itemData.base_price} ₽
+          {itemData.roznica_master_price || itemData.base_price} ₽
         </div>
       </div>
     </Link>

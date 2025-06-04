@@ -111,7 +111,7 @@ export default function FinishDsesign({
       productId: product.id_product,
       quantity: product.quantity,
       name: product.name,
-      price: product.base_price,
+      price: item.roznica_master_price || item.base_price,
     }));
     const productsObject = productsData.reduce((acc, product, index) => {
       acc[index] = product;
@@ -315,14 +315,7 @@ export default function FinishDsesign({
         </div>
         <div className="flex flex-col gap-[15px]  overflow-y-scroll">
           {cart.map((item) => {
-            const price =
-              item?.base_price && item?.base_price !== "0.00"
-                ? item.base_price
-                : item?.purchasingprice
-                ? item.purchasingprice
-                : item?.opt_price
-                ? item.opt_price
-                : 0;
+            const price = item.roznica_master_price || item.base_price;
 
             return (
               <div
@@ -423,7 +416,7 @@ export default function FinishDsesign({
       </div>
       <div className="fixed left-0 bottom-0 w-[100vw] h-[163px] p-[10px] bg-white">
         <div className="flex justify-between items-center mb-[15px]">
-          <p className="text-base font-montserrat text-black ]">
+          <p className="text-base font-montserrat text-black ">
             Общая стоимость заказа
           </p>
           <span

@@ -14,14 +14,7 @@ export default function Card() {
   const { cart } = useSelector(({ user }) => user);
 
   const sum = cart.reduce((acc, item) => {
-    let price =
-      item?.base_price && item?.base_price !== "0.00"
-        ? item.base_price
-        : item?.purchasingprice
-        ? item.purchasingprice
-        : item?.opt_price
-        ? item.opt_price
-        : 0;
+    let price = item.roznica_master_price || item.base_price;
     if (item.quantity) {
       return acc + price * item.quantity;
     } else {
@@ -60,14 +53,7 @@ export default function Card() {
       <Title text={"Корзина товаров"} className={"mb-[30px]"} />
       <div className="flex flex-col gap-[15px] mb-[130px] overflow-y-scroll">
         {cart.map((item) => {
-          let price =
-            item?.base_price && item?.base_price !== "0.00"
-              ? item.base_price
-              : item?.purchasingprice
-              ? item.purchasingprice
-              : item?.opt_price
-              ? item.opt_price
-              : 0;
+          let price = item.roznica_master_price || item.base_price;
           return (
             <div
               key={item.id}
