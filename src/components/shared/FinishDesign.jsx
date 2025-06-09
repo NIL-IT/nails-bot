@@ -111,7 +111,7 @@ export default function FinishDsesign({
       productId: product.id_product,
       quantity: product.quantity,
       name: product.name,
-      price: item.roznica_master_price || item.base_price,
+      price: product.roznica_master_price || product.base_price,
     }));
     const productsObject = productsData.reduce((acc, product, index) => {
       acc[index] = product;
