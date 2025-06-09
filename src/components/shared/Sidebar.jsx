@@ -7,6 +7,7 @@ import {
 } from "../../features/slice/userSlice";
 
 export const Sidebar = ({ categories }) => {
+  console.log(categories);
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
   let { pathname } = useLocation();

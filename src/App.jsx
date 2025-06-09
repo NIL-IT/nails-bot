@@ -8,7 +8,15 @@ import { getAllCart } from "./utils/cart";
 import { ROUTES } from "./components/routes/routes";
 import { useLocation } from "react-router-dom";
 import BackButton from "./components/ui/BackButton";
-
+const categoryData = [
+  "Гель-лак, гель и акрил",
+  "Инструменты",
+  "Оборудование",
+  "Уход и депиляция",
+  "Дизайн ногтей",
+  "Специальные жидкости",
+  "SALE!",
+];
 function App() {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
@@ -64,7 +72,19 @@ function App() {
           const categoriesResponse = results[categoriesIndex];
           if (categoriesResponse && categoriesResponse.data) {
             const arr = categoriesResponse.data;
-            [arr[0], arr[1]] = [arr[1], arr[0]];
+            arr.sort((a, b) => {
+              const indexA = categoryData.indexOf(a.name);
+              const indexB = categoryData.indexOf(b.name);
+              if (indexA !== -1 && indexB !== -1) {
+                return indexA - indexB;
+              }
+              // If only one item is in the order array, prioritize it
+              if (indexA !== -1) return -1;
+              if (indexB !== -1) return 1;
+
+              // If neither item is in the order array, maintain their relative position
+              return 0;
+            });
             setCategories(arr);
           }
         }
