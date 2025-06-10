@@ -164,7 +164,7 @@ export default function SingleProduct() {
           ) : (
             <button
               className={
-                "rounded-[10px] text-white text-2xl font-manrope font-semibold py-[9px] bg-secondary/70 w-[145px] h-[38px] flex justify-center items-center"
+                "rounded-[10px] text-white text-2xl font-manrope font-semibold py-[9px] bg-secondary px-5 h-[38px] flex justify-center items-center"
               }
             >
               Cкоро будет добавлен
