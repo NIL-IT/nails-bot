@@ -26,7 +26,6 @@ export function Product({ idItem, search, className }) {
 
     fetchAllData();
   }, []);
-  console.log("product", itemData);
   return loading ? (
     <SkeletonLoader />
   ) : (
