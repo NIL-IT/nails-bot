@@ -49,6 +49,7 @@ function SkeletonLoader() {
 
 export default function SingleProduct() {
   const dispatch = useDispatch();
+  const [active, setActive] = useState(false);
   const { id } = useParams();
   const [count, setCount] = React.useState(1);
   const [itemData, setItemData] = useState({});
@@ -64,6 +65,12 @@ export default function SingleProduct() {
     if (!loading) return;
     const fetchAllData = async () => {
       try {
+        const checkItem = await API.checkItem(id);
+        if (checkItem.active === "N") {
+          setActive(false);
+        } else {
+          setActive(true);
+        }
         const fetchProduct = await API.getProduct(id);
         setItemData(fetchProduct.data[0]);
       } catch (error) {
@@ -144,14 +151,24 @@ export default function SingleProduct() {
             count={count}
             className={"px-[5px] py-3 w-[145px] h-[38px]"}
           />
-          <Button
-            onClick={addItem}
-            text={"В корзину"}
-            type="normal"
-            className={
-              "bg-secondary w-[145px] h-[38px] flex justify-center items-center"
-            }
-          />
+          {active ? (
+            <Button
+              onClick={addItem}
+              text={active ? "В корзину" : "Cкоро будет добавлен"}
+              type="normal"
+              className={
+                "bg-secondary w-[145px] h-[38px] flex justify-center items-center"
+              }
+            />
+          ) : (
+            <button
+              className={
+                "rounded-[10px] text-white text-2xl font-manrope font-semibold py-[9px] bg-secondary/70 w-[145px] h-[38px] flex justify-center items-center"
+              }
+            >
+              Cкоро будет добавлен
+            </button>
+          )}
         </div>
       </div>
     </div>

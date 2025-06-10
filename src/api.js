@@ -19,7 +19,22 @@ export const API = {
         return { success: false };
       });
   },
+  checkItem: async (id) => {
+    const option = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id_product: id }),
+    };
 
+    return fetch(`${baseURL}ceck_item.php`, option)
+      .then((res) => res.json())
+      .catch((err) => {
+        console.error("API request error:", err);
+        return { success: false };
+      });
+  },
   // Helper function to parse JSON response that might contain multiple JSON objects
   parseResponseTwo: async (response) => {
     const responseText = await response.text();
