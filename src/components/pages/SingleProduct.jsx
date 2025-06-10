@@ -66,12 +66,12 @@ export default function SingleProduct() {
     const fetchAllData = async () => {
       try {
         const checkItem = await API.checkItem(id);
-        if (checkItem.data.active === "N") {
+        if (checkItem.active === "N") {
           setActive(false);
         } else {
           setActive(true);
         }
-        console.log("checkItem.data.active", checkItem.data.active);
+        console.log("checkItem.active", checkItem.active);
         const fetchProduct = await API.getProduct(id);
         setItemData(fetchProduct.data[0]);
       } catch (error) {
