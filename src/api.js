@@ -28,7 +28,7 @@ export const API = {
       body: JSON.stringify({ id_product: id }),
     };
 
-    return fetch(`${baseURL}ceck_item.php`, option)
+    return fetch(`${baseURL}check_item.php`, option)
       .then((res) => res.json())
       .catch((err) => {
         console.error("API request error:", err);
