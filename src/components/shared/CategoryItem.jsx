@@ -20,6 +20,9 @@ export function CategoryItem({ category }) {
         }
         alt={category.name}
       />
+      {category.name === "Лаки El Corazon" && (
+        <Title text={category.name} size={"text-2xl text-center"} />
+      )}
     </Link>
   );
 }

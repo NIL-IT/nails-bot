@@ -65,14 +65,15 @@ export default function SingleProduct() {
     if (!loading) return;
     const fetchAllData = async () => {
       try {
-        const checkItem = await API.checkItem(id);
+        const fetchProduct = await API.getProduct(id);
+        console.log("fetchProduct");
+        const checkItem = await API.checkItem(fetchProduct.data[0].id_product);
         if (checkItem.active === "N") {
           setActive(false);
         } else {
           setActive(true);
         }
         console.log("checkItem.active", checkItem.active);
-        const fetchProduct = await API.getProduct(id);
         setItemData(fetchProduct.data[0]);
       } catch (error) {
         console.error("Global fetch error:", error);
