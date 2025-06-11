@@ -2,7 +2,6 @@ import React from "react";
 import { Title } from "../ui";
 import { Link } from "react-router-dom";
 export function CategoryItem({ category }) {
-  console.log("category", category);
   return (
     <Link
       to={`/categories?id=${category.id_section}&name=${category.name}`}

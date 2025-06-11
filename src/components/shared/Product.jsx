@@ -8,9 +8,10 @@ import SkeletonLoader from "../ui/SkeletonLoader";
 
 export function Product({ idItem, search, className }) {
   const dispatch = useDispatch();
-
   const [itemData, setItemData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false); // Для анимации
+
   useEffect(() => {
     if (!loading) return;
     const fetchAllData = async () => {
@@ -21,13 +22,18 @@ export function Product({ idItem, search, className }) {
         console.error("Global fetch error:", error);
       } finally {
         setLoading(false);
+        // Задержка для плавного появления после загрузки
+        setTimeout(() => setIsVisible(true), 10);
       }
     };
 
     fetchAllData();
   }, []);
+
   return loading ? (
-    <SkeletonLoader />
+    <div className="space-y-[10px]">
+      <SkeletonLoader />
+    </div>
   ) : (
     <Link
       key={itemData.id}
@@ -35,7 +41,7 @@ export function Product({ idItem, search, className }) {
       onClick={() => dispatch(changeCurrentProduct(itemData))}
       className={` 
         flex flex-col h-full rounded-[10px] transition-all duration-200
-        min-w-[46.2vw] ${search ? "bg-gray_dark/10 p-2" : "bg-gray p-[6px]"} ${
+        min-w-[46.2vw] bg-gray p-[6px] fade-in ${isVisible ? "visible" : ""} ${
         className ? className : ""
       }`}
     >
@@ -52,9 +58,7 @@ export function Product({ idItem, search, className }) {
       </div>
       <div className="flex flex-col justify-between flex-grow">
         <Title text={itemData.name} size={"text-2xl"} />
-        <div
-          className={`text-2xl font-semibold mb-1 ${search ? "pt-5" : "pt-2"}`}
-        >
+        <div className={`text-2xl font-semibold mb-1 pt-2" `}>
           {itemData.roznica_master_price || itemData.base_price} ₽
         </div>
       </div>

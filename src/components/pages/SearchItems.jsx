@@ -78,16 +78,13 @@ export default function SearchItems() {
 
       <div className="mt-[100px]">
         {loading ? (
-          <div className="flex flex-wrap justify-center gap-[10px] mb-[30px]">
+          <div className="justify-self-center grid grid-cols-2 gap-[10px_10px]  ">
             <SkeletonLoader count={10} />
           </div>
         ) : error ? (
           <div className="text-center text-red-500">{error}</div>
         ) : list.length > 0 ? (
-          <div
-            className="grid grid-cols-2  
-          gap-[10px] mb-[30px] mx-auto "
-          >
+          <div className="justify-self-center grid grid-cols-2 gap-[10px_10px] ">
             {list.map((item, i) => {
               // Check before rendering
               if (!item?.id) return null;
