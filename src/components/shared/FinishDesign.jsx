@@ -336,7 +336,12 @@ export default function FinishDsesign({
                   <div className="mb-1">
                     <div className="relative flex justify-between items-center w-full">
                       <div className="pr-5">
-                        <Title text={item.name} size={"2xl"} />
+                        <h3
+                          style={{ lineHeight: 1.25 }}
+                          className="text-black font-manrope font-medium text-[14px] pr-2"
+                        >
+                          {item.name}
+                        </h3>
                       </div>
                       <button
                         onClick={() => removeItem(item.id)}
@@ -364,7 +369,7 @@ export default function FinishDsesign({
                     </div>
                     <Title text={item.subtitle} size={"2xl"} />
                   </div>
-                  <p className="text-base font-montserrat text-gray_dark mb-2">
+                  <p className="text-base font-montserrat text-gray_dark mb-3">
                     Артикул:&nbsp;{item.articul}
                   </p>
                   <div className="flex justify-between items-center gap-2">
