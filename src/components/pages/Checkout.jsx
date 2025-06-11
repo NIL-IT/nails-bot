@@ -113,14 +113,7 @@ export default function Checkout({ user }) {
 
   const sum = useCallback(() => {
     return cart.reduce((acc, item) => {
-      const price =
-        item?.base_price && item?.base_price !== "0.00"
-          ? item.base_price
-          : item?.purchasingprice
-          ? item.purchasingprice
-          : item?.opt_price
-          ? item.opt_price
-          : 0;
+      const price = item.roznica_master_price || item.base_price;
       if (item.quantity) {
         return acc + price * item.quantity;
       } else {
