@@ -208,7 +208,7 @@ export default function FinishDsesign({
       };
       const handlePaymentClickTwo = (link) => {
         if (window.Telegram?.WebApp) {
-          Telegram.WebApp.openLink(link, { try_instant_view: false });
+          Telegram.WebApp.openLink(link, { try_instant_view: true });
         } else {
           window.open(link, "_blank");
         }
