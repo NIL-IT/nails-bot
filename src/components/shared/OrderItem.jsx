@@ -3,6 +3,7 @@ import { Title } from "../ui";
 import { PRODUCTS } from "../../utils/data";
 
 export default function OrderItem({ item }) {
+  const price = item.roznica_master_price || item.base_price;
   return (
     <div className="bg-gray py-2 px-[6px] w-[100%] flex items-end  justify-between gap-[5px]">
       <div className="w-[60%]">
@@ -13,7 +14,7 @@ export default function OrderItem({ item }) {
           {item.quantity}x
         </p>
         <span className="font-semibold text-2xl font-manrope">
-          {item.base_price * item.quantity}₽
+          {price * item.quantity}₽
         </span>
       </div>
     </div>

@@ -2,7 +2,8 @@ import React from "react";
 
 export default function OrderAdminItem({ item }) {
   // Calculate the price for this item
-  const itemTotal = item.base_price * (item?.quantity || 1);
+  const price = item.roznica_master_price || item.base_price;
+  const itemTotal = price * (item?.quantity || 1);
 
   return (
     <div className="flex justify-between items-start">
