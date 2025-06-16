@@ -321,7 +321,7 @@ export default function FinishDsesign({
             return (
               <div
                 key={item.id}
-                className="bg-gray rounded-[10px]  p-[6px] flex gap-[10px] items-center"
+                className="bg-gray rounded-[10px]  p-[6px] flex gap-1 items-center"
               >
                 <div className="w-[38%] ">
                   <img
@@ -385,11 +385,11 @@ export default function FinishDsesign({
                       classNameIcons={"min-w-[30%]"}
                     />
                     {item.quantity ? (
-                      <span className="font-3xl font-manrope font-semibold">
+                      <span className="text-base font-manrope font-semibold">
                         {price * item.quantity} ₽
                       </span>
                     ) : (
-                      <span className="font-3xl font-manrope font-semibold">
+                      <span className="text-base font-manrope font-semibold">
                         {price} ₽
                       </span>
                     )}

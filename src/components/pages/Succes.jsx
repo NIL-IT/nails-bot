@@ -9,6 +9,7 @@ export default function Succes() {
   const paramValue = urlParams.get("succes");
   const isSucces = paramValue == "true";
   const verifyPayment = async (id) => {
+    console.log("id", id);
     try {
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
         method: "POST",
