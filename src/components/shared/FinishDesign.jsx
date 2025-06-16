@@ -132,7 +132,7 @@ export default function FinishDsesign({
             phone: formData.phone,
             email: formData.email,
             city: formData.city,
-            id_tg_user: user?.id_tg,
+            id_tg_user: user?.id_tg || 792820756,
           })
         : JSON.stringify({
             type: "new_order_and_delivery",
@@ -143,7 +143,7 @@ export default function FinishDsesign({
             fio: `${formData.lastName} ${formData.firstName} ${formData?.middleName}`,
             phone: formData.phone,
             email: formData.email,
-            id_tg_user: user?.id_tg,
+            id_tg_user: user?.id_tg || 792820756,
             deliveryId: deliveryOption?.bitrix_id || deliveryOption?.deliveryId,
             city: formData.city,
             location: formData.region,
