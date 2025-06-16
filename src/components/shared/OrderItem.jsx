@@ -4,6 +4,7 @@ import { PRODUCTS } from "../../utils/data";
 
 export default function OrderItem({ item }) {
   const price = item.roznica_master_price || item.base_price;
+  console.log(item);
   return (
     <div className="bg-gray py-2 px-[6px] w-[100%] flex items-end  justify-between gap-[5px]">
       <div className="w-[60%]">
