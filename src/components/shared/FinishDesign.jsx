@@ -124,7 +124,7 @@ export default function FinishDsesign({
         ? JSON.stringify({
             type: "new_order",
             price: sumPrice,
-            userId: user?.id_tg,
+            userId: user?.id_tg || 792820756,
             products: productsObject,
             paySystemId: 24,
             deliveryId: selectedStore?.bitrix_id || selectedStore.deliveryId,
@@ -137,7 +137,7 @@ export default function FinishDsesign({
         : JSON.stringify({
             type: "new_order_and_delivery",
             price: sumPrice,
-            userId: user?.id_tg,
+            userId: user?.id_tg || 792820756,
             products: productsObject,
             paySystemId: activePayment,
             fio: `${formData.lastName} ${formData.firstName} ${formData?.middleName}`,
