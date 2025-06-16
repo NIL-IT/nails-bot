@@ -1,15 +1,24 @@
 import { ArrowLeft, Ban, CheckCircle, ShoppingBag } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../routes/routes";
 import Cookies from "js-cookie";
 import { baseURL } from "../../api";
+
 export default function Succes() {
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const urlParams = new URLSearchParams(window.location.search);
   const paramValue = urlParams.get("succes");
   const isSucces = paramValue == "true";
+
   const verifyPayment = async (id) => {
-    console.log("id", id);
+    if (!id) {
+      setError("Не удалось получить идентификатор заказа");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
         method: "POST",
@@ -21,67 +30,111 @@ export default function Succes() {
           payment_id: id,
         }),
       });
+
       const dataFetchPayment = await fetchPayment.json();
       console.log("dataFetchPayment", dataFetchPayment);
+
+      // Очищаем хранилища независимо от результата
       Cookies.remove("payment_id");
       localStorage.removeItem("payment_id");
       sessionStorage.removeItem("payment_id");
+
+      if (!dataFetchPayment.success) {
+        setError(dataFetchPayment.message || "Ошибка при проверке платежа");
+      }
+
+      setIsLoading(false);
       return dataFetchPayment;
     } catch (err) {
+      console.log(err);
+      setError("Произошла ошибка при подключении к серверу");
       Cookies.remove("payment_id");
       localStorage.removeItem("payment_id");
       sessionStorage.removeItem("payment_id");
-      console.log(err);
+      setIsLoading(false);
     }
   };
+
   useEffect(() => {
     const cookieData = Cookies.get("payment_id");
     if (cookieData) {
       verifyPayment(cookieData);
       return;
     }
+
     const sessionData = sessionStorage.getItem("payment_id");
     if (sessionData) {
       verifyPayment(sessionData);
       return;
     }
+
     const localData = localStorage.getItem("payment_id");
     if (localData) {
       verifyPayment(localData);
       return;
     }
+
+    // Если ни в одном хранилище нет данных
+    setError("Идентификатор заказа не найден");
+    setIsLoading(false);
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[60vh] bg-gray-50 flex flex-col justify-center items-center">
+        <div className="flex-1 flex flex-col items-center justify-center p-3">
+          <p>Проверка статуса заказа...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-[60vh] bg-gray-50 flex flex-col justify-center items-center">
       <div className="flex-1 flex flex-col items-center justify-center p-3">
         <div className="w-full">
-          {/* Success animation */}
-          <div className="flex justify-center mb-6">
-            {isSucces ? (
-              <div className="rounded-full bg-[#9bd79b]/20 p-3">
-                <CheckCircle className="h-16 w-16 text-[#008000]" />
-              </div>
-            ) : (
-              <div className="rounded-full bg-[#da2929]/5 p-3">
+          {/* Отображаем ошибку, если она есть */}
+          {error && (
+            <div className="mb-6 text-center">
+              <div className="rounded-full bg-[#da2929]/5 p-3 inline-block">
                 <Ban className="h-16 w-16 text-[#da2929]" />
               </div>
-            )}
-          </div>
+              <h1 className="text-3xl font-bold text-black/80 mb-2 mt-4">
+                Ошибка заказа
+              </h1>
+              <p className="text-gray_dark">{error}</p>
+            </div>
+          )}
 
-          {/* Success message */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-black/80 mb-2">
-              {isSucces
-                ? "Оплата прошла успешно!"
-                : "Произошла ошибка при оплате"}
-            </h1>
-            <p className="text-gray_dark">
-              {" "}
-              {isSucces
-                ? "Спасибо за ваш заказ."
-                : "Через некоторое время попробуйте снова"}
-            </p>
-          </div>
+          {/* Показываем стандартное сообщение только если нет ошибки */}
+          {!error && (
+            <>
+              <div className="flex justify-center mb-6">
+                {isSucces ? (
+                  <div className="rounded-full bg-[#9bd79b]/20 p-3">
+                    <CheckCircle className="h-16 w-16 text-[#008000]" />
+                  </div>
+                ) : (
+                  <div className="rounded-full bg-[#da2929]/5 p-3">
+                    <Ban className="h-16 w-16 text-[#da2929]" />
+                  </div>
+                )}
+              </div>
+
+              <div className="text-center mb-8">
+                <h1 className="text-3xl font-bold text-black/80 mb-2">
+                  {isSucces
+                    ? "Оплата прошла успешно!"
+                    : "Произошла ошибка при оплате"}
+                </h1>
+                <p className="text-gray_dark">
+                  {isSucces
+                    ? "Спасибо за ваш заказ."
+                    : "Через некоторое время попробуйте снова"}
+                </p>
+              </div>
+            </>
+          )}
         </div>
         <div className="space-y-4">
           <Link to={ROUTES.HOME} className="block w-full">

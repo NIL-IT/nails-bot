@@ -208,8 +208,8 @@ export default function FinishDsesign({
       };
       const handlePaymentClickTwo = (link) => {
         if (window.Telegram?.WebApp) {
-          // Telegram.WebApp.openLink(link, { try_instant_view: false });
-          window.location.href = link;
+          Telegram.WebApp.openLink(link, { try_instant_view: false });
+          // window.location.href = link;
         } else {
           window.open(link, "_blank");
         }
@@ -385,11 +385,11 @@ export default function FinishDsesign({
                       classNameIcons={"min-w-[30%]"}
                     />
                     {item.quantity ? (
-                      <span className="text-base font-manrope font-semibold">
+                      <span className="text-[19px] font-manrope font-semibold">
                         {price * item.quantity} ₽
                       </span>
                     ) : (
-                      <span className="text-base font-manrope font-semibold">
+                      <span className="text-[19px] font-manrope font-semibold">
                         {price} ₽
                       </span>
                     )}
