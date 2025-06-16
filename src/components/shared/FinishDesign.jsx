@@ -214,10 +214,6 @@ export default function FinishDsesign({
           window.open(link, "_blank");
         }
       };
-
-      Cookies.set("payment_id", paymentId);
-      localStorage.setItem("payment_id", paymentId);
-      sessionStorage.setItem("payment_id", paymentId);
       if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
         if (window.Telegram?.WebApp) {
@@ -314,14 +310,14 @@ export default function FinishDsesign({
           </div>
           <span className="ml-3 font-medium">Завершение оформления</span>
         </div>
-        <div className="flex flex-col gap-[15px]  overflow-y-scroll">
+        <div className="flex flex-col gap-[15px]">
           {cart.map((item) => {
             const price = item.roznica_master_price || item.base_price;
 
             return (
               <div
                 key={item.id}
-                className="bg-gray rounded-[10px]  p-[6px] flex gap-1 items-center"
+                className="bg-gray rounded-[10px]  flex gap-1 items-center"
               >
                 <div className="w-[38%] ">
                   <img
@@ -385,11 +381,11 @@ export default function FinishDsesign({
                       classNameIcons={"min-w-[30%]"}
                     />
                     {item.quantity ? (
-                      <span className="text-[19px] font-manrope font-semibold">
+                      <span className="text-[17px] font-manrope font-semibold">
                         {price * item.quantity} ₽
                       </span>
                     ) : (
-                      <span className="text-[19px] font-manrope font-semibold">
+                      <span className="text-[17px] font-manrope font-semibold">
                         {price} ₽
                       </span>
                     )}

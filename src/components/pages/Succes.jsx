@@ -10,8 +10,9 @@ export default function Succes() {
   const [isLoading, setIsLoading] = useState(true);
   const urlParams = new URLSearchParams(window.location.search);
   const paramValue = urlParams.get("succes");
+  const paramOrderId = urlParams.get("order");
   const isSucces = paramValue == "true";
-
+  console.log("paramOrderId", paramOrderId);
   const verifyPayment = async (id) => {
     if (!id) {
       setError("Не удалось получить идентификатор заказа");
@@ -33,12 +34,6 @@ export default function Succes() {
 
       const dataFetchPayment = await fetchPayment.json();
       console.log("dataFetchPayment", dataFetchPayment);
-
-      // Очищаем хранилища независимо от результата
-      Cookies.remove("payment_id");
-      localStorage.removeItem("payment_id");
-      sessionStorage.removeItem("payment_id");
-
       if (!dataFetchPayment.success) {
         setError(dataFetchPayment.message || "Ошибка при проверке платежа");
       }
@@ -48,35 +43,18 @@ export default function Succes() {
     } catch (err) {
       console.log(err);
       setError("Произошла ошибка при подключении к серверу");
-      Cookies.remove("payment_id");
-      localStorage.removeItem("payment_id");
-      sessionStorage.removeItem("payment_id");
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    const cookieData = Cookies.get("payment_id");
-    if (cookieData) {
-      verifyPayment(cookieData);
-      return;
+    if (paramOrderId) {
+      verifyPayment(paramOrderId);
+    } else {
+      // Если ни в одном хранилище нет данных
+      setError("Идентификатор заказа не найден");
+      setIsLoading(false);
     }
-
-    const sessionData = sessionStorage.getItem("payment_id");
-    if (sessionData) {
-      verifyPayment(sessionData);
-      return;
-    }
-
-    const localData = localStorage.getItem("payment_id");
-    if (localData) {
-      verifyPayment(localData);
-      return;
-    }
-
-    // Если ни в одном хранилище нет данных
-    setError("Идентификатор заказа не найден");
-    setIsLoading(false);
   }, []);
 
   if (isLoading) {
