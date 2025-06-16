@@ -11,10 +11,10 @@ import { API, baseURL } from "../../api";
 
 export default function OrderHistory({ user }) {
   const [loading, setLoading] = useState(true);
-  console.log("user orders", user)
+  console.log("user orders", user);
   const [data, setData] = useState([]);
   const fetchOrders = async () => {
-    if(!user) return
+    if (!user) return;
     try {
       const option = {
         method: "POST",
@@ -28,6 +28,7 @@ export default function OrderHistory({ user }) {
       };
       const resp = await fetch(`${baseURL}get_orders.php`, option);
       const { data } = await API.parseResponse(resp);
+      console.log("data заказов", data);
       setData(useSortedOrdersUser(data));
     } catch (err) {
       console.log(err);
