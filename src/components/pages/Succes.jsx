@@ -31,30 +31,18 @@ export default function Succes() {
         }),
       });
 
-      let paymentId;
-      try {
-        const responseText = await fetchVerifyPayment.text();
-        console.log("Raw response:", responseText);
+      const responseText = await fetchVerifyPayment.text();
+      console.log("Raw response:", responseText);
+      // Находим конец JSON-части
+      const jsonEnd = responseText.indexOf("}") + 1;
+      let paymentId = null;
 
-        // Try to parse as JSON first
-        try {
-          const jsonResponse = JSON.parse(responseText);
-          if (jsonResponse.payment_id) {
-            paymentId = jsonResponse.payment_id;
-          }
-        } catch (jsonError) {
-          console.log("JSON parse error:", jsonError);
-          // If JSON parsing fails, try to extract ID using regex
-          const match = responseText.match(/(\d+)/);
-          if (match) {
-            paymentId = match[1];
-          }
+      if (jsonEnd > 0 && jsonEnd < responseText.length) {
+        // Получаем ID после JSON
+        const idMatch = responseText.slice(jsonEnd).match(/"(\d+)"|(\d+)/);
+        if (idMatch) {
+          paymentId = idMatch[1] || idMatch[2];
         }
-      } catch (error) {
-        console.error("Error processing response:", error);
-        setError("Ошибка при обработке ответа сервера");
-        setIsLoading(false);
-        return;
       }
 
       if (!paymentId) {
