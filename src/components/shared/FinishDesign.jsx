@@ -196,7 +196,22 @@ export default function FinishDsesign({
           order_id: data.order_id,
         }),
       });
-      const dataFetchPayment = await fetchPayment.json();
+
+      // Get the raw text response
+      const responseText = await fetchPayment.text();
+
+      // Split the response into two parts if it contains two JSON objects
+      const jsonParts = responseText.split("}{");
+      let dataFetchPayment;
+
+      if (jsonParts.length > 1) {
+        // If we have two parts, take the second part (the payment data)
+        // and add back the curly braces
+        dataFetchPayment = JSON.parse("{" + jsonParts[1]);
+      } else {
+        // If it's a single JSON object, parse it normally
+        dataFetchPayment = JSON.parse(responseText);
+      }
 
       const handlePaymentClick = (link) => {
         if (window.Telegram?.WebApp) {
