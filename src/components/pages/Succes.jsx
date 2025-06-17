@@ -9,7 +9,7 @@ export default function Succes() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const urlParams = new URLSearchParams(window.location.search);
-  const paramValue = urlParams.get("succes");
+  const paramValue = urlParams.get("success");
   const paramOrderId = urlParams.get("order");
   const isSucces = paramValue == "true";
   const verifyPayment = async (orderId) => {
