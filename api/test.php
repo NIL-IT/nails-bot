@@ -1,8 +1,25 @@
 <?php
-require_once __DIR__.'/../api/DatabaseClient.php';
-require_once __DIR__.'/../api_bitrix/CatalogBitrixRestApiClient.php';
-$apiClient = new CatalogBitrixRestApiClient( 'https://shtuchki.pro/rest/13283/nj2nk4gedj6wvk5j/' );
-//$paymentId =
-//print_r($apiClient -> sale_payment_add(5388,24));
-print_r($apiClient ->sale_basketitem_add(5388,12407,1, 270,'Мешок для пылесоса MAX ULTIMATE 1 шт'));
-//print_r($apiClient -> sale_payment_update_paid($paymentId,120));
+$url = 'https://nails.nilit2.ru/payment.php';
+$data = [
+    'type' => 'get_payment_id',
+    'order_id' => 5876
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Отключить проверку SSL (только для тестов!)
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);  // Отключить проверку хоста (только для тестов!)
+
+$response = curl_exec($ch);
+
+if (curl_errno($ch)) {
+    die('Ошибка cURL: ' . curl_error($ch));
+}
+
+curl_close($ch);
+
+echo $response;
+?>
