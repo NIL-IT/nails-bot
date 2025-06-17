@@ -41,17 +41,16 @@ function generateTinkoffToken(array $data, string $password): string {
 // === Инициализация платежа ===
 function init_payment(int $amount, int $tg_user_id, int $order_id, string $terminalKey, string $password): ?array {
     $url = "https://securepay.tinkoff.ru/v2/Init";
-    $order_bitrix_id = $order_id;
     $orderId = "{$order_id}_{$tg_user_id}_" . time();
 
     $payload = [
         "TerminalKey" => $terminalKey,
         "Amount" => $amount,
+//        "Amount" => 100,
         "OrderId" => $orderId,
         "Description" => "Оплата заказа",
-        "SuccessURL" => "https://nails.nilit2.ru/payment?success=true&order=" . $order_bitrix_id,
-//        "SuccessURL" => "https://nails.nilit2.ru/payment?success=true",
-        "FailURL" => "https://nails.nilit2.ru/payment?success=false",
+        "SuccessURL" => "https://nails.nilit2.ru/payment?succes=true",
+        "FailURL" => "https://nails.nilit2.ru/payment?succes=false",
     ];
 
     $payload["Token"] = generateTinkoffToken($payload, $password);
@@ -65,49 +64,9 @@ function init_payment(int $amount, int $tg_user_id, int $order_id, string $termi
     ];
 
     $context = stream_context_create($options);
-    $result = @file_get_contents($url, false, $context);
+    $result = file_get_contents($url, false, $context);
 
-    if ($result === false) {
-        error_log("Tinkoff API request failed");
-        return null;
-    }
-
-    $response = json_decode($result, true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        error_log("JSON decode error: " . json_last_error_msg());
-        return null;
-    }
-
-    if (!$response || !isset($response['PaymentId'])) {
-        error_log("Tinkoff API error: " . $result);
-        return null;
-    }
-
-    // Обновляем payment_id в БД
-    try {
-        $dbClient = new DatabaseClient('localhost', '5432', 'testingnil6', 'ivers', '111333555Qaz');
-        $query = "UPDATE orders SET payment_id = :payment_id WHERE id_bitrix = :order_id";
-        $params = [
-            ':order_id' => $order_id,
-            ':payment_id' => $response['PaymentId'],
-        ];
-        $dbClient->psqlQuery($query, $params);
-    } catch (Exception $e) {
-        error_log("Database error: " . $e->getMessage());
-    }
-
-    return $response;
-}
-function get_payment_id(string $order_id){
-    $dbClient = new DatabaseClient( 'localhost', '5432', 'testingnil6', 'ivers', '111333555Qaz' );
-    $query = "SELECT payment_id FROM orders
-            WHERE id_bitrix = :order_id
-            ";
-    $params = array(
-        ':order_id' => $order_id,
-    );
-    $result = $dbClient -> psqlQuery($query, $params);
-    return json_encode($result['data'][0]['payment_id']);
+    return $result ? json_decode($result, true) : null;
 }
 
 // === Проверка платежа ===
@@ -155,11 +114,12 @@ function verify_payment(string $paymentId, string $terminalKey, string $password
 
         $dbClient = new DatabaseClient( 'localhost', '5432', 'testingnil6', 'ivers', '111333555Qaz' );
         $query = "UPDATE orders
-            SET paid = 'Y'
+            SET payment_id = :payment_id
             WHERE id_bitrix = :order_id;
             ";
         $params = array(
             ':order_id' => $order_id,
+            ':payment_id' => $paymentId,
         );
         $dbClient -> psqlQuery($query, $params);
         $paymentId = $apiClient -> sale_payment_list_by_orderId($order_id);
@@ -226,18 +186,7 @@ if ($type === 'init_payment') {
     $paymentId = $data['payment_id'];
     $verifyResponse = verify_payment($paymentId, $verifyTerminalKey, $verifyPassword);
     echo json_encode($verifyResponse);
-} elseif ($type === 'get_payment_id') {
-    if (!isset($data['order_id'])) {
-        http_response_code(400);
-        echo json_encode(['status' => 'error', 'message' => 'Не передан order_id']);
-        exit;
-    }
-
-    $order_id = $data['order_id'];
-    $response = get_payment_id($order_id);
-    echo json_encode($response);
-}
-else {
+} else {
     http_response_code(400);
     echo json_encode(['status' => 'error', 'message' => 'Неизвестный тип операции']);
 }
