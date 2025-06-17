@@ -64,7 +64,7 @@ export default function Succes() {
         }),
       });
 
-      const dataFetchPayment = await fetchPayment.json();
+      const dataFetchPayment = await fetchPayment;
       console.log("dataFetchPayment", dataFetchPayment);
       if (!dataFetchPayment.success) {
         setError(dataFetchPayment.message || "Ошибка при проверке платежа");
