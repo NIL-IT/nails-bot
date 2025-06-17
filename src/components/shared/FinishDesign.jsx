@@ -162,6 +162,7 @@ export default function FinishDsesign({
       };
 
       const resp = await fetch(`${baseURL}order.php`, option);
+      console.log("resp_order", resp);
       const { data } = await API.parseResponseTwo(resp);
       if (!data || !data.order_id) {
         // // Clear the cart
