@@ -163,8 +163,12 @@ export default function FinishDsesign({
 
       const resp = await fetch(`${baseURL}order.php`, option);
       console.log("resp_order", resp);
-      const { data } = await API.parseResponseTwo(resp);
-      if (!data || !data.order_id) {
+      const responseText = await resp.text();
+      // Extract the order data part (everything after the connection message)
+      const orderDataMatch = responseText.match(/\{[\s\S]*"data"[\s\S]*\}/);
+      const orderData = orderDataMatch ? JSON.parse(orderDataMatch[0]) : null;
+
+      if (!orderData || !orderData.data || !orderData.data.order_id) {
         // // Clear the cart
         // cart.forEach((item) => removeItem(item.id));
         // Show error notification
@@ -192,7 +196,7 @@ export default function FinishDsesign({
           type: "init_payment",
           amount: sumPrice * 100,
           id_tg_user: user?.id_tg || 792820756,
-          order_id: data.order_id,
+          order_id: orderData.data.order_id,
         }),
       });
       const dataFetchPayment = await fetchPayment.json();
