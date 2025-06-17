@@ -12,18 +12,18 @@ $data = (strpos($contentType, 'application/json') !== false)
 
 $type = $data['type'] ?? 'init_payment';
 
-//$terminalKey = "1745407865660";
-//$password = 'v$0UyjFovKQX#u56';
+$terminalKey = "1745407865660";
+$password = 'v$0UyjFovKQX#u56';
+
+$verifyTerminalKey = "1745407865660";
+$verifyPassword = 'v$0UyjFovKQX#u56';
+
+
+//$terminalKey = "1745407865610DEMO";
+//$password = 'nT9DjqiwgtAmbwr0';
 //
-//$verifyTerminalKey = "1745407865660";
-//$verifyPassword = 'v$0UyjFovKQX#u56';
-
-
-$terminalKey = "1745407865610DEMO";
-$password = 'nT9DjqiwgtAmbwr0';
-
-$verifyTerminalKey = "1745407865610DEMO";
-$verifyPassword = 'nT9DjqiwgtAmbwr0';
+//$verifyTerminalKey = "1745407865610DEMO";
+//$verifyPassword = 'nT9DjqiwgtAmbwr0';
 // === Генерация токена ===
 function generateTinkoffToken(array $data, string $password): string {
     $data = array_filter($data, fn($v) => $v !== null && $v !== '');
