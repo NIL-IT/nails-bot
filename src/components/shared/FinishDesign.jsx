@@ -212,6 +212,7 @@ export default function FinishDsesign({
           window.open(link, "_blank");
         }
       };
+      console.log("dataFetchPayment", dataFetchPayment);
       if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
         if (window.Telegram?.WebApp) {
