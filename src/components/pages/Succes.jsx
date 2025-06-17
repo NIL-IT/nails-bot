@@ -30,8 +30,16 @@ export default function Succes() {
           order_id: orderId,
         }),
       });
-      const verifyPaymentId = await fetchVerifyPayment.json();
-      console.log("verifyPaymentId", verifyPaymentId);
+      const responseText = await fetchVerifyPayment.text();
+      // Extract the payment ID from the response
+      const paymentId = responseText.match(/"(\d+)"/)?.[1];
+
+      if (!paymentId) {
+        setError("Не удалось получить идентификатор платежа");
+        setIsLoading(false);
+        return;
+      }
+
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
         method: "POST",
         headers: {
@@ -39,7 +47,7 @@ export default function Succes() {
         },
         body: JSON.stringify({
           type: "verify_payment",
-          payment_id: verifyPaymentId,
+          payment_id: paymentId,
         }),
       });
 
