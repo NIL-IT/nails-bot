@@ -47,10 +47,7 @@ function get_payment_id($order_id) {
         if (!$result) {
             return null;
         }
-
-        // Предположим, что psqlQuery возвращает массив:
-        $data = json_decode($result, true);
-        return $data[0]['payment_id'] ?? null;
+        return json_decode($result['data'][0]['payment_id'],true);
 
     } catch (Exception $e) {
         error_log("Error in get_payment_id: " . $e->getMessage());
