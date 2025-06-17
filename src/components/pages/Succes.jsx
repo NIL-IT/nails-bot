@@ -63,15 +63,7 @@ export default function Succes() {
           payment_id: paymentId,
         }),
       });
-
-      const dataFetchPayment = await fetchPayment;
-      console.log("dataFetchPayment", dataFetchPayment);
-      if (!dataFetchPayment.success) {
-        setError(dataFetchPayment.message || "Ошибка при проверке платежа");
-      }
-
       setIsLoading(false);
-      return dataFetchPayment;
     } catch (err) {
       console.log(err);
       setError("Произошла ошибка при подключении к серверу");
