@@ -13,7 +13,7 @@ export default function Succes() {
   const paramOrderId = urlParams.get("order");
   const isSucces = paramValue == "true";
   const verifyPayment = async (orderId) => {
-    if (!id) {
+    if (!orderId) {
       setError("Не удалось получить идентификатор заказа");
       setIsLoading(false);
       return;
