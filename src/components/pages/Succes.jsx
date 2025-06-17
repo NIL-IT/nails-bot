@@ -30,15 +30,40 @@ export default function Succes() {
           order_id: orderId,
         }),
       });
-      const responseText = await fetchVerifyPayment.text();
-      // Extract the payment ID from the response
-      const paymentId = responseText.match(/"(\d+)"/)?.[1];
+
+      let paymentId;
+      try {
+        const responseText = await fetchVerifyPayment.text();
+        console.log("Raw response:", responseText);
+
+        // Try to parse as JSON first
+        try {
+          const jsonResponse = JSON.parse(responseText);
+          if (jsonResponse.payment_id) {
+            paymentId = jsonResponse.payment_id;
+          }
+        } catch (jsonError) {
+          console.log("JSON parse error:", jsonError);
+          // If JSON parsing fails, try to extract ID using regex
+          const match = responseText.match(/(\d+)/);
+          if (match) {
+            paymentId = match[1];
+          }
+        }
+      } catch (error) {
+        console.error("Error processing response:", error);
+        setError("Ошибка при обработке ответа сервера");
+        setIsLoading(false);
+        return;
+      }
 
       if (!paymentId) {
         setError("Не удалось получить идентификатор платежа");
         setIsLoading(false);
         return;
       }
+
+      console.log("Extracted payment ID:", paymentId);
 
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
         method: "POST",
