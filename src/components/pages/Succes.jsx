@@ -12,8 +12,7 @@ export default function Succes() {
   const paramValue = urlParams.get("succes");
   const paramOrderId = urlParams.get("order");
   const isSucces = paramValue == "true";
-  console.log("paramOrderId", paramOrderId);
-  const verifyPayment = async (id) => {
+  const verifyPayment = async (orderId) => {
     if (!id) {
       setError("Не удалось получить идентификатор заказа");
       setIsLoading(false);
@@ -21,6 +20,18 @@ export default function Succes() {
     }
 
     try {
+      const fetchVerifyPayment = await fetch(`${baseURL}payment.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "get_payment_id",
+          order_id: orderId,
+        }),
+      });
+      const verifyPaymentId = await fetchVerifyPayment.json();
+      console.log("verifyPaymentId", verifyPaymentId);
       const fetchPayment = await fetch(`${baseURL}payment.php`, {
         method: "POST",
         headers: {
@@ -28,7 +39,7 @@ export default function Succes() {
         },
         body: JSON.stringify({
           type: "verify_payment",
-          payment_id: id,
+          payment_id: verifyPaymentId,
         }),
       });
 
