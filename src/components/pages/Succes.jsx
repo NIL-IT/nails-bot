@@ -12,6 +12,18 @@ export default function Succes() {
   const paramValue = urlParams.get("success");
   const paramOrderId = urlParams.get("order");
   const isSucces = paramValue == "true";
+  const TELEGRAM_BOT_LINK =
+    "https://t.me/shtuchki_pro_bot/?startapp&addToHomeScreen";
+
+  useEffect(() => {
+    // Redirect after 5 seconds
+    const redirectTimer = setTimeout(() => {
+      window.location.href = TELEGRAM_BOT_LINK;
+    }, 5000);
+
+    return () => clearTimeout(redirectTimer);
+  }, []);
+
   const verifyPayment = async (orderId) => {
     if (!orderId) {
       setError("Не удалось получить идентификатор заказа");
@@ -139,18 +151,12 @@ export default function Succes() {
           )}
         </div>
         <div className="space-y-4">
-          <Link to={ROUTES.HOME} className="block w-full">
-            <button className="w-full bg-primary rounded-xl py-2 px-4 flex items-center text-white">
+          <a href={TELEGRAM_BOT_LINK} className="block w-full">
+            <button className="w-full bg-primary rounded-xl py-2 px-4 flex items-center justify-center text-white">
               <ShoppingBag className="mr-3 h-4 w-4" />
-              Продолжить покупки
+              Вернуться в магазин
             </button>
-          </Link>
-          <Link to={ROUTES.PROFILE} className="block w-full">
-            <button className="w-full bg-primary rounded-xl py-2 px-4 flex justify-center items-center text-white text-center">
-              <ArrowLeft className="mr-3 h-4 w-4" />
-              Мои заказы
-            </button>
-          </Link>
+          </a>
         </div>
       </div>
     </div>

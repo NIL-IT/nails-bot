@@ -132,7 +132,7 @@ function App() {
   return (
     <Container>
       <Header />
-      {categories.length > 0 && !showSidebar && (
+      {categories.length > 0 && !showSidebar && pathname !== "/payment" && (
         <Sidebar categories={categories} />
       )}
       {window.Telegram && <BackButton />}

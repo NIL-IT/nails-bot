@@ -11,7 +11,7 @@ export function Header() {
   const params = useLocation();
   const dispatch = useDispatch();
   const isSearch = params.pathname === "/search";
-
+  const isPayment = params.pathname === "/payment";
   return !isSearch ? (
     <header className="flex justify-between items-center mt-[29px] mb-[13px]">
       <Link
@@ -27,14 +27,16 @@ export function Header() {
           alt="ШТУЧКИ.PRO"
         />
       </Link>
-      <div className="flex gap-5 items-center">
-        <Link to={ROUTES.SEARCH}>
-          <img src="/img/search.svg" alt="Поиск" />
-        </Link>
-        <Link to={ROUTES.PROFILE}>
-          <img src="/img/account.svg" alt="Личный кабинет" />
-        </Link>
-      </div>
+      {!isPayment && (
+        <div className="flex gap-5 items-center">
+          <Link to={ROUTES.SEARCH}>
+            <img src="/img/search.svg" alt="Поиск" />
+          </Link>
+          <Link to={ROUTES.PROFILE}>
+            <img src="/img/account.svg" alt="Личный кабинет" />
+          </Link>
+        </div>
+      )}
     </header>
   ) : (
     <></>
