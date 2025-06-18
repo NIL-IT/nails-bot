@@ -54,7 +54,26 @@ function get_payment_id($order_id) {
         return null;
     }
 }
+function init_payment_on_delivery($order_id) {
+    try {
+        $dbClient = new DatabaseClient('localhost', '5432', 'testingnil6', 'ivers', '111333555Qaz');
+        $query = "UPDATE orders 
+            SET 
+                payment_id = :payment_id,
+                paid = 'ON_DELIVERY'
+            WHERE 
+                id_bitrix = :order_id";
+        $params = [
+            ':order_id' => $order_id,
+            ':payment_id' => 1,
+        ];
+        $result = $dbClient->psqlQuery($query, $params);
+    } catch (Exception $e) {
+        error_log("Database error: " . $e->getMessage());
+    }
 
+    return $result;
+}
 // === Инициализация платежа ===
 function init_payment(int $amount, int $tg_user_id, int $order_id, string $terminalKey, string $password): ?array {
     $url = "https://securepay.tinkoff.ru/v2/Init";
@@ -239,6 +258,16 @@ if ($type === 'init_payment') {
 
     $order_id = $data['order_id'];
     $response = get_payment_id($order_id);
+    echo json_encode($response);
+} elseif ($type === 'init_payment_on_delivery') {
+    if (!isset($data['order_id'])) {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'message' => 'Не передан order_id']);
+        exit;
+    }
+
+    $order_id = $data['order_id'];
+    $response = init_payment_on_delivery($order_id);
     echo json_encode($response);
 } else {
     http_response_code(400);

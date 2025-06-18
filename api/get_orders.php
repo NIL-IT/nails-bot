@@ -53,7 +53,7 @@ JOIN
     catalog_products cp ON otp.id_product = cp.id_product
 WHERE 
     o.id_tg_user = :id_tg_user
-    AND o.paid = 'Y'
+    (o.paid = 'Y' OR o.paid = 'ON_DELIVERY')
     AND o.payment_id IS NOT NULL 
 GROUP BY 
     o.id, o.id_tg_user, o.fio, o.id_bitrix, o.date, o.payment_id
@@ -98,8 +98,8 @@ elseif ($data['method'] == 'admin'){
     JOIN 
         catalog_products cp ON otp.id_product = cp.id_product
     WHERE 
-        AND o.paid = 'Y'
-        o.payment_id IS NOT NULL 
+        (o.paid = 'Y' OR o.paid = 'ON_DELIVERY')
+        AND o.payment_id IS NOT NULL 
     GROUP BY 
         o.id, o.id_tg_user, o.fio, o.id_bitrix, o.date, o.payment_id
     ORDER BY 
