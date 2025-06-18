@@ -61,8 +61,7 @@ function App() {
           if (userPromise) {
             const userResponse = results[0];
             if (userResponse && userResponse.success && userResponse.user) {
-              // setUser(userResponse.user);
-              setUser({ admin: true });
+              setUser(userResponse.user);
             } else {
               console.error("User not found.");
             }
