@@ -68,8 +68,8 @@ export default function OrdersByDay({ order, noDay }) {
           <p className="my-[5px]">
             Статус оплаты:{" "}
             <span
-              className={`font-medium ${
-                order.payment_id === 1 ? "text-[#c4c420]" : "text-[#38791b]"
+              className={`font-bold text-[12px] ${
+                order.payment_id === 1 ? "text-[#ffff35]" : "text-[#4ca324]"
               }`}
             >
               {" "}
