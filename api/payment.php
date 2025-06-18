@@ -10,7 +10,8 @@ $data = (strpos($contentType, 'application/json') !== false)
     ? json_decode(file_get_contents('php://input'), true)
     : $_POST;
 
-$type = $data['type'] ?? 'init_payment';
+$type = isset($data['type']) ? $data['type'] : ($_POST['type'] ?? 'init_payment');
+
 
 $terminalKey = "1745407865660";
 $password = 'v$0UyjFovKQX#u56';
@@ -69,8 +70,8 @@ function init_payment_on_delivery($order_id) {
             ':payment_id' => 1,
         ];
         $result = $dbClient->psqlQuery($query, $params);
-        $result['sale_payment_list_by_orderId'] = $apiClient -> sale_payment_list_by_orderId($order_id);
-        $result['sale_shipmentitem_add'] = $apiClient -> sale_shipmentitem_add($order_id);
+        $apiClient -> sale_payment_list_by_orderId($order_id);
+        $apiClient -> sale_shipmentitem_add($order_id);
     } catch (Exception $e) {
         error_log("Database error: " . $e->getMessage());
     }
