@@ -25,7 +25,7 @@ export default function OrdersByDay({ order, noDay }) {
   useEffect(() => {
     if (order && Array.isArray(order.products)) {
       const totalSum = order.products.reduce((acc, item) => {
-        return acc + item.base_price * (item.quantity || 1);
+        return acc + item.roznica_master_price * (item.quantity || 1);
       }, 0);
       setSum(totalSum);
     }
@@ -65,7 +65,14 @@ export default function OrdersByDay({ order, noDay }) {
               Доставка: {order.deliveryName.replace("city", "")}
             </p>
           )}
-
+          <p
+            className={`${
+              order.payment_id === 1 ? "text-[#ffff00]" : "text-[#52ff00]"
+            }`}
+          >
+            Статус оплаты:{" "}
+            {order.payment_id === 1 ? "Оплата при получении" : "Оплачено"}
+          </p>
           {order?.street && (
             <div className="space-y-[3px] mt-[5px]">
               <p>Город: {order?.city}</p>
