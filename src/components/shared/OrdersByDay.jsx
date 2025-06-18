@@ -65,13 +65,16 @@ export default function OrdersByDay({ order, noDay }) {
               Доставка: {order.deliveryName.replace("city", "")}
             </p>
           )}
-          <p
-            className={`${
-              order.payment_id === 1 ? "text-[#ffff00]" : "text-[#52ff00]"
-            }`}
-          >
+          <p className="my-[5px]">
             Статус оплаты:{" "}
-            {order.payment_id === 1 ? "Оплата при получении" : "Оплачено"}
+            <span
+              className={`font-medium ${
+                order.payment_id === 1 ? "text-[#c4c420]" : "text-[#38791b]"
+              }`}
+            >
+              {" "}
+              {order.payment_id === 1 ? "Оплата при получении" : "Оплачено"}
+            </span>
           </p>
           {order?.street && (
             <div className="space-y-[3px] mt-[5px]">
