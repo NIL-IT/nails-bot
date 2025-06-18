@@ -41,7 +41,7 @@ if($data['method'] == 'user'){
         JSON_BUILD_OBJECT(
             'id', cp.id,
             'name', cp.name,
-            'base_price', cp.base_price,
+            'roznica_master_price', cp.roznica_master_price,
             'quantity', otp.quantity
         )
     ) AS products
@@ -87,7 +87,7 @@ elseif ($data['method'] == 'admin'){
             JSON_BUILD_OBJECT(
                 'id', cp.id,
                 'name', cp.name,
-                'base_price', cp.base_price,
+                'roznica_master_price', cp.roznica_master_price,
                 'quantity', otp.quantity
             )
         ) AS products
