@@ -61,7 +61,7 @@ function init_payment_on_delivery($order_id) {
         $query = "UPDATE orders 
             SET 
                 payment_id = :payment_id,
-                paid = 'ON_DELIVERY'
+                paid = 'D'
             WHERE 
                 id_bitrix = :order_id";
         $params = [
