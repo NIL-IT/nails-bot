@@ -78,20 +78,22 @@ export default function StoreSelectionModal({
               key={index}
               className="mb-4 border-b pb-4 last:border-b-0 last:pb-0"
             >
-              <div className="flex justify-between items-start">
+              <div className="flex justify-between gap-2 items-center">
                 <div>
-                  <h3 className="font-bold">{store.title}</h3>
-                  <p className="text-blue-500 text-sm">{store.city}</p>
-                  <p className="text-gray-600 text-sm mt-1">{store.time}</p>
+                  <h3 className="font--semibold">{store.title}</h3>
+                  <p className="text-blue text-sm">{store.city}</p>
+                  <p className="text-gray-600 font-light text-sm mt-1">
+                    {store.time}
+                  </p>
                 </div>
                 <button
                   onClick={() => handleSelectStore(store)}
-                  className={`border border-pink-500  hover:bg-primary
+                  className={`border border-primary  hover:bg-primary
                      hover:text-white transition-colors px-4 py-2 
                      rounded text-sm ${
                        selected === store
                          ? "bg-primary text-white "
-                         : "bg-white text-black"
+                         : "bg-white text-primary"
                      }`}
                 >
                   Выбрать

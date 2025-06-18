@@ -20,6 +20,7 @@ export default {
       white: "#fff",
       gray: "#FAFAFA",
       gray_dark: "#707070",
+      blue: "#1b75fd",
     },
     extend: {
       keyframes: {

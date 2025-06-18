@@ -85,14 +85,14 @@ export default function DeliveryForm({
               deliveryId: 59,
               title: "ТОМСК ТЦ ЛЕТО",
               city: "Томск, ул. Нахимова 8, ст. 13",
-              time: "Пн-Вс с 10:00 до 21:00",
+              time: "Пн-Вс с 10:00 до 22:00",
             },
             {
               bitrix_id: 107,
               deliveryId: 82,
               title: "ТОМСК ТЦ ПРОСПЕКТ",
               city: "пр. Ленина, 159",
-              time: "Пн-Вс с 10:00 до 21:00",
+              time: "Пн-Вс с 10:00 до 19:00",
             },
             {
               bitrix_id: 110,
