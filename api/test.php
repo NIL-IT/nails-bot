@@ -7,7 +7,7 @@ ini_set('display_errors', 1);
 header('Content-Type: application/json; charset=utf-8');
 
 // Данные для запроса
-$url = 'https://nails.nilit2.ru/payment.php';
+$url = 'https://nails.nilit2.ru:8000/payment.php';
 $data = [
     'type' => 'init_payment_on_delivery',
     'order_id' => 5835,
