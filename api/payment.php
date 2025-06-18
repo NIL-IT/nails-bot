@@ -57,6 +57,7 @@ function get_payment_id($order_id) {
 function init_payment_on_delivery($order_id) {
     try {
         $dbClient = new DatabaseClient('localhost', '5432', 'testingnil6', 'ivers', '111333555Qaz');
+        $apiClient = new CatalogBitrixRestApiClient( 'https://shtuchki.pro/rest/13283/nj2nk4gedj6wvk5j/' );
         $query = "UPDATE orders 
             SET 
                 payment_id = :payment_id,
@@ -68,6 +69,8 @@ function init_payment_on_delivery($order_id) {
             ':payment_id' => 1,
         ];
         $result = $dbClient->psqlQuery($query, $params);
+        $result['sale_payment_list_by_orderId'] = $apiClient -> sale_payment_list_by_orderId($order_id);
+        $result['sale_shipmentitem_add'] = $apiClient -> sale_shipmentitem_add($order_id);
     } catch (Exception $e) {
         error_log("Database error: " . $e->getMessage());
     }
@@ -186,7 +189,6 @@ function verify_payment(string $paymentId, string $terminalKey, string $password
         $result = $dbClient->psqlQuery($query, $params);
         $dbClient -> psqlQuery($query, $params);
         $paymentId = $apiClient -> sale_payment_list_by_orderId($order_id);
-//        $apiClient -> sale_payment_update_paid($paymentId);
         $apiClient -> sale_payment_update_paid($paymentId,$amount);
         $apiClient -> sale_shipmentitem_add($order_id);
         return [

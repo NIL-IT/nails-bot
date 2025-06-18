@@ -1,8 +1,8 @@
 <?php
 $url = 'https://nails.nilit2.ru/payment.php';
 $data = [
-    'type' => 'get_payment_id',
-    'order_id' => 5823
+    'type' => 'init_payment_on_delivery',
+    'order_id' => 5835,
 ];
 
 $ch = curl_init();
