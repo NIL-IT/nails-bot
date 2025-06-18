@@ -53,7 +53,7 @@ JOIN
     catalog_products cp ON otp.id_product = cp.id_product
 WHERE 
     o.id_tg_user = :id_tg_user
-    (o.paid = 'Y' OR o.paid = 'D')
+    AND (o.paid = 'Y' OR o.paid = 'D')
     AND o.payment_id IS NOT NULL 
 GROUP BY 
     o.id, o.id_tg_user, o.fio, o.id_bitrix, o.date, o.payment_id
