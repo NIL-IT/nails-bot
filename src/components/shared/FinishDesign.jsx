@@ -127,7 +127,7 @@ export default function FinishDsesign({
             price: sumPrice,
             userId: user?.id_tg || 792820756,
             products: productsObject,
-            paySystemId: 24,
+            paySystemId: activePayment,
             deliveryId: selectedStore?.bitrix_id || selectedStore.deliveryId,
             fio: `${formData.lastName} ${formData.firstName} ${formData?.middleName}`,
             phone: formData.phone,
