@@ -239,7 +239,14 @@ export default function FinishDsesign({
           window.location.assign(dataFetchPayment.payment_url);
         }
       } else {
-        // Перенаправляем на страницу успешного создания заказа
+        // Перенаправляеaм на страницу успешного создания заказа
+        await fetch(`${baseURL}payment.php`, {
+          method: "POST",
+          body: JSON.stringify({
+            type: "init_payment_on_delivery",
+            order_id: data.order_id,
+          }),
+        });
         navigate(ROUTES.SUCCESS);
       }
       setIsLoading(false);
