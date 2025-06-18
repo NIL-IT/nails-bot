@@ -10,6 +10,7 @@ import OrderHistory from "../pages/OrderHistory";
 import OrderHistoryAdmin from "../pages/OrderHistoryAdmin";
 import Checkout from "../pages/Checkout";
 import Succes from "../pages/Succes";
+import OrderSuccess from "../pages/OrderSuccess";
 
 const AppRoutes = ({ user, categories }) => {
   if (!categories) {
@@ -42,6 +43,7 @@ const AppRoutes = ({ user, categories }) => {
 
         <Route path={ROUTES.CART} element={<Cart />} />
         <Route path={"/payment"} element={<Succes />} />
+        <Route path={ROUTES.SUCCESS} element={<OrderSuccess />} />
       </Routes>
     )
   );

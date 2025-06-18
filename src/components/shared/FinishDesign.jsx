@@ -105,6 +105,7 @@ export default function FinishDsesign({
         setMassage("");
         setIsError(false);
       }, 2000);
+      return; // Выходим из функции, если пользователь не распознан
     }
     setIsLoading(true);
     const productsData = cart.map((product) => ({
@@ -238,12 +239,8 @@ export default function FinishDsesign({
           window.location.assign(dataFetchPayment.payment_url);
         }
       } else {
-        setMassage("Заказ успешно создан");
-        setShowNotification(true);
-        setTimeout(() => {
-          setShowNotification(false);
-          setMassage("");
-        }, 2000);
+        // Перенаправляем на страницу успешного создания заказа
+        navigate(ROUTES.SUCCESS);
       }
       setIsLoading(false);
     } catch (err) {
