@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { API } from "../../api";
 import { CategoryList } from "../shared/CategoryList";
 
-const Home = ({ categories, user }) => {
+const Home = ({ categories }) => {
   const { pathname } = useLocation();
   const [category, setCategory] = useState(null);
   const [subCategory, setSubCategory] = useState(null);

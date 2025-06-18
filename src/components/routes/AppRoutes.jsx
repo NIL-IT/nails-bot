@@ -23,26 +23,20 @@ const AppRoutes = ({ user, categories }) => {
   return (
     categories && (
       <Routes>
-        <Route
-          path={ROUTES.HOME}
-          element={<Home user={user} categories={categories} />}
-        />
+        <Route path={ROUTES.HOME} element={<Home categories={categories} />} />
         <Route path={ROUTES.CATEGORY} element={<SingleCategory />} />
         <Route path={ROUTES.PRODUCT} element={<SingleProduct />} />
         <Route path={ROUTES.SEARCH} element={<SearchItems />} />
         <Route path={ROUTES.CHECKOUT} element={<Checkout user={user} />} />
-        <Route
-          path={ROUTES.PROFILE}
-          element={<OrderHistoryAdmin user={user} />}
-        />
-        {/* {user?.admin ? (
+
+        {user?.admin ? (
           <Route
             path={ROUTES.PROFILE}
             element={<OrderHistoryAdmin user={user} />}
           />
         ) : (
           <Route path={ROUTES.PROFILE} element={<OrderHistory user={user} />} />
-        )} */}
+        )}
 
         <Route path={ROUTES.CART} element={<Cart />} />
         <Route path={"/payment"} element={<Succes />} />
