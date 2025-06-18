@@ -165,7 +165,6 @@ export default function FinishDsesign({
       const resp = await fetch(`${baseURL}order.php`, option);
       const { data } = await API.parseResponseTwo(resp);
       console.log("dataresp", data);
-
       if (!data || !data.order_id) {
         // // Clear the cart
         // cart.forEach((item) => removeItem(item.id));
@@ -185,54 +184,55 @@ export default function FinishDsesign({
 
         return; // Exit the function early
       }
-      const fetchPayment = await fetch(`${baseURL}payment.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          type: "init_payment",
-          amount: sumPrice * 100,
-          id_tg_user: user?.id_tg || 792820756,
-          order_id: data.order_id,
-        }),
-      });
 
-      // Get the raw text response
-      const responseText = await fetchPayment.text();
-
-      // Split the response into two parts if it contains two JSON objects
-      const jsonParts = responseText.split("}{");
-      let dataFetchPayment;
-
-      if (jsonParts.length > 1) {
-        // If we have two parts, take the second part (the payment data)
-        // and add back the curly braces
-        dataFetchPayment = JSON.parse("{" + jsonParts[1]);
-      } else {
-        // If it's a single JSON object, parse it normally
-        dataFetchPayment = JSON.parse(responseText);
-      }
-
-      const handlePaymentClick = (link) => {
-        if (window.Telegram?.WebApp) {
-          // Use try_instant_view: false to ensure proper back button behavior
-          window.Telegram.WebApp.openLink(link, { try_instant_view: true });
-        } else {
-          window.open(link, "_blank");
-        }
-      };
-      const handlePaymentClickTwo = (link) => {
-        if (window.Telegram?.WebApp) {
-          Telegram.WebApp.openLink(link, { try_instant_view: false });
-          // window.location.href = link;
-        } else {
-          window.open(link, "_blank");
-        }
-      };
       console.log("dataFetchPayment", dataFetchPayment);
-      if (!dataFetchPayment) handlePaymentClick("/");
       if (activePayment === 24) {
+        if (!dataFetchPayment) handlePaymentClick("/");
+        const fetchPayment = await fetch(`${baseURL}payment.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: "init_payment",
+            amount: sumPrice * 100,
+            id_tg_user: user?.id_tg || 792820756,
+            order_id: data.order_id,
+          }),
+        });
+
+        // Get the raw text response
+        const responseText = await fetchPayment.text();
+
+        // Split the response into two parts if it contains two JSON objects
+        const jsonParts = responseText.split("}{");
+        let dataFetchPayment;
+
+        if (jsonParts.length > 1) {
+          // If we have two parts, take the second part (the payment data)
+          // and add back the curly braces
+          dataFetchPayment = JSON.parse("{" + jsonParts[1]);
+        } else {
+          // If it's a single JSON object, parse it normally
+          dataFetchPayment = JSON.parse(responseText);
+        }
+
+        const handlePaymentClick = (link) => {
+          if (window.Telegram?.WebApp) {
+            // Use try_instant_view: false to ensure proper back button behavior
+            window.Telegram.WebApp.openLink(link, { try_instant_view: true });
+          } else {
+            window.open(link, "_blank");
+          }
+        };
+        const handlePaymentClickTwo = (link) => {
+          if (window.Telegram?.WebApp) {
+            Telegram.WebApp.openLink(link, { try_instant_view: false });
+            // window.location.href = link;
+          } else {
+            window.open(link, "_blank");
+          }
+        };
         if (window.Telegram?.WebApp) {
           handlePaymentClickTwo(dataFetchPayment.payment_url);
         } else {
