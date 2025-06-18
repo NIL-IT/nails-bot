@@ -184,10 +184,16 @@ export default function FinishDsesign({
 
         return; // Exit the function early
       }
+      const handlePaymentClickTwo = (link) => {
+        if (window.Telegram?.WebApp) {
+          Telegram.WebApp.openLink(link, { try_instant_view: false });
+          // window.location.href = link;
+        } else {
+          window.open(link, "_blank");
+        }
+      };
 
-      console.log("dataFetchPayment", dataFetchPayment);
       if (activePayment === 24) {
-        if (!dataFetchPayment) handlePaymentClick("/");
         const fetchPayment = await fetch(`${baseURL}payment.php`, {
           method: "POST",
           headers: {
@@ -216,23 +222,6 @@ export default function FinishDsesign({
           // If it's a single JSON object, parse it normally
           dataFetchPayment = JSON.parse(responseText);
         }
-
-        const handlePaymentClick = (link) => {
-          if (window.Telegram?.WebApp) {
-            // Use try_instant_view: false to ensure proper back button behavior
-            window.Telegram.WebApp.openLink(link, { try_instant_view: true });
-          } else {
-            window.open(link, "_blank");
-          }
-        };
-        const handlePaymentClickTwo = (link) => {
-          if (window.Telegram?.WebApp) {
-            Telegram.WebApp.openLink(link, { try_instant_view: false });
-            // window.location.href = link;
-          } else {
-            window.open(link, "_blank");
-          }
-        };
         if (window.Telegram?.WebApp) {
           handlePaymentClickTwo(dataFetchPayment.payment_url);
         } else {
