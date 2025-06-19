@@ -1,10 +1,10 @@
 <?php
-// 🛡️ Защита от ошибок заголовков при запуске из CLI
-// Чтение входных данных
+require_once 'cors.php';
+// === УНИВЕРСАЛЬНАЯ ОБРАБОТКА ВХОДЯЩИХ ДАННЫХ ===
 $rawInput = file_get_contents('php://input');
 $data = json_decode($rawInput, true);
 
-// Если JSON некорректен — пробуем получить из $_POST
+// Если пришёл некорректный JSON или пусто — fallback на $_POST
 if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
     $data = $_POST;
 }
@@ -20,7 +20,7 @@ if (!is_array($data) || empty($data)) {
     exit;
 }
 
-// 🔐 Получаем тип операции
+// Получаем тип операции
 $type = $data['type'] ?? $_POST['type'] ?? 'init_payment';
 
 // 📦 Настройки Tinkoff
@@ -32,7 +32,7 @@ $verifyPassword = $password;
 // 📁 Подключаем зависимости
 require_once __DIR__ . '/../api/DatabaseClient.php';
 require_once __DIR__ . '/../api_bitrix/CatalogBitrixRestApiClient.php';
-require_once 'cors.php';
+
 
 // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
 

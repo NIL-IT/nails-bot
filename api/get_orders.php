@@ -34,6 +34,7 @@ if($data['method'] == 'user'){
     o.fio,
     o.id_bitrix,
     o.payment_id,
+    o.paid,
     o.date AS time,
     COUNT(otp.id_product) AS products_count,
     SUM(cp.base_price * otp.quantity) AS total_price,
@@ -42,7 +43,8 @@ if($data['method'] == 'user'){
             'id', cp.id,
             'name', cp.name,
             'roznica_master_price', cp.roznica_master_price,
-            'quantity', otp.quantity
+            'quantity', otp.quantity,
+            'pay_method', o.paid
         )
     ) AS products
 FROM 
@@ -79,6 +81,7 @@ elseif ($data['method'] == 'admin'){
         o.id_tg_user,
         o.fio,
         o.id_bitrix,
+        o.paid,
         o.date AS time,
         o.payment_id,
         COUNT(otp.id_product) AS products_count,
@@ -88,7 +91,8 @@ elseif ($data['method'] == 'admin'){
                 'id', cp.id,
                 'name', cp.name,
                 'roznica_master_price', cp.roznica_master_price,
-                'quantity', otp.quantity
+                'quantity', otp.quantity,
+                'pay_method', o.paid
             )
         ) AS products
     FROM 
