@@ -69,11 +69,11 @@ export default function OrdersByDay({ order, noDay }) {
             Статус оплаты:{" "}
             <span
               className={`font-bold text-[12px] ${
-                order.payment_id === 1 ? "text-[#d3902b]" : "text-[#4ca324]"
+                order.paid === "D" ? "text-[#d3902b]" : "text-[#4ca324]"
               }`}
             >
               {" "}
-              {order.payment_id === 1 ? "Оплата при получении" : "Оплачено"}
+              {order.paid === "D" ? "Оплата при получении" : "Оплачено"}
             </span>
           </p>
           {order?.street && (
