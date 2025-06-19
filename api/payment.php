@@ -24,10 +24,10 @@ if (!is_array($data) || empty($data)) {
 $type = $data['type'] ?? $_POST['type'] ?? 'init_payment';
 
 // 📦 Настройки Tinkoff
-$terminalKey = '1745407865610DEMO';
-$password = 'nT9DjqiwgtAmbwr0';
-//$terminalKey = "1745407865660";
-//$password = 'v$0UyjFovKQX#u56';
+//$terminalKey = '1745407865610DEMO';
+//$password = 'nT9DjqiwgtAmbwr0';
+$terminalKey = "1745407865660";
+$password = 'v$0UyjFovKQX#u56';
 $verifyTerminalKey = $terminalKey;
 $verifyPassword = $password;
 
