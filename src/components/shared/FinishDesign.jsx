@@ -44,7 +44,7 @@ export default function FinishDsesign({
       return [
         {
           id: 10,
-          name: "При получении (Карта / СБП / Наличные)",
+          name: "При получении (Перевод / СБП / Наличные)",
         },
       ];
     }
@@ -55,7 +55,7 @@ export default function FinishDsesign({
       },
       {
         id: 10,
-        name: "При получении (Карта / СБП / Наличные)",
+        name: "При получении (Перевод / СБП / Наличные)",
       },
     ];
   };
