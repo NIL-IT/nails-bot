@@ -13,16 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { API, baseURL } from "../../api";
 import { NotificationPopup } from "./NotificationPopup";
 import { ROUTES } from "../routes/routes";
-const paymentData = [
-  {
-    id: 24,
-    name: "Картой / СБП онлайн прямо сейчас",
-  },
-  {
-    id: 10,
-    name: "При получении (Карта / СБП / Наличные)",
-  },
-];
+
 export default function FinishDsesign({
   formData,
   selectedStore,
@@ -45,8 +36,40 @@ export default function FinishDsesign({
   const [isError, setIsError] = useState(false);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [activePayment, setActivePayment] = useState(paymentData[0].id);
   const { cart } = useSelector(({ user }) => user);
+  console.log("deliveryOption", deliveryOption);
+  // Dynamic payment options
+  const getPaymentData = () => {
+    if (deliveryOption?.bitrix_id === 1) {
+      return [
+        {
+          id: 10,
+          name: "При получении (Карта / СБП / Наличные)",
+        },
+      ];
+    }
+    return [
+      {
+        id: 24,
+        name: "Картой / СБП онлайн прямо сейчас",
+      },
+      {
+        id: 10,
+        name: "При получении (Карта / СБП / Наличные)",
+      },
+    ];
+  };
+  const paymentData = getPaymentData();
+
+  // Ensure activePayment is always valid
+  const [activePayment, setActivePayment] = useState(paymentData[0].id);
+  // Update activePayment if paymentData changes and current activePayment is not valid
+  useEffect(() => {
+    if (!paymentData.find((p) => p.id === activePayment)) {
+      setActivePayment(paymentData[0].id);
+    }
+    // eslint-disable-next-line
+  }, [deliveryOption]);
 
   if (cart.length === 0) {
     return (

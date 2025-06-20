@@ -6,6 +6,7 @@ import {
   changeCurrentCategory,
   changePositionSidebar,
 } from "../../features/slice/userSlice";
+import { ShoppingCart } from "lucide-react";
 
 export function Header() {
   const params = useLocation();
@@ -31,6 +32,11 @@ export function Header() {
         <div className="flex gap-5 items-center">
           <Link to={ROUTES.SEARCH}>
             <img src="/img/search.svg" alt="Поиск" />
+          </Link>
+          <Link className="w-[26px] h-[26px]" to={ROUTES.CART}>
+            <div className="bg-secondary p-[4px] rounded-full">
+              <ShoppingCart size={20} strokeWidth={2} className="text-white" />
+            </div>
           </Link>
           <Link to={ROUTES.PROFILE}>
             <img src="/img/account.svg" alt="Личный кабинет" />

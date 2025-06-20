@@ -77,6 +77,14 @@ export default function CustomerForm({
     };
   }, []);
 
+  // Сброс состояния при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      setSearchData([]);
+      setIsInputFocused(false);
+    };
+  }, []);
+
   const handleCitySelect = (city, region) => {
     setFormData((prev) => ({
       ...prev,
@@ -128,6 +136,12 @@ export default function CustomerForm({
             value={formData.city}
             onChange={handleInputChange}
             onFocus={() => setIsInputFocused(true)}
+            onBlur={() => {
+              setTimeout(() => {
+                setIsInputFocused(false);
+                setSearchData([]);
+              }, 100);
+            }}
             placeholder="Ваш город"
             className="w-full p-3 border border-gray-300 
               rounded focus:outline-none focus:border-secondary"
@@ -136,7 +150,7 @@ export default function CustomerForm({
           {isInputFocused && searchData.length > 0 && (
             <div
               ref={cityDropdownRef}
-              className="absolute top-[74px] left-0 w-full h-auto bg-white py-3  border border-t-0 border-secondary space-y-3 z-10"
+              className="absolute top-[74px] left-0 w-full h-auto rounded rounded-t-none bg-white py-3  border border-t-0   border-secondary space-y-3 z-10"
             >
               {searchData.map((el, index) => (
                 <div
