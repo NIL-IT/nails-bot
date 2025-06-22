@@ -29,6 +29,20 @@ export default function DeliveryForm({
     updateDeliveryOptionsByCity(formData.city);
   }, [formData.city]);
 
+  // Auto-select first delivery option when deliveryOption is null
+  useEffect(() => {
+    if (deliveryOptionParse?.id === null && deliveryOptions.length > 0) {
+      const firstOption = deliveryOptions[0];
+      handleSelectDelivery({
+        id: firstOption.id,
+        price: firstOption.price,
+        bitrix_id: firstOption?.bitrix_id || null,
+      });
+      setPriceDelivery(firstOption.price);
+    }
+  }, [deliveryOptions, deliveryOptionParse?.id]);
+
+  console.log(deliveryOptionParse);
   // Function to get delivery options based on city
   const updateDeliveryOptionsByCity = (city) => {
     const cityLower = city.toLowerCase();
@@ -268,7 +282,7 @@ export default function DeliveryForm({
             </div>
           )}
 
-          {!isShowForm && (
+          {!isShowForm && deliveryOptionParse.id !== null && (
             <div className="mb-4 border rounded-lg p-4">
               <h3 className="font-medium mb-4">Адрес доставки</h3>
 

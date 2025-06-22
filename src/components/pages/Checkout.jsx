@@ -202,8 +202,13 @@ export default function Checkout({ user }) {
       localStorage.removeItem(STORAGE_KEYS.SELECTED_STORE);
       sessionStorage.removeItem(STORAGE_KEYS.SELECTED_STORE);
 
+      // Clear delivery option from all storage methods
+      Cookies.remove(STORAGE_KEYS.DELIVERY_OPTION);
+      localStorage.removeItem(STORAGE_KEYS.DELIVERY_OPTION);
+      sessionStorage.removeItem(STORAGE_KEYS.DELIVERY_OPTION);
+
       // Сбросить опцию доставки на самовывоз
-      setDeliveryOption({ id: "selfPickup", price: 0 });
+      setDeliveryOption({ id: null, price: 0 });
 
       setFormData((prevData) => ({
         ...prevData,
