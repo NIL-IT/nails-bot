@@ -85,6 +85,22 @@ const userSlice = createSlice({
     recoveryAllCart: (state, { payload }) => {
       state.cart = payload;
     },
+    clearCart: (state) => {
+      state.cart = [];
+      // Удаляем все cart_* из localStorage, sessionStorage и cookies
+      const removeAllCartKeys = (storage) => {
+        Object.keys(storage)
+          .filter((key) => key.startsWith("cart_"))
+          .forEach((key) => storage.removeItem(key));
+      };
+      removeAllCartKeys(localStorage);
+      removeAllCartKeys(sessionStorage);
+      if (typeof Cookies !== "undefined") {
+        Object.keys(Cookies.get()).forEach((key) => {
+          if (key.startsWith("cart_")) Cookies.remove(key);
+        });
+      }
+    },
   },
   extraReducers: (builder) => {},
 });
@@ -96,5 +112,6 @@ export const {
   changeCurrentCategory,
   changeCategoryName,
   changePositionSidebar,
+  clearCart,
 } = userSlice.actions;
 export default userSlice.reducer;

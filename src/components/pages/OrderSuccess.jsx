@@ -2,11 +2,18 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle } from "lucide-react";
 import { ROUTES } from "../routes/routes";
+import { useDispatch, useSelector } from "react-redux";
+import { removeItemFromCart } from "../../features/slice/userSlice";
 
 export default function OrderSuccess() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { cart } = useSelector(({ user }) => user);
 
   useEffect(() => {
+    for (const item of cart) {
+      dispatch(removeItemFromCart(item.id));
+    }
     // Перенаправляем на страницу истории заказов через 3 секунды
     const redirectTimer = setTimeout(() => {
       navigate(ROUTES.PROFILE);

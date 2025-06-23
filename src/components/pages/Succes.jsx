@@ -4,9 +4,13 @@ import { Link } from "react-router-dom";
 import { ROUTES } from "../routes/routes";
 import Cookies from "js-cookie";
 import { baseURL } from "../../api";
+import { useDispatch, useSelector } from "react-redux";
+import { removeItemFromCart } from "../../features/slice/userSlice";
 
 export default function Succes() {
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { cart } = useSelector(({ user }) => user);
   const [isLoading, setIsLoading] = useState(true);
   const urlParams = new URLSearchParams(window.location.search);
   const paramValue = urlParams.get("success");
@@ -16,6 +20,11 @@ export default function Succes() {
     "https://t.me/shtuchki_pro_bot/?startapp&addToHomeScreen";
 
   useEffect(() => {
+    if (isSucces) {
+      for (const item of cart) {
+        dispatch(removeItemFromCart(item.id));
+      }
+    }
     // Redirect after 5 seconds
     const redirectTimer = setTimeout(() => {
       window.location.href = TELEGRAM_BOT_LINK;

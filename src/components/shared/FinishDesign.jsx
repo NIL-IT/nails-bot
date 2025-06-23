@@ -29,7 +29,6 @@ export default function FinishDsesign({
       behavior: "smooth",
     });
   }, []);
-  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const [showNotification, setShowNotification] = useState(false);
   const [massage, setMassage] = useState("");
@@ -119,17 +118,17 @@ export default function FinishDsesign({
   };
 
   const handleSubmit = async () => {
-    if (!user?.id_tg) {
-      setMassage("Не удалось распознать пользователя");
-      setIsError(true);
-      setShowNotification(true);
-      setTimeout(() => {
-        setShowNotification(false);
-        setMassage("");
-        setIsError(false);
-      }, 2000);
-      return; // Выходим из функции, если пользователь не распознан
-    }
+    // if (!user?.id_tg) {
+    //   setMassage("Не удалось распознать пользователя");
+    //   setIsError(true);
+    //   setShowNotification(true);
+    //   setTimeout(() => {
+    //     setShowNotification(false);
+    //     setMassage("");
+    //     setIsError(false);
+    //   }, 2000);
+    //   return; // Выходим из функции, если пользователь не распознан
+    // }
     setIsLoading(true);
     const productsData = cart.map((product) => ({
       productId: product.id_product,
@@ -261,10 +260,12 @@ export default function FinishDsesign({
         });
         navigate(ROUTES.SUCCESS);
       }
+
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
       console.log(err);
+    } finally {
     }
   };
 
