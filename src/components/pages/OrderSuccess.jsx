@@ -36,7 +36,17 @@ export default function OrderSuccess() {
             <h1 className="text-3xl font-bold text-black/80 mb-2">
               Заказ успешно создан!
             </h1>
-            <p className="text-gray_dark">Спасибо за ваш заказ.</p>
+            <p style={{ lineHeight: 1.3 }} className="text-gray_dark">
+              В самое ближайшее время наш менеджер свяжется с вами.
+            </p>
+            <div
+              style={{ lineHeight: 1.5 }}
+              className="text-gray_dark text-[12px] mt-2"
+            >
+              Если остались вопросы : <br />
+              @shtuchki_pro <br />
+              <a href="tel:+79234579410"> +7 923 457 94 10</a>
+            </div>
           </div>
         </div>
       </div>

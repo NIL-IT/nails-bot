@@ -150,11 +150,25 @@ export default function Succes() {
                     ? "Оплата прошла успешно!"
                     : "Произошла ошибка при оплате"}
                 </h1>
-                <p className="text-gray_dark">
-                  {isSucces
-                    ? "Спасибо за ваш заказ."
-                    : "Через некоторое время попробуйте снова"}
-                </p>
+                <div className="text-gray_dark">
+                  {isSucces ? (
+                    <>
+                      <p style={{ lineHeight: 1.3 }} className="text-gray_dark">
+                        В самое ближайшее время наш менеджер свяжется с вами.
+                      </p>
+                      <div
+                        style={{ lineHeight: 1.5 }}
+                        className="text-gray_dark text-[12px] mt-2"
+                      >
+                        Если остались вопросы : <br />
+                        @shtuchki_pro <br />
+                        <a href="tel:+79234579410"> +7 923 457 94 10</a>
+                      </div>
+                    </>
+                  ) : (
+                    "Через некоторое время попробуйте снова"
+                  )}
+                </div>
               </div>
             </>
           )}
