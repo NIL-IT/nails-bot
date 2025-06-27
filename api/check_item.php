@@ -9,13 +9,14 @@ if (strpos($contentType, 'application/json') !== false) {
 } else {
     $data = $_POST;
 }
-header('Content-Type: application/json');
-
-$data = json_decode(file_get_contents('php://input'), true);
 $apiClient = new CatalogBitrixRestApiClient( 'https://shtuchki.pro/rest/13283/nj2nk4gedj6wvk5j/' );require_once 'DatabaseClient.php';
 
-$select = ['quantity','active','available'];
+$product = $apiClient -> getCatalogProduct($data['id_product']);
+if ($product['available'] === 'Y' and $product['active'] === 'Y' and $product['quantity'] != null) {
+    echo json_encode(['success' => true, 'data' => $data['id_product'],'active' => 'Y','quantity' => $product['quantity']]);
+}
+else {
+    echo json_encode(['success' => true, 'data' => $product,'active' => 'N']);
+}
 
-$result = $apiClient -> getCatalogProduct($data['id'], $select);
-print_r($result)
 ?>
