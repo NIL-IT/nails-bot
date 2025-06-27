@@ -22,6 +22,7 @@ export function Button({
   handleIncrement,
   classNameIcons,
   to,
+  maxCount,
 }) {
   return type === basket ? (
     <button
@@ -86,7 +87,7 @@ export function Button({
           classNameIcons
         )}
       >
-        <Plus size={12} color="#dc46a0" />
+        <Plus size={12} color={count >= maxCount ? "#f19ed0" : "#dc46a0"} />
       </button>
     </div>
   ) : (

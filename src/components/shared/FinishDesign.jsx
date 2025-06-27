@@ -109,7 +109,7 @@ export default function FinishDsesign({
       dispatch(
         addItemToCart({
           ...currentItem,
-          quantity: currentItem.quantity + 1,
+          quantity: Math.min(currentItem.quantity + 1, currentItem.maxquantity),
         })
       );
   };
@@ -346,11 +346,11 @@ export default function FinishDsesign({
         <div className="flex flex-col gap-[15px]">
           {cart.map((item) => {
             const price = item.roznica_master_price || item.base_price;
-
+            console.log(cart);
             return (
               <div
                 key={item.id}
-                className="bg-gray rounded-[10px]  flex gap-1 items-center"
+                className="bg-gray rounded-[10px]  flex gap-1 items-center py-2 pr-2"
               >
                 <div className="w-[38%] ">
                   <img
@@ -406,6 +406,7 @@ export default function FinishDsesign({
                     <Button
                       id={item.id}
                       type={quantity}
+                      maxCount={item.maxquantity}
                       handleIncrement={handleIncrement}
                       count={item.quantity ? item.quantity : 1}
                       className={

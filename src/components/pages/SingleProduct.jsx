@@ -51,6 +51,7 @@ export default function SingleProduct() {
   const dispatch = useDispatch();
   const [active, setActive] = useState(false);
   const { id } = useParams();
+  const [maxCount, setMaxCount] = useState(1);
   const [count, setCount] = React.useState(1);
   const [itemData, setItemData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -68,12 +69,13 @@ export default function SingleProduct() {
         const fetchProduct = await API.getProduct(id);
         console.log("fetchProduct");
         const checkItem = await API.checkItem(fetchProduct.data[0].id_product);
+        setMaxCount(checkItem.quantity);
         if (checkItem.active === "N") {
           setActive(false);
         } else {
           setActive(true);
         }
-        console.log("checkItem.active", checkItem.active);
+        console.log("checkItem.active", checkItem);
         setItemData(fetchProduct.data[0]);
       } catch (error) {
         console.error("Global fetch error:", error);
@@ -88,7 +90,7 @@ export default function SingleProduct() {
   const handleIncrement = (variant) => {
     if (variant === minus) {
       setCount(count > 1 ? count - 1 : count);
-    } else setCount(count + 1);
+    } else setCount(Math.min(count + 1, maxCount));
   };
 
   const addItem = () => {
@@ -151,6 +153,7 @@ export default function SingleProduct() {
             type={quantity}
             handleIncrement={handleIncrement}
             count={count}
+            maxCount={maxCount}
             className={"px-[5px] py-3 w-[145px] h-[38px]"}
           />
           {active ? (
@@ -165,7 +168,7 @@ export default function SingleProduct() {
           ) : (
             <button
               className={
-                "rounded-[10px] text-white text-2xl font-manrope font-semibold py-[9px] bg-secondary px-5 h-[38px] flex justify-center items-center"
+                "rounded-[10px] text-white text-[13px] min-[380px]:text-2xl font-manrope font-semibold py-[9px] bg-secondary px-5 h-[38px] flex justify-center items-center"
               }
             >
               Cкоро будет добавлен
