@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../features/slice/userSlice";
 import { ROUTES } from "../routes/routes";
 import { API, baseURL } from "../../api";
+import { useNavigate } from "react-router-dom";
 
 export default function OrderHistory({ user }) {
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,7 @@ export default function OrderHistory({ user }) {
       );
     }
   };
+  const navigate = useNavigate();
   return loading ? (
     <></>
   ) : data.length > 0 ? (
@@ -67,9 +69,12 @@ export default function OrderHistory({ user }) {
               <OrderItem key={item.id} item={item} />
             ))}
           </div>
-          <div onClick={() => addItem(order.products)}>
+          <div>
             <Button
-              to={ROUTES.CART}
+              onClick={async () => {
+                await addItem(order.products);
+                navigate(ROUTES.CART);
+              }}
               text="Повторный заказ"
               type={normal}
               className={"w-[100%] bg-secondary mt-5"}

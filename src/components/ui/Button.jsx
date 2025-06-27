@@ -24,19 +24,20 @@ export function Button({
   to,
   maxCount,
 }) {
-  return type === basket ? (
-    <button
-      className={clsx(`rounded-[10px] bg-primary px-5 py-[9px]`, className)}
-    >
+  if (type === basket) {
+    return (
       <Link
         to={ROUTES.CART}
-        className="text-white text-2xl font-manrope font-semibold"
+        className={clsx(`rounded-[10px] bg-primary px-5 py-[9px]`, className)}
       >
-        {text}
+        <span className="text-white text-2xl font-manrope font-semibold">
+          {text}
+        </span>
       </Link>
-    </button>
-  ) : type === outline ? (
-    <>
+    );
+  }
+  if (type === outline) {
+    return (
       <Link to={`/categories/${id}`}>
         <button className=" rounded-[10px] border border-primary px-[10px] py-[7px]">
           <div className="flex items-center gap-[5px]">
@@ -47,50 +48,76 @@ export function Button({
           </div>
         </button>
       </Link>
-    </>
-  ) : type === normal ? (
-    <button
-      onClick={onClick ? () => onClick() : () => {}}
-      className={clsx(`rounded-[10px] bg-primary  py-[9px]`, className)}
-    >
-      <Link
-        to={to ? to : ""}
-        className="text-white text-2xl font-manrope font-semibold"
-      >
-        {text}
-      </Link>
-    </button>
-  ) : type === quantity ? (
-    <div
-      className={clsx(
-        `flex items-center justify-between border border-primary rounded-[10px]  `,
-        className
-      )}
-    >
-      <button
-        onClick={() => handleIncrement(minus, id)}
-        className={cn(
-          "min-w-[30%] min-h-[20px] flex flex-col items-end justify-center py-2 px-2",
-          classNameIcons
+    );
+  }
+  if (type === normal) {
+    if (onClick) {
+      return (
+        <button
+          onClick={onClick}
+          className={clsx(`rounded-[10px] bg-primary  py-[9px]`, className)}
+        >
+          <span className="text-white text-2xl font-manrope font-semibold">
+            {text}
+          </span>
+        </button>
+      );
+    } else if (to) {
+      return (
+        <Link
+          to={to}
+          className={clsx(
+            `rounded-[10px] bg-primary  py-[9px] text-white text-2xl font-manrope font-semibold`,
+            className
+          )}
+        >
+          {text}
+        </Link>
+      );
+    } else {
+      return (
+        <button
+          className={clsx(`rounded-[10px] bg-primary  py-[9px]`, className)}
+        >
+          <span className="text-white text-2xl font-manrope font-semibold">
+            {text}
+          </span>
+        </button>
+      );
+    }
+  }
+  if (type === quantity) {
+    return (
+      <div
+        className={clsx(
+          `flex items-center justify-between border border-primary rounded-[10px]  `,
+          className
         )}
       >
-        <Minus size={12} color="#dc46a0" />
-      </button>
+        <button
+          onClick={() => handleIncrement(minus, id)}
+          className={cn(
+            "min-w-[30%] min-h-[20px] flex flex-col items-end justify-center py-2 px-2",
+            classNameIcons
+          )}
+        >
+          <Minus size={12} color="#dc46a0" />
+        </button>
 
-      <span className="text-primary text-xl font-montserrat font-medium">
-        {count}
-      </span>
-      <button
-        onClick={() => handleIncrement(plus, id)}
-        className={cn(
-          "min-w-[30%] min-h-[20px] flex flex-col items-start justify-center py-2 px-2",
-          classNameIcons
-        )}
-      >
-        <Plus size={12} color={count >= maxCount ? "#f19ed0" : "#dc46a0"} />
-      </button>
-    </div>
-  ) : (
-    <></>
-  );
+        <span className="text-primary text-xl font-montserrat font-medium">
+          {count}
+        </span>
+        <button
+          onClick={() => handleIncrement(plus, id)}
+          className={cn(
+            "min-w-[30%] min-h-[20px] flex flex-col items-start justify-center py-2 px-2",
+            classNameIcons
+          )}
+        >
+          <Plus size={12} color={count >= maxCount ? "#f19ed0" : "#dc46a0"} />
+        </button>
+      </div>
+    );
+  }
+  return <></>;
 }
