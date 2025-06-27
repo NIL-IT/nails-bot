@@ -49,7 +49,6 @@ export default function Card() {
     if (cart.length > 0) {
       fetchMaxQuantities();
     } else {
-      setCartWithMaxQuantity([]);
       setSum(0);
       setOrderValid(false);
       setLoading(false);
